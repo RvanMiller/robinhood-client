@@ -1,11 +1,11 @@
 """Contains all functions for placing orders for stocks, options, and crypto."""
 from uuid import uuid4
 
-from robin_stocks.robinhood.crypto import *
-from robin_stocks.robinhood.helper import *
-from robin_stocks.robinhood.profiles import *
-from robin_stocks.robinhood.stocks import *
-from robin_stocks.robinhood.urls import *
+from parakeet.robinhood.crypto import *
+from parakeet.robinhood.helper import *
+from parakeet.robinhood.profiles import *
+from parakeet.robinhood.stocks import *
+from parakeet.robinhood.urls import *
 
 @login_required
 def get_all_stock_orders(info=None, account_number=None, start_date=None):

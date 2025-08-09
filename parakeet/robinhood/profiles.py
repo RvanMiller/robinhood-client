@@ -1,6 +1,6 @@
 """Contains functions for getting all the information tied to a user account."""
-from robin_stocks.robinhood.helper import *
-from robin_stocks.robinhood.urls import *
+from parakeet.robinhood.helper import *
+from parakeet.robinhood.urls import *
 
 
 @login_required

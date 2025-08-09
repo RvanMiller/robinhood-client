@@ -1,4 +1,4 @@
-import robin_stocks.robinhood as r
+import parakeet.robinhood as r
 import matplotlib.pyplot as plt
 import datetime as dt
 

@@ -1,6 +1,6 @@
 """Contains functions to get information about crypto-currencies."""
-from robin_stocks.robinhood.helper import *
-from robin_stocks.robinhood.urls import *
+from parakeet.robinhood.helper import *
+from parakeet.robinhood.urls import *
 
 @login_required
 def load_crypto_profile(info=None):

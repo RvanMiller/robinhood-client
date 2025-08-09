@@ -1,4 +1,4 @@
-import robin_stocks.robinhood as r
+import parakeet.robinhood as r
 import os
 import datetime
 import time as t

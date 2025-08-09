@@ -1,4 +1,4 @@
-import robin_stocks.robinhood as r 
+import parakeet.robinhood as r 
 
 '''
 This is an example script that will show you how to check the performance of your open positions.

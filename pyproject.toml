@@ -1,0 +1,53 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+# Include package data files if any are specified (e.g., via MANIFEST.in or package_data)
+include-package-data = true
+
+# Auto-discover packages under the repository root, but only those that start with "parakeet"
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["parakeet*"]
+exclude = [
+    "tests*",
+    "docs*",
+    "examples*",
+]
+
+[project]
+name = "parakeet"
+version = "0.1.0"
+description = "A Python wrapper around the Robinhood API"
+readme = { file = "README.rst", content-type = "text/x-rst" }
+license = "MIT"
+authors = [
+    { name = "Ryan Miller", email = "mrzodge@gmail.com" },
+]
+keywords = ["robinhood", "robin stocks", "finance app", "stocks", "options", "trading", "investing"]
+requires-python = ">=3.9"
+dependencies = [
+    "requests",
+    "pyotp",
+    "python-dotenv",
+    "cryptography",
+]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3 :: Only",
+    "Operating System :: OS Independent",
+]
+
+[tool.setuptools.license-files]
+paths = ["LICENSE.txt"]
+
+[project.urls]
+Homepage = "https://github.com/RvanMiller/robin_stocks"
+Repository = "https://github.com/RvanMiller/robin_stocks"
+
+[project.optional-dependencies]
+dev = [
+    "pytest",
+    "ruff",
+]

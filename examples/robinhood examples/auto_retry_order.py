@@ -2,7 +2,7 @@ import os
 from time import sleep
 
 import pyotp
-import robin_stocks.robinhood as r
+import parakeet.robinhood as r
 from dotenv import load_dotenv
 
 '''
