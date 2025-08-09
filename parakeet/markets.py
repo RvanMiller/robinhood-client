@@ -1,7 +1,7 @@
 """Contains functions for getting market level data."""
-from parakeet.robinhood.helper import *
-from parakeet.robinhood.urls import *
-from parakeet.robinhood.stocks import *
+from parakeet.helper import *
+from parakeet.urls import *
+from parakeet.stocks import *
 
 def get_top_movers_sp500(direction, info=None):
     """Returns a list of the top S&P500 movers up or down for the day.

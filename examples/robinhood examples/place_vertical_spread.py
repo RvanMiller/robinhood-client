@@ -1,4 +1,4 @@
-import parakeet.robinhood as r
+import parakeet as pk
 '''
 This is an example script that will place an option spread.
 '''
@@ -8,7 +8,7 @@ username = ''
 password = ''
 #!!!
 
-login = r.login(username,password)
+login = pk.login(username,password)
 
 #!!! WARNING - Some option spreads have UNLIMITED risk.
 #!!! Note - Make sure to check the prices of option legs before placing a spread order. Some vertical spreads carry more risk.
@@ -31,5 +31,5 @@ leg2 = {"expirationDate":"2019-12-20",
 spread = [leg1,leg2]
 #!!!
 
-order = r.order_option_spread("debit", 3.10, "PLUG", 1, spread)
+order = pk.order_option_spread("debit", 3.10, "PLUG", 1, spread)
 print(order)

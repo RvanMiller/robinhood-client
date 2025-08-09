@@ -3,7 +3,7 @@
 from functools import wraps
 
 import requests
-from parakeet.robinhood.globals import LOGGED_IN, OUTPUT, SESSION
+from parakeet.globals import LOGGED_IN, OUTPUT, SESSION
 
 
 def set_login_state(logged_in):

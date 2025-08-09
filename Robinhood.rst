@@ -7,8 +7,8 @@ accomplished by typing
 Basic
 ^^^^^
 
->>> import robin_stocks.robinhood as r
->>> login = r.login('joshsmith@email.com','password')
+>>> import parakeet as pk
+>>> login = pk.login('joshsmith@email.com','password')
 
 You will be prompted for your MFA token if you have MFA enabled and choose to do the above basic example.
 
@@ -26,15 +26,15 @@ the resulting MFA code into the prompt on your robinhood app.
 
 Once you have entered the above MFA code (the totp variable that is printed out) into your Robinhood account, it will give you a backup code.
 Make sure you do not lose this code or you may be locked out of your account!!! You can also take the exact same "My2factorAppHere" from above
-and enter it into your phone's authentication app, such as Google Authenticator. This will cause the exact same MFA code to be generated on your phone
+and enter it into your phone's authentication app, such as Google Authenticatopk. This will cause the exact same MFA code to be generated on your phone
 as well as your python code. This is important to do if you plan on being away from your computer and need to access your Robinhood account from your phone.
 
 Now you should be able to login with the following code,
 
 >>> import pyotp
->>> import robin_stocks.robinhood as r
+>>> import parakeet as pk
 >>> totp  = pyotp.TOTP("My2factorAppHere").now()
->>> login = r.login('joshsmith@email.com','password', mfa_code=totp)
+>>> login = pk.login('joshsmith@email.com','password', mfa_code=totp)
 
 Not all of the functions contained in the module need the user to be authenticated. A lot of the functions
 contained in the modules 'stocks' and 'options' do not require authentication, but it's still good practice
@@ -48,26 +48,26 @@ There is also the ability to submit market orders, limit orders, and stop orders
 Robinhood supports it. Here is a list of possible trades you can make
 
 >>> #Buy 10 shares of Apple at market price
->>> r.order_buy_market('AAPL',10)
+>>> pk.order_buy_market('AAPL',10)
 >>> #Sell half a Bitcoin is price reaches 10,000
->>> r.order_sell_crypto_limit('BTC',0.5,10000)
+>>> pk.order_sell_crypto_limit('BTC',0.5,10000)
 >>> #Buy $500 worth of Bitcoin
->>> r.order_buy_crypto_by_price('BTC',500)
+>>> pk.order_buy_crypto_by_price('BTC',500)
 >>> #Buy 5 $150 May 1st, 2020 SPY puts if the price per contract is $1.00. Good until cancelled.
->>> r.order_buy_option_limit('open','debit',1.00,'SPY',5,'2020-05-01',150,'put','gtc')
+>>> pk.order_buy_option_limit('open','debit',1.00,'SPY',5,'2020-05-01',150,'put','gtc')
 
 Now let's try a slightly more complex example. Let's say you wanted to sell half your Tesla stock if it fell to 200.00.
 To do this you would type
 
->>> positions_data = r.get_open_stock_positions()
+>>> positions_data = pk.get_open_stock_positions()
 >>> ## Note: This for loop adds the stock ticker to every order, since Robinhood
 >>> ## does not provide that information in the stock orders.
 >>> ## This process is very slow since it is making a GET request for each order.
 >>> for item in positions_data:
->>>     item['symbol'] = r.get_symbol_by_url(item['instrument'])
+>>>     item['symbol'] = pk.get_symbol_by_url(item['instrument'])
 >>> TSLAData = [item for item in positions_data if item['symbol'] == 'TSLA']
 >>> sellQuantity = float(TSLAData['quantity'])//2.0
->>> r.order_sell_limit('TSLA',sellQuantity,200.00)
+>>> pk.order_sell_limit('TSLA',sellQuantity,200.00)
 
 Viewing Orders
 --------------
@@ -77,18 +77,18 @@ Stocks, options, and cryptocurrencies are separated into three different locatio
 For example, let's say that you have some limit orders to buy and sell Bitcoin and those orders have yet to be filled.
 If you want to cancel all your limit sells, you would type
 
->>> positions_data = r.get_all_open_crypto_orders()
+>>> positions_data = pk.get_all_open_crypto_orders()
 >>> ## Note: Again we are adding symbol to our list of orders because Robinhood
 >>> ## does not include this with the order information.
 >>> for item in positions_data:
->>>    item['symbol'] = r.get_crypto_quote_from_id(item['currency_pair_id'], 'symbol')
+>>>    item['symbol'] = pk.get_crypto_quote_from_id(item['currency_pair_id'], 'symbol')
 >>> btcOrders = [item for item in positions_data if item['symbol'] == 'BTCUSD' and item['side'] == 'sell']
 >>> for item in btcOrders:
->>>    r.cancel_crypto_order(item['id'])
+>>>    pk.cancel_crypto_order(item['id'])
 
 If you want to view all the call options for a list of stocks you could type
 
->>> optionData = r.find_options_by_expiration(['fb','aapl','tsla','nflx'],
+>>> optionData = pk.find_options_by_expiration(['fb','aapl','tsla','nflx'],
 >>>              expirationDate='2018-11-16',optionType='call')
 >>> for item in optionData:
 >>>     print(' price -',item['strike_price'],' exp - ',item['expiration_date'],' symbol - ',
@@ -107,7 +107,7 @@ exposed the get and post methods so any call to the Robinhood API could be made.
 
 >>> url = 'https://api.robinhood.com/'
 >>> payload = { 'key1' : 'value1', 'key2' : 'value2'}
->>> r.request_get(url,'regular',payload)
+>>> pk.request_get(url,'regular',payload)
 
 The above code would results in a get request to ``https://api.robinhood.com/?key1=value1&key2=value2`` (which is a
 meaningless request). RobinHood returns most data as { 'previous' : None, 'results' : [], 'next' : None},
@@ -125,16 +125,16 @@ can be either absolute or relative. To save the file in the current directory, s
 file extension. If it is missing it will be added, and any other file extension will be automatically changed. Below are example calls.
 
 >>> # let's say that I am running code from C:/Users/josh/documents/
->>> r.export_completed_stock_orders(".") # saves at C:/Users/josh/documents/stock_orders_Jun-28-2020.csv
->>> r.export_completed_option_orders("../", "toplevel") # save at C:/Users/josh/toplevel.csv
+>>> pk.export_completed_stock_orders(".") # saves at C:/Users/josh/documents/stock_orders_Jun-28-2020.csv
+>>> pk.export_completed_option_orders("../", "toplevel") # save at C:/Users/josh/toplevel.csv
 
 Getting Quote Information For Stocks In A Specific Category
 -----------------------------------------------------------
 When you are on Robinhood, there are these green tags you can click on to get all the stocks for that category.
 You can now get the quote information for those categories by calling
 
->>> r.get_all_stocks_from_market_tag('upcoming-earnings') # get upcoming earnings
->>> r.get_all_stocks_from_market_tag('technology') # get all tech tags
+>>> pk.get_all_stocks_from_market_tag('upcoming-earnings') # get upcoming earnings
+>>> pk.get_all_stocks_from_market_tag('technology') # get all tech tags
 
 These functions do some processing to get the quote data so they may run a little slow.
 The Robinhood API only returns a list of instrument urls.

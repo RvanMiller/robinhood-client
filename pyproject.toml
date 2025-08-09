@@ -25,7 +25,7 @@ license = "MIT"
 authors = [
     { name = "Ryan Miller", email = "mrzodge@gmail.com" },
 ]
-keywords = ["robinhood", "robin stocks", "finance app", "stocks", "options", "trading", "investing"]
+keywords = ["robinhood", "parakeet", "finance app", "stocks", "options", "trading", "investing"]
 requires-python = ">=3.9"
 dependencies = [
     "requests",
@@ -39,12 +39,9 @@ classifiers = [
     "Operating System :: OS Independent",
 ]
 
-[tool.setuptools.license-files]
-paths = ["LICENSE.txt"]
-
 [project.urls]
-Homepage = "https://github.com/RvanMiller/robin_stocks"
-Repository = "https://github.com/RvanMiller/robin_stocks"
+Homepage = "https://github.com/RvanMiller/parakeet"
+Repository = "https://github.com/RvanMiller/parakeet"
 
 [project.optional-dependencies]
 dev = [

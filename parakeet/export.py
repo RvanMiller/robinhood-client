@@ -1,10 +1,10 @@
 from csv import writer
 from datetime import date
 from pathlib import Path
-from parakeet.robinhood.helper import *
-from parakeet.robinhood.orders import *
-from parakeet.robinhood.stocks import *
-from parakeet.robinhood.crypto import *
+from parakeet.helper import *
+from parakeet.orders import *
+from parakeet.stocks import *
+from parakeet.crypto import *
 
 
 def fix_file_extension(file_name):

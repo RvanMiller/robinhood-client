@@ -1,4 +1,4 @@
-import parakeet.robinhood as r
+import parakeet as pk
 
 '''
 Robinhood includes dividends as part of your net gain. This script removes
@@ -15,11 +15,11 @@ username = ''
 password = ''
 #!!!
 
-login = r.login(username,password)
+login = pk.login(username,password)
 
-profileData = r.load_portfolio_profile()
-allTransactions = r.get_bank_transfers()
-cardTransactions= r.get_card_transactions()
+profileData = pk.load_portfolio_profile()
+allTransactions = pk.get_bank_transfers()
+cardTransactions= pk.get_card_transactions()
 
 deposits = sum(float(x['amount']) for x in allTransactions if (x['direction'] == 'deposit') and (x['state'] == 'completed'))
 withdrawals = sum(float(x['amount']) for x in allTransactions if (x['direction'] == 'withdraw') and (x['state'] == 'completed'))
@@ -27,7 +27,7 @@ debits = sum(float(x['amount']['amount']) for x in cardTransactions if (x['direc
 reversal_fees = sum(float(x['fees']) for x in allTransactions if (x['direction'] == 'deposit') and (x['state'] == 'reversed'))
 
 money_invested = deposits + reversal_fees - (withdrawals - debits)
-dividends = r.get_total_dividends()
+dividends = pk.get_total_dividends()
 percentDividend = dividends/money_invested*100
 
 equity = float(profileData['extended_hours_equity'])

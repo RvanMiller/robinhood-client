@@ -5,8 +5,8 @@ import pickle
 import random
 import time
 
-from parakeet.robinhood.helper import *
-from parakeet.robinhood.urls import *
+from parakeet.helper import *
+from parakeet.urls import *
 
 def generate_device_token():
     """This function will generate a token used when loggin on.
@@ -254,12 +254,12 @@ def _validate_sherrif_id(device_token:str, workflow_id:str,mfa_code:str):
 
     raise Exception("Id not returned in user-machine call")
 
-def _get_sherrif_challenge(token_id:str):
+# TODO: Verify robin_stocks repo to see if this is still used at all
+# def _get_sherrif_challenge(token_id:str):
     
-    if "id" in data:
-        return data["id"]
-    raise Exception("Id not returned in user-machine call")
-
+#     if "id" in data:
+#         return data["id"]
+#     raise Exception("Id not returned in user-machine call")
 
 @login_required
 def logout():

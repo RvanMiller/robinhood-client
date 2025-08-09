@@ -1,4 +1,4 @@
-import parakeet.robinhood as r 
+import parakeet as pk
 
 '''
 This is an example script that will show you how to check the performance of your open positions.
@@ -9,22 +9,22 @@ username = ''
 password = ''
 #!!!
 
-login = r.login(username, password)
+login = pk.login(username, password)
 
 # Query your positions
-positions = r.get_open_stock_positions()
+positions = pk.get_open_stock_positions()
 
 # Get Ticker symbols
-tickers = [r.get_symbol_by_url(item["instrument"]) for item in positions]
+tickers = [pk.get_symbol_by_url(item["instrument"]) for item in positions]
 
 # Get your quantities
 quantities = [float(item["quantity"]) for item in positions]
 
 # Query previous close price for each stock ticker
-prevClose = r.get_quotes(tickers, "previous_close")
+prevClose = pk.get_quotes(tickers, "previous_close")
 
 # Query last trading price for each stock ticker
-lastPrice = r.get_quotes(tickers, "last_trade_price")
+lastPrice = pk.get_quotes(tickers, "last_trade_price")
 
 # Calculate the profit per share
 profitPerShare = [float(lastPrice[i]) - float(prevClose[i]) for i in range(len(tickers))]
@@ -47,4 +47,4 @@ for item in tickersPerf:
 
 print ("Net Gain:", sum(profit))
 
-r.logout()
+pk.logout()

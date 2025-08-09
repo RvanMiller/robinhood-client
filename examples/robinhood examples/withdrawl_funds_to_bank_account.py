@@ -1,7 +1,7 @@
 import os
 
 import pyotp
-import parakeet.robinhood as r
+import parakeet as pk
 from dotenv import load_dotenv
 '''
 This is an example script that will withdrawl money to the bank
@@ -17,11 +17,11 @@ amount_to_withdrawl = "REPLACE-ME"
 load_dotenv()
 # Login using two-factor code
 totp = pyotp.TOTP(os.environ['robin_mfa']).now()
-login = r.login(os.environ['robin_username'],
+login = pk.login(os.environ['robin_username'],
                 os.environ['robin_password'], store_session=True, mfa_code=totp)
 # Get the bank account information
-bank_accounts = r.get_linked_bank_accounts()
-account_names = r.filter_data(bank_accounts, 'bank_account_nickname')
+bank_accounts = pk.get_linked_bank_accounts()
+account_names = pk.filter_data(bank_accounts, 'bank_account_nickname')
 # set up default variable values for business logic
 count = 1
 valid_choice = False
@@ -62,5 +62,5 @@ elif bank_choice == count:
     print("you chose to cancel. Exiting...")
 else:
     ach_relationship = bank_accounts[bank_choice - 1]['url']
-    withdrawl = r.withdrawl_funds_to_bank_account(ach_relationship, amount_to_withdrawl)
+    withdrawl = pk.withdrawl_funds_to_bank_account(ach_relationship, amount_to_withdrawl)
     print(withdrawl)

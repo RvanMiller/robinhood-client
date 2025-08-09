@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 #
-# robin_stocks documentation build configuration file, created by
+# parakeet documentation build configuration file, created by
 # sphinx-quickstart on Tue Oct 16 18:34:53 2018.
 #
 # This file is execfile()d with the current directory set to its

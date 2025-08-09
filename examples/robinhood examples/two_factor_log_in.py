@@ -1,7 +1,7 @@
 import os
 
 import pyotp
-import parakeet.robinhood as r
+import parakeet as pk
 from dotenv import load_dotenv
 '''
 This is an example script that will automatically log you in with two factor authentication.
@@ -23,8 +23,8 @@ load_dotenv()
 totp = pyotp.TOTP(os.environ['robin_mfa']).now()
 print("Current OTP:", totp)
 # Here I am setting store_session=False so no pickle file is used.
-login = r.login(os.environ['robin_username'],
-                os.environ['robin_password'], store_session=False, mfa_code=totp)
+login = pk.login(os.environ['robin_username'],
+                os.environ['robin_password'], store_session=True, mfa_code=totp)
 # In the login dictionary, you will see that 'detail' is 
 # 'logged in with brand new authentication code.' to show that I am not using a pickle file.
 print(login)

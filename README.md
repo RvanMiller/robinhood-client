@@ -9,14 +9,28 @@ The only current and future supported API is Robinhood, as this library is meant
 Below is an example of how to call the module:
 
 ```python
-import parakeet.robinhood as rh
+import parakeet as pk
 # Here are some example calls
-rh.get_all_open_crypto_orders() # gets all crypto orders from Robinhood
+pk.get_all_open_crypto_orders() # gets all crypto orders from Robinhood
 ```
 
 ## Contributing
 
-If you would like to contribute to this project, follow our contributing guidelines [here](https://github.com/jmfernandes/robin_stocks/blob/master/contributing.md).
+> TODO: Add generic contributing guide here.
+
+### Build and Install a Wheel
+
+**Build**
+```bash
+python -m pip install build
+python -m build
+```
+
+**Install**
+```bash
+python -m pip install /path/to/parakeet/dist/parakeet-*.whl
+```
+
 
 ### Automatic Testing
 
@@ -76,8 +90,7 @@ and this will install whatever you changed in the local files. This will allow y
 
 # List of Functions and Example Usage
 
-
-For a complete list of all Robinhood API functions and what the different parameters mean, go to [parakeet Robinhood Page](http://www.robin-stocks.com/en/latest/robinhood.html). If you would like to see some example code and instructions on how to set up two-factor authorization for Robinhood, go to the [Robinhood Documentation](Robinhood.rst).
+If you would like to see some example code and instructions on how to set up two-factor authorization, go to the [Documentation](Robinhood.rst).
 
 ---
 

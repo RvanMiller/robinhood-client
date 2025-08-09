@@ -1,5 +1,5 @@
 """Contains all the url endpoints for interacting with Robinhood API."""
-from parakeet.robinhood.helper import id_for_chain, id_for_stock
+from parakeet.helper import id_for_chain, id_for_stock
 
 # Login
 

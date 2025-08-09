@@ -1,7 +1,7 @@
 """Contains functions for getting information about options."""
 import sys
-from parakeet.robinhood.helper import *
-from parakeet.robinhood.urls import *
+from parakeet.helper import *
+from parakeet.urls import *
 
 def spinning_cursor():
     """ This is a generator function to yield a character. """
