@@ -17,9 +17,9 @@ exclude = [
 ]
 
 [project]
-name = "robinhood_client"
+name = "robinhood-client"
 version = "1.0.0"
-description = "A Python wrapper around the Robinhood API"
+description = "An unofficial Python client for Robinhood API"
 readme = { file = "README.md", content-type = "text/markdown" }
 license = "MIT"
 authors = [
