@@ -1,0 +1,84 @@
+# Parakeet API Library
+
+This library provides a pure Python interface that interacts with the Robinhood API. The code is simple to use, easy to understand, and easy to modify. With this library, you can view information on stocks, options, and crypto-currencies in real-time, create your own robo-investor or trading algorithm.
+
+## Supported API
+
+The only current and future supported API is Robinhood, as this library is meant as a stand-in for an official Robinhood API if they ever get around to it. For more information about how to use the API, visit the [Robinhood Documentation](Robinhood.rst).
+
+Below is an example of how to call the module:
+
+```python
+import parakeet.robinhood as rh
+# Here are some example calls
+rh.get_all_open_crypto_orders() # gets all crypto orders from Robinhood
+```
+
+## Contributing
+
+If you would like to contribute to this project, follow our contributing guidelines [here](https://github.com/jmfernandes/robin_stocks/blob/master/contributing.md).
+
+### Automatic Testing
+
+
+If you are contributing to this project and would like to use automatic testing for your changes, you will need to install pytest and pytest-dotenv. To do this, type into terminal or command prompt:
+
+
+```bash
+pip install pytest
+pip install pytest-dotenv
+```
+
+
+You will also need to fill out all the fields in `.test.env`. It is recommended to rename the file as `.env` once you are done adding in all your personal information. After that, you can simply run:
+
+
+```bash
+pytest
+```
+
+
+to run all the tests. If you would like to run specific tests or run all the tests in a specific class then type:
+
+```bash
+pytest tests/test_robinhood.py -k test_name_apple # runs only the 1 test
+```
+
+
+Finally, if you would like the API calls to print out to terminal, then add the `-s` flag to any of the above pytest calls.
+
+
+# Installing
+
+There is no need to download these files directly. This project is published on PyPi, so it can be installed by typing into terminal (on Mac) or into command prompt (on PC):
+
+```bash
+pip install parakeet
+```
+
+Also be sure that Python 3 is installed. If you need to install python you can download it from [Python.org](https://www.python.org/downloads/). Pip is the package installer for python, and is automatically installed when you install python. To learn more about Pip, you can go to [PyPi.org](https://pypi.org/project/pip/).
+
+If you would like to be able to make changes to the package yourself, clone the repository onto your computer by typing into the terminal or command prompt:
+
+```bash
+git clone https://github.com/YOUR_GITHUB_USERNAME/parakeet.git
+cd parakeet
+```
+
+Now that you have cd into the repository you can type:
+
+```bash
+pip install .
+```
+
+and this will install whatever you changed in the local files. This will allow you to make changes and experiment with your own code.
+
+
+# List of Functions and Example Usage
+
+
+For a complete list of all Robinhood API functions and what the different parameters mean, go to [parakeet Robinhood Page](http://www.robin-stocks.com/en/latest/robinhood.html). If you would like to see some example code and instructions on how to set up two-factor authorization for Robinhood, go to the [Robinhood Documentation](Robinhood.rst).
+
+---
+
+**Attribution:** This project is a fork of [robin_stocks](https://github.com/jmfernandes/robin_stocks) by Joseph Fernandes. Parakeet is a slimmed down version that supports only Robinhood, with all other integrations removed.
