@@ -1,4 +1,4 @@
-import parakeet as pk
+import robinhood_client as rh
 import os
 import datetime
 import time as t
@@ -13,7 +13,7 @@ username = ''
 password = ''
 #!!!
 
-login = pk.login(username,password)
+login = rh.login(username,password)
 
 #!!! fill out the specific option information
 strike = 300
@@ -42,8 +42,8 @@ while t.time() < endTime:
     fileStream.write(time)
     print(time)
     #Get the data
-    instrument_data = pk.get_option_instrument_data(stock,date,strike,optionType)
-    market_data = pk.get_option_market_data(stock,date,strike,optionType)
+    instrument_data = rh.get_option_instrument_data(stock,date,strike,optionType)
+    market_data = rh.get_option_market_data(stock,date,strike,optionType)
 
     fileStream.write("\n")
     fileStream.write("{} Instrument Data {}".format("="*30,"="*30))

@@ -9,7 +9,7 @@ if "%SPHINXBUILD%" == "" (
 )
 set SOURCEDIR=source
 set BUILDDIR=build
-set SPHINXPROJ=parakeet
+set SPHINXPROJ=robinhood_client
 
 if "%1" == "" goto help
 

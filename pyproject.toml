@@ -17,15 +17,15 @@ exclude = [
 ]
 
 [project]
-name = "parakeet"
-version = "0.1.0"
+name = "robinhood_client"
+version = "1.0.0"
 description = "A Python wrapper around the Robinhood API"
 readme = { file = "README.md", content-type = "text/markdown" }
 license = "MIT"
 authors = [
     { name = "Ryan Miller", email = "mrzodge@gmail.com" },
 ]
-keywords = ["robinhood", "parakeet", "finance app", "stocks", "options", "trading", "investing"]
+keywords = ["robinhood", "http client", "api", "stocks", "options", "trading", "crypto", "investing"]
 requires-python = ">=3.9"
 dependencies = [
     "requests",
@@ -40,8 +40,8 @@ classifiers = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/RvanMiller/parakeet"
-Repository = "https://github.com/RvanMiller/parakeet"
+Homepage = "https://github.com/RvanMiller/robinhood-client"
+Repository = "https://github.com/RvanMiller/robinhood-client"
 
 [project.optional-dependencies]
 dev = [

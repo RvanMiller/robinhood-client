@@ -1,7 +1,7 @@
 import os
 
 import pyotp
-import parakeet as pk
+import robinhood_client as rh
 from dotenv import load_dotenv
 '''
 This is an example script that will deposit money to your robinhood
@@ -17,11 +17,11 @@ amount_to_deposit = "REPLACE-ME"
 load_dotenv()
 # Login using two-factor code
 totp = pyotp.TOTP(os.environ['robin_mfa']).now()
-login = pk.login(os.environ['robin_username'],
+login = rh.login(os.environ['robin_username'],
                 os.environ['robin_password'], store_session=True, mfa_code=totp)
 # Get the bank account information
-bank_accounts = pk.get_linked_bank_accounts()
-account_names = pk.filter_data(bank_accounts, 'bank_account_nickname')
+bank_accounts = rh.get_linked_bank_accounts()
+account_names = rh.filter_data(bank_accounts, 'bank_account_nickname')
 # set up default variable values for business logic
 count = 1
 valid_choice = False
@@ -62,6 +62,6 @@ elif bank_choice == count:
     print("you chose to cancel. Exiting...")
 else:
     ach_relationship = bank_accounts[bank_choice - 1]['url']
-    deposit = pk.deposit_funds_to_robinhood_account(
+    deposit = rh.deposit_funds_to_robinhood_account(
         ach_relationship, amount_to_deposit)
     print(deposit)

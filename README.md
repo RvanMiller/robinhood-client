@@ -1,6 +1,6 @@
-# Parakeet API Library
+# A Lightweight Robinhood API Client
 
-This library provides a pure Python interface that interacts with the Robinhood API. The code is simple to use, easy to understand, and easy to modify. With this library, you can view information on stocks, options, and crypto-currencies in real-time, create your own robo-investor or trading algorithm.
+This unofficial API client provides a Python interface for interacting with the Robinhood API. The code is simple to use, easy to understand, and easy to modify. With this library, you can view information on stocks, options, and crypto-currencies in real-time, create your own robo-investor or trading algorithm.
 
 ## Supported API
 
@@ -9,7 +9,7 @@ The only current and future supported API is Robinhood, as this library is meant
 Below is an example of how to call the module:
 
 ```python
-import parakeet as pk
+import robinhood-client as rh
 # Here are some example calls
 pk.get_all_open_crypto_orders() # gets all crypto orders from Robinhood
 ```
@@ -28,7 +28,7 @@ python -m build
 
 **Install**
 ```bash
-python -m pip install /path/to/parakeet/dist/parakeet-*.whl
+python -m pip install /path/to/robinhood-client/dist/robinhood-client-*.whl
 ```
 
 
@@ -67,7 +67,7 @@ Finally, if you would like the API calls to print out to terminal, then add the 
 There is no need to download these files directly. This project is published on PyPi, so it can be installed by typing into terminal (on Mac) or into command prompt (on PC):
 
 ```bash
-pip install parakeet
+pip install robinhood-client
 ```
 
 Also be sure that Python 3 is installed. If you need to install python you can download it from [Python.org](https://www.python.org/downloads/). Pip is the package installer for python, and is automatically installed when you install python. To learn more about Pip, you can go to [PyPi.org](https://pypi.org/project/pip/).
@@ -75,8 +75,8 @@ Also be sure that Python 3 is installed. If you need to install python you can d
 If you would like to be able to make changes to the package yourself, clone the repository onto your computer by typing into the terminal or command prompt:
 
 ```bash
-git clone https://github.com/YOUR_GITHUB_USERNAME/parakeet.git
-cd parakeet
+git clone https://github.com/YOUR_GITHUB_USERNAME/robinhood-client.git
+cd robinhood-client
 ```
 
 Now that you have cd into the repository you can type:
@@ -94,4 +94,4 @@ If you would like to see some example code and instructions on how to set up two
 
 ---
 
-**Attribution:** This project is a fork of [robin_stocks](https://github.com/jmfernandes/robin_stocks) by Joseph Fernandes. Parakeet is a slimmed down version that supports only Robinhood, with all other integrations removed.
+**Attribution:** This project is a fork of [robin_stocks](https://github.com/jmfernandes/robin_stocks) by Joseph Fernandes. **Robinhood Client** is a slimmed down version that supports only Robinhood and additional enhancements for cloud support, security, and other minor changes.

@@ -1,4 +1,4 @@
-import parakeet as pk
+import robinhood_client as rh
 import matplotlib.pyplot as plt
 import datetime as dt
 
@@ -18,11 +18,11 @@ username = ''
 password = ''
 #!!!
 
-login = pk.login(username,password)
+login = rh.login(username,password)
 
 #!!! fill out the specific option information
 symbol = 'AAPL'
-symbol_name = pk.get_name_by_symbol(symbol)
+symbol_name = rh.get_name_by_symbol(symbol)
 expirationDate = '2020-07-02' # format is YYYY-MM-DD.
 strike = 300
 optionType = 'call' # available options are 'call' or 'put' or None.
@@ -32,7 +32,7 @@ bounds = 'regular' # available options are 'regular', 'trading', and 'extended'.
 info = None
 #!!!
 
-historicalData = pk.get_option_historicals(symbol, expirationDate, strike, optionType, interval, span, bounds, info)
+historicalData = rh.get_option_historicals(symbol, expirationDate, strike, optionType, interval, span, bounds, info)
 
 dates = []
 closingPrices = []
