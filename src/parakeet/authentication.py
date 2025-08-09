@@ -5,8 +5,8 @@ import pickle
 import random
 import time
 
-from src.helper import *
-from src.urls import *
+from .helper import *
+from .urls import *
 
 def generate_device_token():
     """This function will generate a token used when loggin on.

@@ -3,7 +3,7 @@
 from functools import wraps
 
 import requests
-from src.globals import LOGGED_IN, OUTPUT, SESSION
+from .globals import LOGGED_IN, OUTPUT, SESSION
 
 
 def set_login_state(logged_in):

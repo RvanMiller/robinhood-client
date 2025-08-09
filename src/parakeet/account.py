@@ -2,10 +2,10 @@
 import os
 from uuid import uuid4
 
-from parakeet.helper import *
-from parakeet.profiles import *
-from parakeet.stocks import *
-from parakeet.urls import *
+from .helper import *
+from .profiles import *
+from .stocks import *
+from .urls import *
 
 
 @login_required

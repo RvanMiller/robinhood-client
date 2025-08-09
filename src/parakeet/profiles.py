@@ -1,6 +1,6 @@
 """Contains functions for getting all the information tied to a user account."""
-from parakeet.helper import *
-from parakeet.urls import *
+from .helper import *
+from .urls import *
 
 
 @login_required

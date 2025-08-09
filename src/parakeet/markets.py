@@ -1,7 +1,7 @@
 """Contains functions for getting market level data."""
-from src.helper import *
-from src.urls import *
-from src.stocks import *
+from .helper import *
+from .urls import *
+from .stocks import *
 
 def get_top_movers_sp500(direction, info=None):
     """Returns a list of the top S&P500 movers up or down for the day.

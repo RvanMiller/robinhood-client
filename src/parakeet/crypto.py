@@ -1,6 +1,6 @@
 """Contains functions to get information about crypto-currencies."""
-from src.helper import *
-from src.urls import *
+from .helper import *
+from .urls import *
 
 @login_required
 def load_crypto_profile(info=None):

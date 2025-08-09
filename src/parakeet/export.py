@@ -1,10 +1,10 @@
 from csv import writer
 from datetime import date
 from pathlib import Path
-from src.helper import *
-from src.orders import *
-from src.stocks import *
-from src.crypto import *
+from .helper import *
+from .orders import *
+from .stocks import *
+from .crypto import *
 
 
 def fix_file_extension(file_name):

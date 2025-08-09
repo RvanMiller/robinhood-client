@@ -1,8 +1,8 @@
 """Contains information in regards to stocks."""
 from functools import lru_cache as cache
 
-from parakeet.helper import *
-from parakeet.urls import *
+from .helper import *
+from .urls import *
 
 def get_quotes(inputSymbols, info=None):
     """Takes any number of stock tickers and returns information pertaining to its price.
