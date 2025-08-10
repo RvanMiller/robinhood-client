@@ -25,3 +25,6 @@ __pycache__/
 *.so
 *~
 [.]venv
+
+# Temporary
+docs-backup/
