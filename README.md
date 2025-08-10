@@ -2,65 +2,6 @@
 
 This unofficial API client provides a Python interface for interacting with the Robinhood API. The code is simple to use, easy to understand, and easy to modify. With this library, you can view information on stocks, options, and crypto-currencies in real-time, create your own robo-investor or trading algorithm.
 
-## Supported API
-
-The only current and future supported API is Robinhood, as this library is meant as a stand-in for an official Robinhood API if they ever get around to it. For more information about how to use the API, visit the [Robinhood Documentation](Robinhood.rst).
-
-Below is an example of how to call the module:
-
-```python
-import robinhood-client as rh
-# Here are some example calls
-pk.get_all_open_crypto_orders() # gets all crypto orders from Robinhood
-```
-
-## Contributing
-
-> TODO: Add generic contributing guide here.
-
-### Build and Install a Wheel
-
-**Build**
-```bash
-python -m pip install build
-python -m build
-```
-
-**Install**
-```bash
-python -m pip install /path/to/robinhood-client/dist/robinhood-client-*.whl
-```
-
-
-### Automatic Testing
-
-
-If you are contributing to this project and would like to use automatic testing for your changes, you will need to install pytest and pytest-dotenv. To do this, type into terminal or command prompt:
-
-
-```bash
-pip install pytest
-pip install pytest-dotenv
-```
-
-
-You will also need to fill out all the fields in `.test.env`. It is recommended to rename the file as `.env` once you are done adding in all your personal information. After that, you can simply run:
-
-
-```bash
-pytest
-```
-
-
-to run all the tests. If you would like to run specific tests or run all the tests in a specific class then type:
-
-```bash
-pytest tests/test_robinhood.py -k test_name_apple # runs only the 1 test
-```
-
-
-Finally, if you would like the API calls to print out to terminal, then add the `-s` flag to any of the above pytest calls.
-
 
 # Installing
 
@@ -87,11 +28,61 @@ pip install .
 
 and this will install whatever you changed in the local files. This will allow you to make changes and experiment with your own code.
 
+## Basic Usage
 
-# List of Functions and Example Usage
+```python
+import robinhood-client as rh
+
+# Gets all crypto orders from Robinhood that are opened
+pk.get_all_open_crypto_orders() 
+```
+
+## More Examples
 
 If you would like to see some example code and instructions on how to set up two-factor authorization, go to the [Documentation](Robinhood.rst).
 
 ---
 
-**Attribution:** This project is a fork of [robin_stocks](https://github.com/jmfernandes/robin_stocks) by Joseph Fernandes. **Robinhood Client** is a slimmed down version that supports only Robinhood and additional enhancements for cloud support, security, and other minor changes.
+## Contributing
+
+See the [Contributing](/contributing.md) page for info about contributing to this project.
+
+### Build and Install a Wheel
+
+**Build**
+```bash
+python -m pip install build
+python -m build
+```
+
+**Install**
+```bash
+python -m pip install /path/to/robinhood-client/dist/robinhood-client-*.whl
+```
+
+### Automatic Testing
+
+If you are contributing to this project and would like to use automatic testing for your changes, you will need to install pytest and pytest-dotenv. To do this, type into terminal or command prompt:
+
+```bash
+pip install pytest
+pip install pytest-dotenv
+```
+
+You will also need to fill out all the fields in `.test.env`. It is recommended to rename the file as `.env` once you are done adding in all your personal information. After that, you can simply run:
+
+```bash
+pytest
+```
+
+to run all the tests. If you would like to run specific tests or run all the tests in a specific class then type:
+
+```bash
+pytest tests/test_robinhood.py -k test_name_apple # runs only the 1 test
+```
+
+Finally, if you would like the API calls to print out to terminal, then add the `-s` flag to any of the above pytest calls.
+
+---
+
+**Attribution:** This project is a fork of [robin_stocks](https://github.com/jmfernandes/robin_stocks) by Joseph Fernandes. **Robinhood Client** is a slimmed down version that supports only Robinhood and additional enhancements for cloud support, security, and other changes.
