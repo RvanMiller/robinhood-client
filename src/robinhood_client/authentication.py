@@ -167,20 +167,21 @@ def login(username=None, password=None, expiresIn=86400, scope='internal',
                 raise Exception(data['detail'])
             raise Exception(f"Received an error response {data}")
     else:
-        raise Exception('Error: Trouble connecting to robinhood API. Check internet connection.')
+        raise Exception('Error: Trouble connecting to Robinhood API. Please check your Internet connection.')
     logger.info("Successfully logged in to Robinhood.")
     return
 
 
 @login_required
 def logout():
-    """Removes authorization from the session header.
+    """Logs out of Robinhood by clearing session data.
 
     :returns: None
 
     """
     set_login_state(False)
     update_session('Authorization', None)
+    logger.info("Logged out of Robinhood successfully.")
 
 
 def _respond_to_challenge(challenge_id, sms_code):
