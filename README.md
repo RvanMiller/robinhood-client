@@ -57,7 +57,7 @@ robinhood_client.login(username="your_username", password="your_password")
 You can customize the logging behavior using the `configure_logging` function:
 
 ```python
-from robinhood_client.logging_config import configure_logging
+from robinhood_client.logging import configure_logging
 import logging
 
 # Set custom log level and optionally log to a file
