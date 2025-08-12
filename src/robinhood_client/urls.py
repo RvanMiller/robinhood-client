@@ -39,7 +39,7 @@ def security_profile_url():
 def user_profile_url():
     return(f'{BASE_API_URL}/user/')
 
-def portfolios_historicals_url(account_number):
+def portfolio_historicals_url(account_number):
     return(f'{BASE_API_URL}/portfolios/historicals/{account_number}/')
 
 
