@@ -413,7 +413,7 @@ class TestOptions:
     @classmethod
     def setup_class(cls):
         totp  = pyotp.TOTP(os.environ['robin_mfa']).now()
-        login = rh.login(os.environ['robin_username'], os.environ['robin_password'], mfa_code=totp)
+        rh.login(os.environ['robin_username'], os.environ['robin_password'], mfa_code=totp)
 
     @classmethod
     def teardown_class(cls):
@@ -462,7 +462,7 @@ class TestMarkets:
     @classmethod
     def setup_class(cls):
         totp  = pyotp.TOTP(os.environ['robin_mfa']).now()
-        login = rh.login(os.environ['robin_username'], os.environ['robin_password'], mfa_code=totp)
+        rh.login(os.environ['robin_username'], os.environ['robin_password'], mfa_code=totp)
 
     @classmethod
     def teardown_class(cls):
@@ -636,7 +636,7 @@ class TestProfiles:
     @classmethod
     def setup_class(cls):
         totp  = pyotp.TOTP(os.environ['robin_mfa']).now()
-        login = rh.login(os.environ['robin_username'], os.environ['robin_password'], mfa_code=totp)
+        rh.login(os.environ['robin_username'], os.environ['robin_password'], mfa_code=totp)
 
     @classmethod
     def teardown_class(cls):
@@ -818,7 +818,7 @@ class TestOrders:
     @classmethod
     def setup_class(cls):
         totp  = pyotp.TOTP(os.environ['robin_mfa']).now()
-        login = rh.login(os.environ['robin_username'], os.environ['robin_password'], mfa_code=totp)
+        rh.login(os.environ['robin_username'], os.environ['robin_password'], mfa_code=totp)
     
     def test_find_stock_orders(cls):
         def isFloat(f):
