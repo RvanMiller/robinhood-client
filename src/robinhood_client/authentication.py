@@ -290,4 +290,4 @@ def _validate_sherrif_id(device_token: str, workflow_id: str):
             if retry_attempts == 0:
                 raise PermissionError("Max retries reached. Unable to confirm verification. Authentication denied.")
 
-    raise AuthenticationError("Timeout reached. Unable to confirm verification. Authentication denied.")
+    raise TimeoutError("Timeout reached. Unable to confirm verification. Authentication denied.")
