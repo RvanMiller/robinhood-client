@@ -1,3 +1,9 @@
+# Import logging configuration first to ensure it's set up before other modules
+from .logging import configure_logging
+
+# Configure the default logger for the package
+configure_logging()
+
 from .account import (build_holdings, build_user_profile,
                       delete_symbols_from_watchlist,
                       deposit_funds_to_robinhood_account,

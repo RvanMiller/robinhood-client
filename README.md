@@ -34,8 +34,62 @@ and this will install whatever you changed in the local files. This will allow y
 import robinhood-client as rh
 
 # Gets all crypto orders from Robinhood that are opened
-pk.get_all_open_crypto_orders() 
+rh.get_all_open_crypto_orders() 
 ```
+
+## Logging
+
+The library includes a configurable logging system that works both when used as a library and when run as a script.
+
+### Default Behavior
+
+By default, logs are configured at the INFO level and output to the console. This happens automatically when you import the package:
+
+```python
+import robinhood_client
+
+# Logs will appear in the console at INFO level
+robinhood_client.login(username="your_username", password="your_password")
+```
+
+### Customizing Logging
+
+You can customize the logging behavior using the `configure_logging` function:
+
+```python
+from robinhood_client.logging_config import configure_logging
+import logging
+
+# Set custom log level and optionally log to a file
+configure_logging(
+    level=logging.DEBUG,  # More detailed logs
+    log_file="robinhood.log"  # Also write logs to this file
+)
+```
+
+### Environment Variables
+
+You can also configure logging using environment variables:
+
+- `ROBINHOOD_LOG_LEVEL`: Set the logging level (DEBUG, INFO, WARNING, ERROR, CRITICAL)
+- `ROBINHOOD_LOG_FILE`: Path to a log file where logs will be written
+
+Example:
+```bash
+# On Linux/Mac
+export ROBINHOOD_LOG_LEVEL=DEBUG
+export ROBINHOOD_LOG_FILE=~/robinhood.log
+
+# On Windows
+set ROBINHOOD_LOG_LEVEL=DEBUG
+set ROBINHOOD_LOG_FILE=C:\logs\robinhood.log
+```
+
+### Using in Cloud Environments
+
+When deploying to cloud environments, the logging system will respect the configured log levels and can write to a file or stdout as needed, making it suitable for containerized environments and cloud logging systems.
+
+See the `examples/logging_example.py` file for a complete example of custom logging configuration.
 
 ## More Examples
 
