@@ -285,7 +285,7 @@ def _validate_sherrif_id(device_token: str, workflow_id: str):
             logger.error("API request failed: %s", e)
             retry_attempts -= 1
             if retry_attempts == 0:
-                raise TimeoutError("Max retries reached. Assuming login approved and proceeding.")
+                raise TimeoutError("Max retries reached. Login failed.")
             logger.info("Retrying workflow status check...")
             continue
 
