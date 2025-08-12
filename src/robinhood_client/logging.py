@@ -1,4 +1,4 @@
-"""Logging configuration for robinhood-client."""
+"""Default logging configuration for robinhood-client."""
 import logging
 import sys
 import os

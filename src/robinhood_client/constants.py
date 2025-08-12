@@ -1,0 +1,6 @@
+"""Contains all constants used in the Robinhood client."""
+BASE_API_URL = "https://api.robinhood.com"
+BASE_NUMMUS_URL = "https://nummus.robinhood.com"
+BASE_PHOENIX_URL = "https://phoenix.robinhood.com"
+BASE_MINERVA_URL = "https://minerva.robinhood.com"
+BASE_BONFIRE_URL = "https://bonfire.robinhood.com"
