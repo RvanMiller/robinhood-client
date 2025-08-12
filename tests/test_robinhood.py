@@ -1,4 +1,3 @@
-# Used by git Actions
 import os
 import datetime
 import robinhood_client as rh
@@ -49,7 +48,7 @@ class TestStocks:
     @classmethod
     def setup_class(cls):
         totp  = pyotp.TOTP(os.environ['robin_mfa']).now()
-        login = rh.login(os.environ['robin_username'], os.environ['robin_password'], mfa_code=totp)
+        rh.login(os.environ['robin_username'], os.environ['robin_password'], mfa_code=totp)
 
     @classmethod
     def teardown_class(cls):
@@ -226,9 +225,10 @@ class TestStocks:
         assert (fake_ratings == '')
 
     def test_events(self):
-        event = rh.get_events(self.single_stock)
+        event = rh.get_events('BRK.A')
+        print(len(event))
         assert (len(event) == 0)
-        event = rh.get_events(self.event_stock)
+        event = rh.get_events('AAPL')
         assert (len(event) != 0)
         event = event[0]
         assert ('account' in event)
@@ -301,12 +301,12 @@ class TestCrypto:
     bitcoin_currency = 'BTC-USD'
     bitcoin_symbol = 'BTCUSD'
     fake = 'thisisafake'
-    account = os.environ['crypto_account']
+    account = os.environ['crypto_account_id']
 
     @classmethod
     def setup_class(cls):
         totp  = pyotp.TOTP(os.environ['robin_mfa']).now()
-        login = rh.login(os.environ['robin_username'], os.environ['robin_password'], mfa_code=totp)
+        rh.login(os.environ['robin_username'], os.environ['robin_password'], mfa_code=totp)
 
     @classmethod
     def teardown_class(cls):
