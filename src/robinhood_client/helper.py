@@ -18,7 +18,6 @@ def set_output(output):
     
 def get_output():
     """Gets the current global output stream"""
-    global OUTPUT
     return OUTPUT
 
 def login_required(func):
@@ -26,7 +25,6 @@ def login_required(func):
        in."""
     @wraps(func)
     def login_wrapper(*args, **kwargs):
-        global LOGGED_IN
         if not LOGGED_IN:
             raise Exception('{} can only be called when logged in'.format(
                 func.__name__))
