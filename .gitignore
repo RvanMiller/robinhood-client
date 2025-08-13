@@ -1,16 +1,10 @@
 # sensitive environment information
 .env
-data.pickle
+*.pickle
 
 # build and distribution files that are auto-generated
 build/
 dist/
-
-# notes to self
-uploadnotes.txt
-
-# testing
-tests/app_tests.py
 
 # generated app info
 .vscode/
@@ -25,6 +19,3 @@ __pycache__/
 *.so
 *~
 [.]venv
-
-# Temporary
-docs-backup/

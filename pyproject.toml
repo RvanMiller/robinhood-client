@@ -57,5 +57,5 @@ test = [
 [tool.pytest.ini_options]
 python_classes = ["Test", "Describe"]
 python_functions = ["test_", "it_", "and_", "but_", "they_"]
-python_files = ["test_*.py",]
+python_files = ["test_*.py", "*_tests.py"]
 testpaths = ["tests",]
