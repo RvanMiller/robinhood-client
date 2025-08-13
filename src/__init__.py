@@ -1,2 +1,3 @@
-# Re-export all symbols from the robinhood_client package
+# Re-export the public API from src/robinhood_client
+
 from robinhood_client import *

@@ -3,6 +3,7 @@ import sys
 
 from requests import Session
 
+
 # Keeps track on if the user is logged in or not.
 LOGGED_IN = False
 # The session object for making get and post requests.
@@ -17,11 +18,11 @@ SESSION.headers = {
     "User-Agent": "*"
 }
 
-#All print() statement direct their output to this stream
-#by default, we use stdout which is the existing behavior
-#but a client can change to any normal Python stream that
-#print() accepts.  Common options are
-#sys.stderr for standard error
-#open(os.devnull,"w") for dev null
-#io.StringIO() to go to a string for the client to inspect
-OUTPUT=sys.stdout
+# All print() statement direct their output to this stream
+# by default, we use stdout which is the existing behavior
+# but a client can change to any normal Python stream that
+# print() accepts.  Common options are
+# sys.stderr for standard error
+# open(os.devnull,"w") for dev null
+# io.StringIO() to go to a string for the client to inspect
+OUTPUT = sys.stdout

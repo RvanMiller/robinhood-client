@@ -2,10 +2,15 @@
 import os
 from uuid import uuid4
 
-from .helper import *
-from .profiles import *
-from .stocks import *
-from .urls import *
+from .helper import filter_data, get_output, id_for_stock, inputs_to_set, login_required, request_document, \
+    request_get, request_post
+from .profiles import load_account_profile, load_portfolio_profile
+from .stocks import get_fundamentals, get_instrument_by_url, get_instruments_by_symbols, get_latest_price, \
+    get_name_by_symbol
+from .urls import banktransfers_url, cardtransactions_url, daytrades_url, dividends_url, documents_url, \
+    interest_url, linked_url, margin_url, margininterest_url, notifications_url, phoenix_url, \
+    portfolio_historicals_url, positions_url, referral_url, stockloan_url, subscription_url, \
+    unifiedtransfers_url, watchlists_url, wiretransfers_url
 
 
 @login_required
@@ -49,6 +54,7 @@ def load_phoenix_account(info=None):
     data = request_get(url, 'regular')
     return (filter_data(data, info))
 
+
 @login_required
 def get_historical_portfolio(interval=None, span='week', bounds='regular', info=None):
     interval_check = ['5minute', '10minute', 'hour', 'day', 'week']
@@ -57,7 +63,7 @@ def get_historical_portfolio(interval=None, span='week', bounds='regular', info=
 
     if interval not in interval_check:
         if interval is None and (bounds != 'regular' and span != 'all'):
-            print ('ERROR: Interval must be None for "all" span "regular" bounds', file=get_output())
+            print('ERROR: Interval must be None for "all" span "regular" bounds', file=get_output())
             return ([None])
         print(
             'ERROR: Interval must be "5minute","10minute","hour","day",or "week"', file=get_output())
@@ -82,6 +88,7 @@ def get_historical_portfolio(interval=None, span='week', bounds='regular', info=
     data = request_get(url, 'regular', payload)
 
     return (filter_data(data, info))
+
 
 @login_required
 def get_all_positions(info=None):
@@ -159,8 +166,9 @@ def get_dividends(info=None):
 
     :param info: Will filter the results to get a specific value.
     :type info: Optional[str]
-    :returns: [list] Returns a list of dictionaries of key/value pairs for each divident payment. If info parameter is provided, \
-    a list of strings is returned where the strings are the value of the key that matches info.
+    :returns: [list] Returns a list of dictionaries of key/value pairs for each divident payment. \
+        If info parameter is provided, a list of strings is returned where the strings are the value \
+        of the key that matches info.
     :Dictionary Keys: * id
                       * url
                       * account
@@ -225,7 +233,8 @@ def get_dividends_by_instrument(instrument, dividend_data):
             'total_dividend': "{0:.2f}".format(total_dividends),
             'amount_paid_to_date': "{0:.2f}".format(total_amount_paid)
         }
-    except:
+    except Exception:
+        # TODO: Log exception
         pass
 
 
@@ -343,6 +352,7 @@ def deposit_funds_to_robinhood_account(ach_relationship, amount, info=None):
     data = request_post(url, payload)
     return (filter_data(data, info))
 
+
 @login_required
 def get_linked_bank_accounts(info=None):
     """Returns all linked bank accounts.
@@ -406,6 +416,7 @@ def get_bank_transfers(direction=None, info=None):
     data = request_get(url, 'pagination')
     return (filter_data(data, info))
 
+
 @login_required
 def get_unified_transfers(info=None):
     """Returns all transfers made for the account.
@@ -420,6 +431,7 @@ def get_unified_transfers(info=None):
     data = request_get(url, 'results')
     return (filter_data(data, info))
 
+
 @login_required
 def get_card_transactions(cardType=None, info=None):
     """Returns all debit card transactions made on the account
@@ -433,12 +445,13 @@ def get_card_transactions(cardType=None, info=None):
 
     """
     payload = None
-    if type:
-        payload = { 'type': type }
+    if cardType:
+        payload = {'type': cardType}
 
     url = cardtransactions_url()
     data = request_get(url, 'pagination', payload)
     return (filter_data(data, info))
+
 
 @login_required
 def get_stock_loan_payments(info=None):
@@ -454,6 +467,7 @@ def get_stock_loan_payments(info=None):
     data = request_get(url, 'pagination')
     return (filter_data(data, info))
 
+
 @login_required
 def get_interest_payments(info=None):
     """Returns a list of interest payments.
@@ -467,6 +481,7 @@ def get_interest_payments(info=None):
     url = interest_url()
     data = request_get(url, 'pagination')
     return (filter_data(data, info))
+
 
 @login_required
 def get_margin_interest(info=None):
@@ -602,7 +617,7 @@ def download_all_documents(doctype=None, dirpath=None):
 
     counter = 0
     for item in documents:
-        if doctype == None:
+        if doctype is None:
             data = request_document(item['download_url'])
             if data:
                 name = item['created_at'][0:10] + '-' + \
@@ -626,7 +641,7 @@ def download_all_documents(doctype=None, dirpath=None):
                     counter += 1
                     print('Writing PDF {}...'.format(counter), file=get_output())
 
-    if downloaded_files == False:
+    if downloaded_files is False:
         print('WARNING: Could not find files of that doctype to download', file=get_output())
     else:
         if counter == 1:
@@ -664,8 +679,7 @@ def get_watchlist_by_name(name="My First List", info=None):
     :returns: Returns a list of dictionaries that contain the instrument urls and a url that references itself.
 
     """
-
-    #Get id of requested watchlist
+    # Get id of requested watchlist
     all_watchlists = get_all_watchlists()
     watchlist_id = ''
     for wl in all_watchlists['results']:
@@ -691,7 +705,7 @@ def post_symbols_to_watchlist(inputSymbols, name="My First List"):
     symbols = inputs_to_set(inputSymbols)
     ids = get_instruments_by_symbols(symbols, info='id')
     data = []
-    #Get id of requested watchlist
+    # Get id of requested watchlist
     all_watchlists = get_all_watchlists()
     watchlist_id = ''
     for wl in all_watchlists['results']:
@@ -701,9 +715,9 @@ def post_symbols_to_watchlist(inputSymbols, name="My First List"):
     for id in ids:
         payload = {
             watchlist_id: [{
-                "object_type" : "instrument",
-                "object_id" : id,
-                "operation" : "create"
+                "object_type": "instrument",
+                "object_id": id,
+                "operation": "create",
             }]
         }
         url = watchlists_url(name, True)
@@ -727,7 +741,7 @@ def delete_symbols_from_watchlist(inputSymbols, name="My First List"):
     ids = get_instruments_by_symbols(symbols, info='id')
     data = []
 
-    #Get id of requested watchlist
+    # Get id of requested watchlist
     all_watchlists = get_all_watchlists()
     watchlist_id = ''
     for wl in all_watchlists['results']:
@@ -737,9 +751,9 @@ def delete_symbols_from_watchlist(inputSymbols, name="My First List"):
     for id in ids:
         payload = {
             watchlist_id: [{
-                "object_type" : "instrument",
-                "object_id" : id,
-                "operation" : "delete"
+                "object_type": "instrument",
+                "object_id": id,
+                "operation": "delete",
             }]
         }
         url = watchlists_url(name, True)
@@ -831,7 +845,8 @@ def build_holdings(with_dividends=False):
                 holdings[symbol].update(get_dividends_by_instrument(
                     item['instrument'], dividend_data))
 
-        except:
+        except Exception:
+            # TODO: Log exception
             pass
 
     return (holdings)

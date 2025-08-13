@@ -1,11 +1,10 @@
+# Public API for Robinhood Client
+
 # Import logging configuration first to ensure it's set up before other modules
 from .logging import configure_logging
 
 # Configure the default logger for the package
 configure_logging()
-
-# Ignore unused imports
-# flake8: noqa
 
 from .account import (build_holdings, build_user_profile,
                       delete_symbols_from_watchlist,

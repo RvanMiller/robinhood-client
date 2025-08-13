@@ -106,7 +106,7 @@ def login(username=None, password=None, expiresIn=86400, scope='internal',
                     res.raise_for_status()
                     logger.info("Successfully logged in to Robinhood.")
                     return
-            except:
+            except Exception:
                 logger.warning("Authentication token may be expired - logging in normally.")
                 set_login_state(False)
                 update_session('Authorization', None)
@@ -211,7 +211,7 @@ def _validate_sherrif_id(device_token: str, workflow_id: str):
     inquiries_url = f"{BASE_API_URL}/pathfinder/inquiries/{machine_id}/user_view/"
 
     start_time = time.time()
-    
+
     while time.time() - start_time < 120:  # 2-minute timeout
         time.sleep(5)
         inquiries_response = request_get(inquiries_url)
@@ -256,7 +256,8 @@ def _validate_sherrif_id(device_token: str, workflow_id: str):
         try:
             inquiries_payload = {"sequence": 0, "user_input": {"status": "continue"}}
             inquiries_response = request_post(url=inquiries_url, payload=inquiries_payload, json=True)
-            if "type_context" in inquiries_response and inquiries_response["type_context"]["result"] == "workflow_status_approved":
+            if "type_context" in inquiries_response and \
+               inquiries_response["type_context"]["result"] == "workflow_status_approved":
                 logger.info("Verification successful!")
                 return
             else:

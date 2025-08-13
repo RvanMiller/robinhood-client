@@ -43,7 +43,7 @@ def configure_logging(level=None, log_file=None):
 
     # Add handler to logger
     logger.addHandler(console_handler)
-    
+
     # Add file handler if log_file is specified or in environment variable
     log_file = log_file or os.environ.get('ROBINHOOD_LOG_FILE')
     if log_file:
@@ -51,8 +51,9 @@ def configure_logging(level=None, log_file=None):
         file_handler.setLevel(level)
         file_handler.setFormatter(formatter)
         logger.addHandler(file_handler)
-    
+
     return logger
+
 
 # Auto-configure logging when this module is imported
 # This allows for simple usage without explicit configuration

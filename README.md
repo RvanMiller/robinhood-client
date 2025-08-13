@@ -128,6 +128,14 @@ pytest tests/test_robinhood.py -k test_name_apple # runs only the 1 test
 
 Finally, if you would like the API calls to print out to terminal, then add the `-s` flag to any of the above pytest calls.
 
+### Linting
+
+Check for linting errors with `flake8` which will use the root directory config.
+```bash
+$ flake8 --count --statistics
+0
+```
+
 ### Updating Documentation
 
 Docs are powered by [Sphinx](https://www.sphinx-doc.org/en/master/tutorial/getting-started.html).

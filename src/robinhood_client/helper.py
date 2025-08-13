@@ -11,14 +11,17 @@ def set_login_state(logged_in):
     global LOGGED_IN
     LOGGED_IN = logged_in
 
+
 def set_output(output):
     """Sets the global output stream"""
     global OUTPUT
     OUTPUT = output
-    
+
+
 def get_output():
     """Gets the current global output stream"""
     return OUTPUT
+
 
 def login_required(func):
     """A decorator for indicating which methods require the user to be logged
@@ -138,7 +141,8 @@ def id_for_option(symbol, expirationDate, strike, optionType):
 
     listOfOptions = [item for item in data if item["expiration_date"] == expirationDate]
     if (len(listOfOptions) == 0):
-        print('Getting the option ID failed. Perhaps the expiration date is wrong format, or the strike price is wrong.', file=get_output())
+        print('Getting the option ID failed. Perhaps the expiration date is wrong format, or the strike price is wrong.',
+              file=get_output())
         return (None)
 
     return (listOfOptions[0]['id'])
@@ -177,19 +181,19 @@ def filter_data(data, info):
         return (data)
     elif (data == [None]):
         return ([])
-    elif (type(data) == list):
+    elif (data is list):
         if (len(data) == 0):
             return ([])
         compareDict = data[0]
         noneType = []
-    elif (type(data) == dict):
+    elif (data is dict):
         compareDict = data
         noneType = None
 
     if info is not None:
-        if info in compareDict and type(data) == list:
+        if info in compareDict and data is list:
             return ([x[info] for x in data])
-        elif info in compareDict and type(data) == dict:
+        elif info in compareDict and data is dict:
             return (data[info])
         else:
             print(error_argument_not_key_in_dictionary(info), file=get_output())
@@ -255,12 +259,14 @@ def request_get(url, dataType='regular', payload=None, jsonify_data=True):
     'results' will return data['results']. 'pagination' will return data['results'] and append it with any \
     data that is in data['next']. 'indexzero' will return data['results'][0].
     :type dataType: Optional[str]
-    :param payload: Dictionary of parameters to pass to the url. Will append the requests url as url/?key1=value1&key2=value2.
+    :param payload: Dictionary of parameters to pass to the url. Will append the requests url as \
+        url/?key1=value1&key2=value2.
     :type payload: Optional[dict]
-    :param jsonify_data: If this is true, will return requests.post().json(), otherwise will return response from requests.post().
+    :param jsonify_data: If this is true, will return requests.post().json(), otherwise will return \
+        response from requests.post().
     :type jsonify_data: bool
-    :returns: Returns the data from the get request. If jsonify_data=True and requests returns an http code other than <200> \
-    then either '[None]' or 'None' will be returned based on what the dataType parameter was set as.
+    :returns: Returns the data from the get request. If jsonify_data=True and requests returns an http code \
+        other than <200> then either '[None]' or 'None' will be returned based on what the dataType parameter was set as.
 
     """
     if (dataType == 'results' or dataType == 'pagination'):
@@ -302,10 +308,11 @@ def request_get(url, dataType='regular', payload=None, jsonify_data=True):
                 res = SESSION.get(nextData['next'])
                 res.raise_for_status()
                 nextData = res.json()
-            except:
+            except Exception:
+                # TODO: Log exception
                 print('Additional pages exist but could not be loaded.', file=get_output())
                 return (data)
-            print('Loading page '+str(counter)+' ...', file=get_output())
+            print('Loading page ' + str(counter) + ' ...', file=get_output())
             counter += 1
             for item in nextData['results']:
                 data.append(item)
@@ -315,7 +322,7 @@ def request_get(url, dataType='regular', payload=None, jsonify_data=True):
         except KeyError as message:
             print("{0} is not a key in the dictionary".format(message), file=get_output())
             return (None)
-        except IndexError as message:
+        except IndexError:
             return (None)
 
     return (data)
@@ -332,7 +339,8 @@ def request_post(url, payload=None, timeout=16, json=False, jsonify_data=True):
     :type timeout: Optional[int]
     :param json: This will set the 'content-type' parameter of the session header to 'application/json'
     :type json: bool
-    :param jsonify_data: If this is true, will return requests.post().json(), otherwise will return response from requests.post().
+    :param jsonify_data: If this is true, will return requests.post().json(), otherwise will return \
+        response from requests.post().
     :type jsonify_data: bool
     :returns: Returns the data from the post request.
 
@@ -348,7 +356,7 @@ def request_post(url, payload=None, timeout=16, json=False, jsonify_data=True):
         else:
             res = SESSION.post(url, data=payload, timeout=timeout)
         if res.status_code not in [200, 201, 202, 204, 301, 302, 303, 304, 307, 400, 401, 402, 403]:
-            raise Exception("Received "+ str(res.status_code))
+            raise Exception("Received " + str(res.status_code))
         data = res.json()
     except Exception as message:
         print("Error in request_post: {0}".format(message), file=get_output())
@@ -373,7 +381,7 @@ def request_delete(url):
     except Exception as message:
         data = None
         print("Error in request_delete: {0}".format(message), file=get_output())
-        
+
     return (data)
 
 
