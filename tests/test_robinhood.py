@@ -33,6 +33,16 @@ def round_up_price(ticker, multiplier):
     num = price + (multiplier - 1)
     return num - (num % multiplier)
 
+class TestAuthentication:
+
+    def test_login_existing_session(self):
+        totp  = pyotp.TOTP(os.environ['robin_mfa']).now()
+        # Arrange
+        rh.login(os.environ['robin_username'], os.environ['robin_password'], mfa_code=totp)
+        rh.logout()
+        # Act
+        rh.login()
+
 class TestStocks:
 
     # Set up variables for class
@@ -841,7 +851,7 @@ class TestAccountInformation:
     @classmethod
     def setup_class(cls):
         totp  = pyotp.TOTP(os.environ['robin_mfa']).now()
-        login = rh.login(os.environ['robin_username'], os.environ['robin_password'], mfa_code=totp)
+        rh.login(os.environ['robin_username'], os.environ['robin_password'], mfa_code=totp)
     
     def test_get_stock_loan_payments(cls):
         def isFloat(f):
