@@ -24,7 +24,7 @@ totp = pyotp.TOTP(os.environ['rh_mfa_code']).now()
 print("Current OTP:", totp)
 # Here I am setting store_session=False so no pickle file is used.
 login = rh.login(os.environ['rh_username'],
-                os.environ['rh_password'], store_session=True, rh_mfa_code=totp)
+                os.environ['rh_password'], store_session=True, mfa_code=totp)
 # In the login dictionary, you will see that 'detail' is 
 # 'logged in with brand new authentication code.' to show that I am not using a pickle file.
 print(login)
