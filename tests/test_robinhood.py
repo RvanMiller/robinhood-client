@@ -315,7 +315,7 @@ class TestCrypto:
     @classmethod
     def setup_class(cls):
         totp  = pyotp.TOTP(os.environ['rh_mfa_code']).now()
-        rh.login(os.environ['username'], os.environ['rh_password'], mfa_code=totp)
+        rh.login(os.environ['rh_username'], os.environ['rh_password'], mfa_code=totp)
 
     @classmethod
     def teardown_class(cls):
