@@ -32,7 +32,6 @@ jobs:
         rh_username: ${{ secrets.rh_username }}
         rh_password: ${{ secrets.rh_password }}
         rh_mfa_code: ${{ secrets.rh_mfa_code }}
-        rh_account_number: ${{ secrets.rh_account_number }}
       run: |
         pip install pytest
         pip install pytest-dotenv
