@@ -322,7 +322,7 @@ def find_options_by_specific_profitability(inputSymbols, expirationDate=None, st
     :type profitCeiling: int
     :param info: Will filter the results to get a specific value.
     :type info: Optional[str]
-    :returns: Returns a list of dictionaries of key/value pairs for all stock option market data. \
+    :returns: Returns a list of dictionaries of key/value pairs for all stock option market data.
     If info parameter is provided, a list of strings is returned where the strings are the value of the key that matches info.
 
     """
@@ -365,7 +365,7 @@ def get_option_market_data_by_id(id, info=None):
     :type id: str
     :param info: Will filter the results to get a specific value.
     :type info: Optional[str]
-    :returns: Returns a dictionary of key/value pairs for the stock. \
+    :returns: Returns a dictionary of key/value pairs for the stock.
     If info parameter is provided, the value of the key that matches info is extracted.
 
     """
