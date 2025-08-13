@@ -48,3 +48,8 @@ dev = [
     "pytest",
     "ruff",
 ]
+test = [
+    "pytest",
+    "pytest-dotenv",
+    "python-dateutil",
+]
