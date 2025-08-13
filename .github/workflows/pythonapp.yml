@@ -34,4 +34,4 @@ jobs:
         rh_mfa_code: ${{ secrets.rh_mfa_code }}
       run: |
         pip install -e ".[test]"
-        pytest tests/test_robinhood.py
+        pytest tests/unit_tests.py
