@@ -6,9 +6,6 @@ from .helper import convert_none_to_string, error_ticker_does_not_exist, filter_
 from .urls import earnings_url, events_url, fundamentals_url, historicals_url, instruments_url, \
     marketdata_pricebook_url, marketdata_quotes_url, news_url, quotes_url, ratings_url, splits_url
 
-# from .helper import *
-# from .urls import *
-
 
 def get_quotes(inputSymbols, info=None):
     """Takes any number of stock tickers and returns information pertaining to its price.
@@ -162,42 +159,8 @@ def get_instruments_by_symbols(inputSymbols, info=None):
 
 
 def get_instrument_by_url(url, info=None):
-    """Takes a single url for the stock. Should be located at ``https://api.robinhood.com/instruments/<id>`` where <id> is \
+    """Takes a single url for the stock. Should be located at ``https://api.robinhood.com/instruments/<id>`` where <id> is
         the id of the stock.
-
-    :param url: The url of the stock. Can be found in several locations including \
-    in the dictionary returned from get_instruments_by_symbols(inputSymbols,info=None)
-    :type url: str
-    :param info: Will filter the results to have a list of the values that correspond to key that matches info.
-    :type info: Optional[str]
-    :returns: [dict or str] If info parameter is left as None then will return a dictionary of key/value pairs \
-        for a specific url.
-    Otherwise, it will be the string value of the key that corresponds to info.
-    :Dictionary Keys: * id
-                      * url
-                      * quote
-                      * fundamentals
-                      * splits
-                      * state
-                      * market
-                      * simple_name
-                      * name
-                      * tradeable
-                      * tradability
-                      * symbol
-                      * bloomberg_unique
-                      * margin_initial_ratio
-                      * maintenance_ratio
-                      * country
-                      * day_trade_ratio
-                      * list_date
-                      * min_tick_size
-                      * type
-                      * tradable_chain_id
-                      * rhs_tradability
-                      * fractional_tradability
-                      * default_collar_fraction
-
     """
     data = request_get(url, 'regular')
 
