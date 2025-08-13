@@ -10,8 +10,8 @@ on:
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
+    environment: Non-Prod Environment
 
     steps:
     - uses: actions/checkout@v1
