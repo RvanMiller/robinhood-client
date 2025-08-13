@@ -16,7 +16,7 @@ Also be sure that Python 3 is installed. If you need to install python you can d
 ## Basic Usage
 
 ```python
-import robinhood-client as rh
+import robinhood_client as rh
 
 # Gets all crypto orders from Robinhood that are opened
 rh.get_all_open_crypto_orders() 
