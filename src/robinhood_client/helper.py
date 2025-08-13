@@ -181,19 +181,19 @@ def filter_data(data, info):
         return (data)
     elif (data == [None]):
         return ([])
-    elif (data is list):
+    elif isinstance(data, list):
         if (len(data) == 0):
             return ([])
         compareDict = data[0]
         noneType = []
-    elif (data is dict):
+    elif isinstance(data, dict):
         compareDict = data
         noneType = None
 
     if info is not None:
-        if info in compareDict and data is list:
+        if info in compareDict and isinstance(data, list):
             return ([x[info] for x in data])
-        elif info in compareDict and data is dict:
+        elif info in compareDict and isinstance(data, dict):
             return (data[info])
         else:
             print(error_argument_not_key_in_dictionary(info), file=get_output())
