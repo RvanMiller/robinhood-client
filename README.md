@@ -137,6 +137,16 @@ pytest tests/test_robinhood.py -k test_name_apple # runs only the 1 test
 
 Finally, if you would like the API calls to print out to terminal, then add the `-s` flag to any of the above pytest calls.
 
+### Updating Documentation
+
+Docs are powered by [Sphinx](https://www.sphinx-doc.org/en/master/tutorial/getting-started.html).
+
+**Build Docs**
+
+```bash
+sphinx-build -M html docs/source/ docs/build/
+```
+
 ---
 
 **Attribution:** This project is a fork of [robin_stocks](https://github.com/jmfernandes/robin_stocks) by Joseph Fernandes. **Robinhood Client** is a slimmed down version that supports only Robinhood and additional enhancements for cloud support, security, and other changes.
