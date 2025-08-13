@@ -185,9 +185,6 @@ def _respond_to_challenge(challenge_id, sms_code):
 def _generate_device_token():
     """Generates a cryptographically secure device token."""
     rands = [secrets.randbelow(256) for _ in range(16)]
-    hexa = [str(hex(i + 256)).lstrip("0x")[1:] for i in range(256)]
-    token = ""
-    for i, r in enumerate(rands):
     token = ""
     for i, r in enumerate(rands):
         token += f"{r:02x}"
