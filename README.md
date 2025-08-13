@@ -101,6 +101,12 @@ If you would like to see some example code and instructions on how to set up two
 
 See the [Contributing](/contributing.md) page for info about contributing to this project.
 
+### Install Dev Dependencies
+
+```bash
+pip install -e .[dev]
+```
+
 ### Build and Install a Wheel
 
 **Build**

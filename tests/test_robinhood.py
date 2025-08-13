@@ -458,6 +458,7 @@ class TestOptions:
         assert (len(info) == 1)
         assert (info[0]['type'] == 'call')
 
+
 class TestMarkets:
 
     today = datetime.datetime.today().strftime('%Y-%m-%d')
@@ -826,7 +827,7 @@ class TestOrders:
     def setup_class(cls):
         totp  = pyotp.TOTP(os.environ['rh_mfa_code']).now()
         rh.login(os.environ['rh_username'], os.environ['rh_password'], mfa_code=totp)
-    
+
     def test_find_stock_orders(cls):
         def isFloat(f):
             try:
@@ -843,13 +844,13 @@ class TestOrders:
             assert isFloat(order['cumulative_quantity'])
             if(order['state'] == 'filled'):
                 assert (order['quantity'] == order['cumulative_quantity'])
-                
+
 class TestAccountInformation:
     @classmethod
     def setup_class(cls):
         totp  = pyotp.TOTP(os.environ['rh_mfa_code']).now()
         rh.login(os.environ['rh_username'], os.environ['rh_password'], mfa_code=totp)
-    
+
     def test_get_stock_loan_payments(cls):
         def isFloat(f):
             try:
@@ -865,7 +866,7 @@ class TestAccountInformation:
             assert isFloat(payment['amount']['amount'])
             assert ('symbol' in payment)
             assert ('description' in payment)
-        
+
     def test_get_interest_payments(cls):
         def isFloat(f):
             try:
@@ -873,7 +874,7 @@ class TestAccountInformation:
                 return True
             except ValueError:
                 return False
-            
+
         interests = rh.get_interest_payments()
         assert (interests)
         for interest in interests:
