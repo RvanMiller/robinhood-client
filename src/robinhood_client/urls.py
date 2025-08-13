@@ -1,7 +1,7 @@
 """Contains all the url endpoints for interacting with Robinhood API."""
 from .helper import id_for_chain, id_for_stock
 from .constants import BASE_API_URL, BASE_NUMMUS_URL, BASE_PHOENIX_URL, \
-                       BASE_MINERVA_URL, BASE_BONFIRE_URL
+    BASE_MINERVA_URL, BASE_BONFIRE_URL
 
 
 # Login
@@ -113,11 +113,11 @@ def banktransfers_url(direction=None):
 
 
 def cardtransactions_url():
-   return (f'{BASE_MINERVA_URL}/history/transactions/')
+    return (f'{BASE_MINERVA_URL}/history/transactions/')
 
 
 def unifiedtransfers_url():
-   return (f'{BASE_BONFIRE_URL}/paymenthub/unified_transfers/')
+    return (f'{BASE_BONFIRE_URL}/paymenthub/unified_transfers/')
 
 
 def daytrades_url(account):

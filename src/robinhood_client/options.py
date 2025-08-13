@@ -4,7 +4,7 @@ from .helper import *
 from .urls import *
 
 def spinning_cursor():
-    """ This is a generator function to yield a character. """
+    """This is a generator function to yield a character. """
     while True:
         for cursor in '|/-\\':
             yield cursor
@@ -12,7 +12,7 @@ def spinning_cursor():
 spinner = spinning_cursor()
 
 def write_spinner():
-    """ Function to create a spinning cursor to tell user that the code is working on getting market data. """
+    """Function to create a spinning cursor to tell user that the code is working on getting market data. """
     if get_output()==sys.stdout:
         marketString = 'Loading Market Data '
         sys.stdout.write(marketString)
@@ -32,7 +32,7 @@ def get_aggregate_positions(info=None, account_number=None):
     """
     url = aggregate_url(account_number=account_number)
     data = request_get(url, 'pagination')
-    return(filter_data(data, info))
+    return (filter_data(data, info))
 
 @login_required
 def get_aggregate_open_positions(info=None, account_number=None):
@@ -47,7 +47,7 @@ def get_aggregate_open_positions(info=None, account_number=None):
     url = aggregate_url(account_number=account_number)
     payload = {'nonzero': 'True'}
     data = request_get(url, 'pagination', payload)
-    return(filter_data(data, info))
+    return (filter_data(data, info))
 
 
 @login_required
@@ -63,7 +63,7 @@ def get_market_options(info=None):
     url = option_orders_url()
     data = request_get(url, 'pagination')
 
-    return(filter_data(data, info))
+    return (filter_data(data, info))
 
 
 @login_required
@@ -78,7 +78,7 @@ def get_all_option_positions(info=None, account_number=None):
     """
     url = option_positions_url(account_number=account_number)
     data = request_get(url, 'pagination')
-    return(filter_data(data, info))
+    return (filter_data(data, info))
 
 
 @login_required
@@ -97,7 +97,7 @@ def get_open_option_positions(account_number=None, info=None):
     payload = {'nonzero': 'True'}
     data = request_get(url, 'pagination', payload)
 
-    return(filter_data(data, info))
+    return (filter_data(data, info))
 
 
 def get_chains(symbol, info=None):
@@ -120,7 +120,7 @@ def get_chains(symbol, info=None):
     url = chains_url(symbol)
     data = request_get(url)
 
-    return(filter_data(data, info))
+    return (filter_data(data, info))
 
 @login_required
 def find_tradable_options(symbol, expirationDate=None, strikePrice=None, optionType=None, info=None):
@@ -163,7 +163,7 @@ def find_tradable_options(symbol, expirationDate=None, strikePrice=None, optionT
         payload['type'] = optionType
 
     data = request_get(url, 'pagination', payload)
-    return(filter_data(data, info))
+    return (filter_data(data, info))
 
 @login_required
 def find_options_by_expiration(inputSymbols, expirationDate, optionType=None, info=None):
@@ -202,7 +202,7 @@ def find_options_by_expiration(inputSymbols, expirationDate, optionType=None, in
 
         data.extend(filteredOptions)
 
-    return(filter_data(data, info))
+    return (filter_data(data, info))
 
 @login_required
 def find_options_by_strike(inputSymbols, strikePrice, optionType=None, info=None):
@@ -240,7 +240,7 @@ def find_options_by_strike(inputSymbols, strikePrice, optionType=None, info=None
 
         data.extend(filteredOptions)
 
-    return(filter_data(data, info))
+    return (filter_data(data, info))
 
 @login_required
 def find_options_by_expiration_and_strike(inputSymbols, expirationDate, strikePrice, optionType=None, info=None):
@@ -333,7 +333,7 @@ def find_options_by_specific_profitability(inputSymbols, expirationDate=None, st
                 except:
                     pass
 
-    return(filter_data(data, info))
+    return (filter_data(data, info))
 
 @login_required
 def get_option_market_data_by_id(id, info=None):
@@ -350,16 +350,16 @@ def get_option_market_data_by_id(id, info=None):
     """
     instrument = get_option_instrument_data_by_id(id)
     if instrument is None:
-      # e.g. 503 Server Error: Service Unavailable for url: https://api.robinhood.com/options/instruments/d1058013-09a2-4063-b6b0-92717e17d0c0/
-      return None  # just return None which the caller can easily check; do NOT use faked empty data, it will only cause future problem
+        # e.g. 503 Server Error: Service Unavailable for url: https://api.robinhood.com/options/instruments/d1058013-09a2-4063-b6b0-92717e17d0c0/
+        return None  # just return None which the caller can easily check; do NOT use faked empty data, it will only cause future problem
     else:
-      payload = {
-          "instruments" : instrument['url']
-      }
-      url = marketdata_options_url()
-      data = request_get(url, 'results', payload)
+        payload = {
+            "instruments" : instrument['url']
+        }
+        url = marketdata_options_url()
+        data = request_get(url, 'results', payload)
 
-    return(filter_data(data, info))
+    return (filter_data(data, info))
 
 @login_required
 def get_option_market_data(inputSymbols, expirationDate, strikePrice, optionType, info=None):
@@ -394,7 +394,7 @@ def get_option_market_data(inputSymbols, expirationDate, strikePrice, optionType
         marketData = get_option_market_data_by_id(optionID)
         data.append(marketData)
 
-    return(filter_data(data, info))
+    return (filter_data(data, info))
 
 
 def get_option_instrument_data_by_id(id, info=None):
@@ -410,7 +410,7 @@ def get_option_instrument_data_by_id(id, info=None):
     """
     url = option_instruments_url(id)
     data = request_get(url)
-    return(filter_data(data, info))
+    return (filter_data(data, info))
 
 
 def get_option_instrument_data(symbol, expirationDate, strikePrice, optionType, info=None):
@@ -441,7 +441,7 @@ def get_option_instrument_data(symbol, expirationDate, strikePrice, optionType, 
     url = option_instruments_url(optionID)
     data = request_get(url)
 
-    return(filter_data(data, info))
+    return (filter_data(data, info))
 
 
 def get_option_historicals(symbol, expirationDate, strikePrice, optionType, interval='hour', span='week', bounds='regular', info=None):
@@ -481,13 +481,13 @@ def get_option_historicals(symbol, expirationDate, strikePrice, optionType, inte
     if interval not in interval_check:
         print(
             'ERROR: Interval must be "5minute","10minute","hour","day",or "week"', file=get_output())
-        return([None])
+        return ([None])
     if span not in span_check:
         print('ERROR: Span must be "day", "week", "year", or "5year"', file=get_output())
-        return([None])
+        return ([None])
     if bounds not in bounds_check:
         print('ERROR: Bounds must be "extended","regular",or "trading"', file=get_output())
-        return([None])
+        return ([None])
 
     optionID = id_for_option(symbol, expirationDate, strikePrice, optionType)
 
@@ -496,7 +496,7 @@ def get_option_historicals(symbol, expirationDate, strikePrice, optionType, inte
                'interval': interval,
                'bounds': bounds}
     data = request_get(url, 'regular', payload)
-    if (data == None or data == [None]):
+    if (data is None or data == [None]):
         return data
 
     histData = []
@@ -504,4 +504,4 @@ def get_option_historicals(symbol, expirationDate, strikePrice, optionType, inte
         subitem['symbol'] = symbol
         histData.append(subitem)
 
-    return(filter_data(histData, info))
+    return (filter_data(histData, info))

@@ -128,7 +128,7 @@ def login(username=None, password=None, expiresIn=86400, scope='internal',
         if 'verification_workflow' in data:
             logger.info("Verification workflow required. Please check your Robinhood Mobile app.")
             workflow_id = data['verification_workflow']['id']
-            _validate_sherrif_id(device_token=device_token, workflow_id=workflow_id) 
+            _validate_sherrif_id(device_token=device_token, workflow_id=workflow_id)
             data = request_post(url, payload)
         # Update Session data with authorization or raise exception with the information present in data.
         if 'access_token' in data:
@@ -179,7 +179,7 @@ def _respond_to_challenge(challenge_id, sms_code):
     payload = {
         'response': sms_code
     }
-    return(request_post(url, payload))
+    return (request_post(url, payload))
 
 
 def _generate_device_token():
@@ -252,10 +252,10 @@ def _validate_sherrif_id(device_token: str, workflow_id: str):
     inquiries_url = f"{BASE_API_URL}/pathfinder/inquiries/{machine_id}/user_view/"
 
     retry_attempts = 5  # Allow up to 5 retries in case of 500 errors
-    while time.time() - start_time < 120:  # 2-minute timeout 
+    while time.time() - start_time < 120:  # 2-minute timeout
         try:
             inquiries_payload = {"sequence": 0, "user_input": {"status": "continue"}}
-            inquiries_response = request_post(url=inquiries_url, payload=inquiries_payload,json=True)
+            inquiries_response = request_post(url=inquiries_url, payload=inquiries_payload, json=True)
             if "type_context" in inquiries_response and inquiries_response["type_context"]["result"] == "workflow_status_approved":
                 logger.info("Verification successful!")
                 return

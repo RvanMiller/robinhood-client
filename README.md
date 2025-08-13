@@ -13,21 +13,6 @@ pip install robinhood-client
 
 Also be sure that Python 3 is installed. If you need to install python you can download it from [Python.org](https://www.python.org/downloads/). Pip is the package installer for python, and is automatically installed when you install python. To learn more about Pip, you can go to [PyPi.org](https://pypi.org/project/pip/).
 
-If you would like to be able to make changes to the package yourself, clone the repository onto your computer by typing into the terminal or command prompt:
-
-```bash
-git clone https://github.com/YOUR_GITHUB_USERNAME/robinhood-client.git
-cd robinhood-client
-```
-
-Now that you have cd into the repository you can type:
-
-```bash
-pip install .
-```
-
-and this will install whatever you changed in the local files. This will allow you to make changes and experiment with your own code.
-
 ## Basic Usage
 
 ```python
@@ -115,7 +100,7 @@ python -m pip install build
 python -m build
 ```
 
-**Install**
+**Install Wheel**
 ```bash
 python -m pip install /path/to/robinhood-client/dist/robinhood-client-*.whl
 ```

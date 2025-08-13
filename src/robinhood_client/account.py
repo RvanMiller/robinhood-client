@@ -47,10 +47,10 @@ def load_phoenix_account(info=None):
     """
     url = phoenix_url()
     data = request_get(url, 'regular')
-    return(filter_data(data, info))
+    return (filter_data(data, info))
 
 @login_required
-def get_historical_portfolio(interval=None, span='week', bounds='regular',info=None):
+def get_historical_portfolio(interval=None, span='week', bounds='regular', info=None):
     interval_check = ['5minute', '10minute', 'hour', 'day', 'week']
     span_check = ['day', 'week', 'month', '3month', 'year', '5year', 'all']
     bounds_check = ['extended', 'regular', 'trading']
@@ -61,16 +61,16 @@ def get_historical_portfolio(interval=None, span='week', bounds='regular',info=N
             return ([None])
         print(
             'ERROR: Interval must be "5minute","10minute","hour","day",or "week"', file=get_output())
-        return([None])
+        return ([None])
     if span not in span_check:
         print('ERROR: Span must be "day","week","month","3month","year",or "5year"', file=get_output())
-        return([None])
+        return ([None])
     if bounds not in bounds_check:
         print('ERROR: Bounds must be "extended","regular",or "trading"')
-        return([None])
+        return ([None])
     if (bounds == 'extended' or bounds == 'trading') and span != 'day':
         print('ERROR: extended and trading bounds can only be used with a span of "day"', file=get_output())
-        return([None])
+        return ([None])
 
     account = load_account_profile(info='account_number')
     url = portfolio_historicals_url(account)
@@ -81,7 +81,7 @@ def get_historical_portfolio(interval=None, span='week', bounds='regular',info=N
     }
     data = request_get(url, 'regular', payload)
 
-    return(filter_data(data, info))
+    return (filter_data(data, info))
 
 @login_required
 def get_all_positions(info=None):
@@ -113,7 +113,7 @@ def get_all_positions(info=None):
     url = positions_url()
     data = request_get(url, 'pagination')
 
-    return(filter_data(data, info))
+    return (filter_data(data, info))
 
 
 @login_required
@@ -149,7 +149,7 @@ def get_open_stock_positions(account_number=None, info=None):
     payload = {'nonzero': 'true'}
     data = request_get(url, 'pagination', payload)
 
-    return(filter_data(data, info))
+    return (filter_data(data, info))
 
 
 @login_required
@@ -180,7 +180,7 @@ def get_dividends(info=None):
     url = dividends_url()
     data = request_get(url, 'pagination')
 
-    return(filter_data(data, info))
+    return (filter_data(data, info))
 
 
 @login_required
@@ -196,7 +196,7 @@ def get_total_dividends():
     dividend_total = 0
     for item in data:
         dividend_total += float(item['amount']) if (item['state'] == 'paid' or item['state'] == 'reinvested') else 0
-    return(dividend_total)
+    return (dividend_total)
 
 
 @login_required
@@ -242,7 +242,7 @@ def get_notifications(info=None):
     url = notifications_url()
     data = request_get(url, 'pagination')
 
-    return(filter_data(data, info))
+    return (filter_data(data, info))
 
 
 @login_required
@@ -254,7 +254,7 @@ def get_latest_notification():
     """
     url = notifications_url(True)
     data = request_get(url)
-    return(data)
+    return (data)
 
 
 @login_required
@@ -269,7 +269,7 @@ def get_wire_transfers(info=None):
     """
     url = wiretransfers_url()
     data = request_get(url, 'pagination')
-    return(filter_data(data, info))
+    return (filter_data(data, info))
 
 
 @login_required
@@ -293,7 +293,7 @@ def get_margin_calls(symbol=None):
     else:
         data = request_get(url, 'results')
 
-    return(data)
+    return (data)
 
 
 @login_required
@@ -317,7 +317,7 @@ def withdrawl_funds_to_bank_account(ach_relationship, amount, info=None):
         "ref_id": str(uuid4())
     }
     data = request_post(url, payload)
-    return(filter_data(data, info))
+    return (filter_data(data, info))
 
 
 @login_required
@@ -341,7 +341,7 @@ def deposit_funds_to_robinhood_account(ach_relationship, amount, info=None):
         "ref_id": str(uuid4())
     }
     data = request_post(url, payload)
-    return(filter_data(data, info))
+    return (filter_data(data, info))
 
 @login_required
 def get_linked_bank_accounts(info=None):
@@ -354,7 +354,7 @@ def get_linked_bank_accounts(info=None):
     """
     url = linked_url()
     data = request_get(url, 'results')
-    return(filter_data(data, info))
+    return (filter_data(data, info))
 
 
 @login_required
@@ -371,7 +371,7 @@ def get_bank_account_info(id, info=None):
     """
     url = linked_url(id)
     data = request_get(url)
-    return(filter_data(data, info))
+    return (filter_data(data, info))
 
 
 @login_required
@@ -385,7 +385,7 @@ def unlink_bank_account(id):
     """
     url = linked_url(id, True)
     data = request_post(url)
-    return(data)
+    return (data)
 
 
 @login_required
@@ -404,7 +404,7 @@ def get_bank_transfers(direction=None, info=None):
     """
     url = banktransfers_url(direction)
     data = request_get(url, 'pagination')
-    return(filter_data(data, info))
+    return (filter_data(data, info))
 
 @login_required
 def get_unified_transfers(info=None):
@@ -418,7 +418,7 @@ def get_unified_transfers(info=None):
     """
     url = unifiedtransfers_url()
     data = request_get(url, 'results')
-    return(filter_data(data, info))
+    return (filter_data(data, info))
 
 @login_required
 def get_card_transactions(cardType=None, info=None):
@@ -438,7 +438,7 @@ def get_card_transactions(cardType=None, info=None):
 
     url = cardtransactions_url()
     data = request_get(url, 'pagination', payload)
-    return(filter_data(data, info))
+    return (filter_data(data, info))
 
 @login_required
 def get_stock_loan_payments(info=None):
@@ -452,7 +452,7 @@ def get_stock_loan_payments(info=None):
     """
     url = stockloan_url()
     data = request_get(url, 'pagination')
-    return(filter_data(data, info))
+    return (filter_data(data, info))
 
 @login_required
 def get_interest_payments(info=None):
@@ -466,7 +466,7 @@ def get_interest_payments(info=None):
     """
     url = interest_url()
     data = request_get(url, 'pagination')
-    return(filter_data(data, info))
+    return (filter_data(data, info))
 
 @login_required
 def get_margin_interest(info=None):
@@ -480,7 +480,7 @@ def get_margin_interest(info=None):
     """
     url = margininterest_url()
     data = request_get(url, 'pagination')
-    return(filter_data(data, info))
+    return (filter_data(data, info))
 
 
 @login_required
@@ -495,7 +495,7 @@ def get_subscription_fees(info=None):
     """
     url = subscription_url()
     data = request_get(url, 'pagination')
-    return(filter_data(data, info))
+    return (filter_data(data, info))
 
 
 @login_required
@@ -510,7 +510,7 @@ def get_referrals(info=None):
     """
     url = referral_url()
     data = request_get(url, 'pagination')
-    return(filter_data(data, info))
+    return (filter_data(data, info))
 
 
 @login_required
@@ -526,7 +526,7 @@ def get_day_trades(info=None):
     account = load_account_profile(info='account_number')
     url = daytrades_url(account)
     data = request_get(url, 'regular')
-    return(filter_data(data, info))
+    return (filter_data(data, info))
 
 
 @login_required
@@ -542,7 +542,7 @@ def get_documents(info=None):
     url = documents_url()
     data = request_get(url, 'pagination')
 
-    return(filter_data(data, info))
+    return (filter_data(data, info))
 
 
 @login_required
@@ -576,7 +576,7 @@ def download_document(url, name=None, dirpath=None):
     open(filename, 'wb').write(data.content)
     print('Done - Wrote file {}.pdf to {}'.format(name, os.path.abspath(filename)))
 
-    return(data)
+    return (data)
 
 
 @login_required
@@ -636,7 +636,7 @@ def download_all_documents(doctype=None, dirpath=None):
             print('Done - wrote {} files to {}'.format(counter,
                                                        os.path.abspath(directory)), file=get_output())
 
-    return(documents)
+    return (documents)
 
 
 @login_required
@@ -650,7 +650,7 @@ def get_all_watchlists(info=None):
     """
     url = watchlists_url()
     data = request_get(url, 'result')
-    return(filter_data(data, info))
+    return (filter_data(data, info))
 
 
 @login_required
@@ -673,8 +673,8 @@ def get_watchlist_by_name(name="My First List", info=None):
             watchlist_id = wl['id']
 
     url = watchlists_url(name)
-    data = request_get(url,'list_id',{'list_id':watchlist_id})
-    return(filter_data(data, info))
+    data = request_get(url, 'list_id', {'list_id': watchlist_id})
+    return (filter_data(data, info))
 
 
 @login_required
@@ -709,7 +709,7 @@ def post_symbols_to_watchlist(inputSymbols, name="My First List"):
         url = watchlists_url(name, True)
         data.append(request_post(url, payload, json=True))
 
-    return(data)
+    return (data)
 
 
 @login_required
@@ -745,7 +745,7 @@ def delete_symbols_from_watchlist(inputSymbols, name="My First List"):
         url = watchlists_url(name, True)
         data.append(request_post(url, payload, json=True))
 
-    return(data)
+    return (data)
 
 
 @login_required
@@ -768,7 +768,7 @@ def build_holdings(with_dividends=False):
         dividend_data = get_dividends()
 
     if not positions_data or not portfolios_data or not accounts_data:
-        return({})
+        return ({})
 
     if portfolios_data['extended_hours_equity'] is not None:
         total_equity = max(float(portfolios_data['equity']), float(
@@ -834,7 +834,7 @@ def build_holdings(with_dividends=False):
         except:
             pass
 
-    return(holdings)
+    return (holdings)
 
 
 @login_required
@@ -854,9 +854,10 @@ def build_user_profile(account_number=None):
         user['extended_hours_equity'] = portfolios_data['extended_hours_equity']
 
     if accounts_data:
-        cash = "{0:.2f}".format(float(accounts_data['portfolio_cash'])) # float(accounts_data['cash']) + uncleared_deposits 
+        # float(accounts_data['cash']) + uncleared_deposits
+        cash = "{0:.2f}".format(float(accounts_data['portfolio_cash']))
         user['cash'] = cash
 
     user['dividend_total'] = get_total_dividends()
 
-    return(user)
+    return (user)

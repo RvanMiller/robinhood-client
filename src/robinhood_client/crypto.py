@@ -23,7 +23,7 @@ def load_crypto_profile(info=None):
     """
     url = crypto_account_url()
     data = request_get(url, 'indexzero')
-    return(filter_data(data, info))
+    return (filter_data(data, info))
 
 
 @login_required
@@ -48,7 +48,7 @@ def get_crypto_positions(info=None):
     """
     url = crypto_holdings_url()
     data = request_get(url, 'pagination')
-    return(filter_data(data, info))
+    return (filter_data(data, info))
 
 
 def get_crypto_currency_pairs(info=None):
@@ -73,7 +73,7 @@ def get_crypto_currency_pairs(info=None):
     """
     url = crypto_currency_pairs_url()
     data = request_get(url, 'results')
-    return(filter_data(data, info))
+    return (filter_data(data, info))
 
 
 def get_crypto_info(symbol, info=None):
@@ -105,7 +105,7 @@ def get_crypto_info(symbol, info=None):
         data = data[0]
     else:
         data = None
-    return(filter_data(data, info))
+    return (filter_data(data, info))
 
 
 SYMBOL_TO_ID_CACHE = {}
@@ -150,7 +150,7 @@ def get_crypto_quote(symbol, info=None):
     id = get_crypto_info(symbol, info='id')
     url = crypto_quote_url(id)
     data = request_get(url)
-    return(filter_data(data, info))
+    return (filter_data(data, info))
 
 
 @login_required
@@ -176,7 +176,7 @@ def get_crypto_quote_from_id(id, info=None):
     """
     url = crypto_quote_url(id)
     data = request_get(url)
-    return(filter_data(data, info))
+    return (filter_data(data, info))
 
 
 @login_required
@@ -214,16 +214,16 @@ def get_crypto_historicals(symbol, interval='hour', span='week', bounds='24_7', 
     if interval not in interval_check:
         print(
             'ERROR: Interval must be "15second","5minute","10minute","hour","day",or "week"', file=get_output())
-        return([None])
+        return ([None])
     if span not in span_check:
         print('ERROR: Span must be "hour","day","week","month","3month","year",or "5year"', file=get_output())
-        return([None])
+        return ([None])
     if bounds not in bounds_check:
         print('ERROR: Bounds must be "24_7","extended","regular",or "trading"', file=get_output())
-        return([None])
+        return ([None])
     if (bounds == 'extended' or bounds == 'trading') and span != 'day':
         print('ERROR: extended and trading bounds can only be used with a span of "day"', file=get_output())
-        return([None])
+        return ([None])
 
 
     symbol = inputs_to_set(symbol)
@@ -240,4 +240,4 @@ def get_crypto_historicals(symbol, interval='hour', span='week', bounds='24_7', 
         subitem['symbol'] = cryptoSymbol
         histData.append(subitem)
 
-    return(filter_data(histData, info))
+    return (filter_data(histData, info))

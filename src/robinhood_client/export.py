@@ -8,7 +8,7 @@ from .crypto import *
 
 
 def fix_file_extension(file_name):
-    """ Takes a file extension and makes it end with .csv
+    """Takes a file extension and makes it end with .csv
 
     :param file_name: Name of the file.
     :type file_name: str
@@ -20,7 +20,7 @@ def fix_file_extension(file_name):
     return path.resolve()
 
 def create_absolute_csv(dir_path, file_name, order_type):
-    """ Creates a filepath given a directory and file name.
+    """Creates a filepath given a directory and file name.
 
     :param dir_path: Absolute or relative path to the directory the file will be written.
     :type dir_path: str
@@ -37,7 +37,7 @@ def create_absolute_csv(dir_path, file_name, order_type):
         file_name = "{}_orders_{}.csv".format(order_type, date.today().strftime('%b-%d-%Y'))
     else:
         file_name = fix_file_extension(file_name)
-    return(Path.joinpath(directory, file_name))
+    return (Path.joinpath(directory, file_name))
 
 
 @login_required
