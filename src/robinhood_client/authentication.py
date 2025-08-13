@@ -79,7 +79,7 @@ def login(username=None, password=None, expiresIn=86400, scope='internal',
     }
 
     if mfa_code:
-        payload['rh_mfa_code'] = mfa_code
+        payload['mfa_code'] = mfa_code
 
     # If authentication has been stored in pickle file then load it. Stops login server from being pinged so much.
     if os.path.isfile(pickle_path):
