@@ -73,7 +73,7 @@ def get_historical_portfolio(interval=None, span='week', bounds='regular',info=N
         return([None])
 
     account = load_account_profile(info='account_number')
-    url = portfolis_historicals_url(account)
+    url = portfolio_historicals_url(account)
     payload = {
         'interval': interval,
         'span': span,
@@ -211,7 +211,7 @@ def get_dividends_by_instrument(instrument, dividend_data):
               total_dividend      -- the total dividend paid based on total shares for a specified stock \
               amount_paid_to_date -- total amount earned by account for this particular stock
     """
-    #global dividend_data
+    # global dividend_data
     try:
         data = list(
             filter(lambda x: x['instrument'] == instrument, dividend_data))

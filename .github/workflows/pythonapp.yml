@@ -29,12 +29,10 @@ jobs:
         flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
     - name: Test robinhood with pytest
       env:
-        robin_username: ${{ secrets.username }}
-        robin_password: ${{ secrets.password }}
-        robin_mfa: ${{ secrets.mfa }}
-        account_number: ${{ secrets.account }}
-        zipcode: ${{ secrets.zipcode }}
-        crypto_account: ${{ secrets.crypto }}
+        rh_username: ${{ secrets.rh_username }}
+        rh_password: ${{ secrets.rh_password }}
+        rh_mfa_code: ${{ secrets.rh_mfa_code }}
+        rh_account_number: ${{ secrets.rh_account_number }}
       run: |
         pip install pytest
         pip install pytest-dotenv
