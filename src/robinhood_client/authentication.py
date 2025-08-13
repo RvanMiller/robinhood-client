@@ -105,7 +105,7 @@ def login(username=None, password=None, expiresIn=86400, scope='internal',
                     res = request_get(positions_url(), 'pagination', {'nonzero': 'true'}, jsonify_data=False)
                     res.raise_for_status()
                     logger.info("Successfully logged in to Robinhood.")
-                    return
+                    return True
             except Exception:
                 logger.warning("Authentication token may be expired - logging in normally.")
                 set_login_state(False)
@@ -150,7 +150,7 @@ def login(username=None, password=None, expiresIn=86400, scope='internal',
     else:
         raise AuthenticationError('Trouble connecting to Robinhood API. Please check your Internet connection.')
     logger.info("Successfully logged in to Robinhood.")
-    return
+    return True
 
 
 @login_required
