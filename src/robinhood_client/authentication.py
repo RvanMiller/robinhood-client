@@ -188,7 +188,9 @@ def _generate_device_token():
     hexa = [str(hex(i + 256)).lstrip("0x")[1:] for i in range(256)]
     token = ""
     for i, r in enumerate(rands):
-        token += hexa[r]
+    token = ""
+    for i, r in enumerate(rands):
+        token += f"{r:02x}"
         if i in [3, 5, 7, 9]:
             token += "-"
     return token
