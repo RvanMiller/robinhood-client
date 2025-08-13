@@ -1,9 +1,11 @@
 import os
 import datetime
-import robinhood_client as rh
 import pyotp
 import pytest
 from dateutil.relativedelta import relativedelta
+
+import robinhood_client as rh
+
 
 def third_friday(year, month, day):
     """Return datetime.date for monthly option expiration given year and
@@ -33,15 +35,17 @@ def round_up_price(ticker, multiplier):
     num = price + (multiplier - 1)
     return num - (num % multiplier)
 
+
 class TestAuthentication:
 
     def test_login_existing_session(self):
-        totp  = pyotp.TOTP(os.environ['rh_mfa_code']).now()
+        totp = pyotp.TOTP(os.environ['rh_mfa_code']).now()
         # Arrange
         rh.login(os.environ['rh_username'], os.environ['rh_password'], mfa_code=totp)
         rh.logout()
         # Act
         rh.login()
+
 
 class TestStocks:
 
@@ -57,7 +61,7 @@ class TestStocks:
 
     @classmethod
     def setup_class(cls):
-        totp  = pyotp.TOTP(os.environ['rh_mfa_code']).now()
+        totp = pyotp.TOTP(os.environ['rh_mfa_code']).now()
         rh.login(os.environ['rh_username'], os.environ['rh_password'], mfa_code=totp)
 
     @classmethod
@@ -90,11 +94,11 @@ class TestStocks:
         assert ('instrument' in quote)
         #
         more_quotes = rh.get_quotes(self.list_stocks, info=None)
-        assert (len(more_quotes) ==  len(self.list_stocks))
+        assert (len(more_quotes) == len(self.list_stocks))
         #
         fake_quotes = rh.get_quotes(self.fake_stocks, info=None)
         assert (len(fake_quotes) == 1)
-        assert (fake_quotes[0] == None)
+        assert (fake_quotes[0] is None)
 
     def test_fundamentals(self):
         quote = rh.get_fundamentals(self.single_stock, info=None)
@@ -131,7 +135,7 @@ class TestStocks:
         #
         fake_quotes = rh.get_fundamentals(self.fake_stocks, info=None)
         assert (len(fake_quotes) == 1)
-        assert (fake_quotes[0] == None)
+        assert (fake_quotes[0] is None)
 
     def test_instruments(self):
         quote = rh.get_instruments_by_symbols(self.single_stock)
@@ -168,7 +172,7 @@ class TestStocks:
         #
         fake_quotes = rh.get_fundamentals(self.fake_stocks, info=None)
         assert (len(fake_quotes) == 1)
-        assert (fake_quotes[0] == None)
+        assert (fake_quotes[0] is None)
 
     def test_instrument_id(self):
         quote = rh.get_instrument_by_url(self.instrument)
@@ -205,7 +209,7 @@ class TestStocks:
         assert (len(more_prices) == len(self.list_stocks))
         fake_prices = rh.get_latest_price(self.fake_stocks)
         assert (len(fake_prices) == 1)
-        assert (fake_prices[0] == None)
+        assert (fake_prices[0] is None)
 
     def test_name_by_symbol(self):
         name = rh.get_name_by_symbol(self.single_stock)
@@ -298,11 +302,12 @@ class TestStocks:
 
     def test_stock_historicals(self):
         historicals = rh.get_stock_historicals(self.single_stock, interval='hour', span='day', bounds='regular', info=None)
-        assert (len(historicals) <= 6) # 6 regular hours in a day
+        assert (len(historicals) <= 6)  # 6 regular hours in a day
         historicals = rh.get_stock_historicals(self.single_stock, interval='hour', span='day', bounds='trading', info=None)
-        assert (len(historicals) <= 9) # 9 trading hours total in a day
+        assert (len(historicals) <= 9)  # 9 trading hours total in a day
         historicals = rh.get_stock_historicals(self.single_stock, interval='hour', span='day', bounds='extended', info=None)
-        assert (len(historicals) <= 16) # 16 extended hours total in a day
+        assert (len(historicals) <= 16)  # 16 extended hours total in a day
+
 
 class TestCrypto:
 
@@ -314,7 +319,7 @@ class TestCrypto:
 
     @classmethod
     def setup_class(cls):
-        totp  = pyotp.TOTP(os.environ['rh_mfa_code']).now()
+        totp = pyotp.TOTP(os.environ['rh_mfa_code']).now()
         rh.login(os.environ['rh_username'], os.environ['rh_password'], mfa_code=totp)
 
     @classmethod
@@ -366,7 +371,7 @@ class TestCrypto:
         assert ('symbol' in crypto)
         assert ('tradability' in crypto)
         crypto = rh.get_crypto_info(self.stock, info=None)
-        assert (crypto == None)
+        assert (crypto is None)
 
     def test_crypto_quote(self):
         crypto = rh.get_crypto_quote(self.bitcoin, info=None)
@@ -380,9 +385,9 @@ class TestCrypto:
         assert ('id' in crypto)
         assert ('volume' in crypto)
         crypto = rh.get_crypto_quote(self.stock, info=None)
-        assert (crypto == None)
+        assert (crypto is None)
         crypto = rh.get_crypto_quote(self.fake, info=None)
-        assert (crypto == None)
+        assert (crypto is None)
 
     def test_crypto_historicals(self):
         crypto = rh.get_crypto_historicals(self.bitcoin, 'day', 'week', '24_7', info=None)
@@ -399,18 +404,19 @@ class TestCrypto:
         assert ('interpolated' in first_point)
         #
         crypto = rh.get_crypto_historicals(self.bitcoin, 'hour', 'day', 'regular', info=None)
-        assert (len(crypto) <= 6) # 6 regular hours in a day
+        assert (len(crypto) <= 6)  # 6 regular hours in a day
         crypto = rh.get_crypto_historicals(self.bitcoin, 'hour', 'day', 'trading', info=None)
-        assert (len(crypto) <= 9) # 9 trading hours in a day
+        assert (len(crypto) <= 9)  # 9 trading hours in a day
         crypto = rh.get_crypto_historicals(self.bitcoin, 'hour', 'day', 'extended', info=None)
-        assert (len(crypto) <= 16) # 16 extended hours in a day
+        assert (len(crypto) <= 16)  # 16 extended hours in a day
         crypto = rh.get_crypto_historicals(self.bitcoin, 'hour', 'day', '24_7', info=None)
-        assert (len(crypto) <= 24) # 24 24_7 hours in a day
+        assert (len(crypto) <= 24)  # 24 24_7 hours in a day
+
 
 class TestOptions:
 
     # have to login to use round_up_price
-    totp  = pyotp.TOTP(os.environ['rh_mfa_code']).now()
+    totp = pyotp.TOTP(os.environ['rh_mfa_code']).now()
     login = rh.login(os.environ['rh_username'], os.environ['rh_password'], mfa_code=totp)
     #
     now = datetime.datetime.now() + relativedelta(months=1)
@@ -420,7 +426,7 @@ class TestOptions:
 
     @classmethod
     def setup_class(cls):
-        totp  = pyotp.TOTP(os.environ['rh_mfa_code']).now()
+        totp = pyotp.TOTP(os.environ['rh_mfa_code']).now()
         rh.login(os.environ['rh_username'], os.environ['rh_password'], mfa_code=totp)
 
     @classmethod
@@ -434,7 +440,7 @@ class TestOptions:
         assert (len(info) > 50)
         info = rh.find_options_by_expiration(self.symbol, self.expiration_date, info='strike_price')
         first = info[0]
-        assert (type(first) == str)
+        assert (first is str)
         assert (len(info) > 50)
         info = rh.find_options_by_expiration(self.symbol, self.expiration_date, info='expiration_date')
         assert (len(set(info)) == 1)
@@ -442,7 +448,7 @@ class TestOptions:
     def test_find_options_by_strike(self):
         info = rh.find_options_by_strike(self.symbol, self.strike)
         assert (len(info) >= 24)
-        info = rh.find_options_by_strike(self.symbol, self.strike,'call')
+        info = rh.find_options_by_strike(self.symbol, self.strike, 'call')
         assert (info[0]['type'] == 'call')
         info = rh.find_options_by_strike(self.symbol, self.strike, info='expiration_date')
         assert (len(set(info)) > 1)
@@ -470,7 +476,7 @@ class TestMarkets:
 
     @classmethod
     def setup_class(cls):
-        totp  = pyotp.TOTP(os.environ['rh_mfa_code']).now()
+        totp = pyotp.TOTP(os.environ['rh_mfa_code']).now()
         rh.login(os.environ['rh_username'], os.environ['rh_password'], mfa_code=totp)
 
     @classmethod
@@ -641,10 +647,11 @@ class TestMarkets:
         market = rh.get_market_hours(self.nasdaq, self.american_time)
         assert market
 
+
 class TestProfiles:
     @classmethod
     def setup_class(cls):
-        totp  = pyotp.TOTP(os.environ['rh_mfa_code']).now()
+        totp = pyotp.TOTP(os.environ['rh_mfa_code']).now()
         rh.login(os.environ['rh_username'], os.environ['rh_password'], mfa_code=totp)
 
     @classmethod
@@ -822,10 +829,11 @@ class TestProfiles:
         profile = rh.load_account_profile(info=None)
         assert profile
 
+
 class TestOrders:
     @classmethod
     def setup_class(cls):
-        totp  = pyotp.TOTP(os.environ['rh_mfa_code']).now()
+        totp = pyotp.TOTP(os.environ['rh_mfa_code']).now()
         rh.login(os.environ['rh_username'], os.environ['rh_password'], mfa_code=totp)
 
     def test_find_stock_orders(cls):
@@ -842,13 +850,14 @@ class TestOrders:
         for order in orderHistory:
             assert isFloat(order['quantity'])
             assert isFloat(order['cumulative_quantity'])
-            if(order['state'] == 'filled'):
+            if (order['state'] == 'filled'):
                 assert (order['quantity'] == order['cumulative_quantity'])
+
 
 class TestAccountInformation:
     @classmethod
     def setup_class(cls):
-        totp  = pyotp.TOTP(os.environ['rh_mfa_code']).now()
+        totp = pyotp.TOTP(os.environ['rh_mfa_code']).now()
         rh.login(os.environ['rh_username'], os.environ['rh_password'], mfa_code=totp)
 
     def test_get_stock_loan_payments(cls):

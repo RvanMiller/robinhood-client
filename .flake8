@@ -1,5 +1,5 @@
 [flake8]
-exclude = .git,.github,.pytest_cache,.venv,__pycache__,examples,docs,tests,build,dist
+exclude = .git,.github,.pytest_cache,.venv,__pycache__,examples,docs,build,dist
 paths = src/robinhood_client
 max-line-length = 127
 # High for now while refactoring - should be 10
