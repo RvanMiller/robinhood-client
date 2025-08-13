@@ -8,6 +8,7 @@ import logging
 import requests
 
 from .constants import BASE_API_URL
+from .exceptions import AuthenticationError
 from .helper import set_login_state, update_session, request_get, request_post, login_required
 from .urls import challenge_url, login_url, positions_url
 
@@ -144,10 +145,10 @@ def login(username=None, password=None, expiresIn=86400, scope='internal',
                                  'device_token': payload['device_token']}, f)
         else:
             if 'detail' in data:
-                raise Exception(data['detail'])
-            raise Exception(f"Received an error response {data}")
+                raise AuthenticationError(data['detail'])
+            raise AuthenticationError(f"Received an error response {data}")
     else:
-        raise Exception('Error: Trouble connecting to Robinhood API. Please check your Internet connection.')
+        raise AuthenticationError('Trouble connecting to Robinhood API. Please check your Internet connection.')
     logger.info("Successfully logged in to Robinhood.")
     return
 
@@ -197,7 +198,7 @@ def _get_sherrif_id(data):
     """Extracts the sheriff verification ID from the response."""
     if "id" in data:
         return data["id"]
-    raise Exception("Error: No verification ID returned in user-machine response")
+    raise AuthenticationError("No verification ID returned in user-machine response")
 
 
 def _validate_sherrif_id(device_token: str, workflow_id: str):
@@ -266,7 +267,7 @@ def _validate_sherrif_id(device_token: str, workflow_id: str):
             logger.error("API request failed: %s", e)
             retry_attempts -= 1
             if retry_attempts == 0:
-                raise TimeoutError("Max retries reached. Login failed.")
+                raise AuthenticationError(f"Max retries reached. Login failed: {str(e)}")
             logger.info("Retrying workflow status check...")
             continue
 
@@ -275,7 +276,7 @@ def _validate_sherrif_id(device_token: str, workflow_id: str):
             logger.warning("Error: No response from Robinhood API. Retrying...")
             retry_attempts -= 1
             if retry_attempts == 0:
-                raise TimeoutError("Max retries reached. Login verification failed.")
+                raise AuthenticationError("Max retries reached. Login verification failed.")
             continue
 
         workflow_status = inquiries_response.get("verification_workflow", {}).get("workflow_status")
@@ -288,6 +289,6 @@ def _validate_sherrif_id(device_token: str, workflow_id: str):
         else:
             retry_attempts -= 1
             if retry_attempts == 0:
-                raise PermissionError("Max retries reached. Unable to confirm verification. Authentication denied.")
+                raise AuthenticationError("Max retries reached. Unable to confirm verification.")
 
-    raise TimeoutError("Timeout reached. Unable to confirm verification. Authentication denied.")
+    raise AuthenticationError("Timeout reached. Unable to confirm verification.")
