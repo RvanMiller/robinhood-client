@@ -328,6 +328,10 @@ def request_get(url, dataType='regular', payload=None, jsonify_data=True):
     return (data)
 
 
+def request_get_ex(url: str) -> list[dict]:
+    pass
+
+
 def request_post(url, payload=None, timeout=16, json=False, jsonify_data=True):
     """For a given url and payload, makes a post request and returns the response. Allows for responses other than 200.
 
@@ -396,6 +400,18 @@ def update_session(key, value):
 
     """
     SESSION.headers[key] = value
+
+
+def get_session(key, default=None):
+    """Retrieves the value from the session headers.
+
+    :param key: The key to retrieve from the session headers.
+    :type key: str
+    :param default: The default value to return if the key is not found.
+    :type default: Optional[Any]
+    :returns: The value from the session headers or the default value.
+    """
+    return SESSION.headers.get(key, default)
 
 
 def error_argument_not_key_in_dictionary(keyword):
