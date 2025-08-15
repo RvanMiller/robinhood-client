@@ -9,7 +9,7 @@ import requests
 
 from .constants import BASE_API_URL
 from .exceptions import AuthenticationError
-from .helper import set_login_state, update_session, request_get, request_post, login_required
+from .helper import get_session, set_login_state, update_session, request_get, request_post, login_required
 from .urls import challenge_url, login_url, positions_url
 
 # Get logger for this module
@@ -163,6 +163,16 @@ def logout():
     set_login_state(False)
     update_session('Authorization', None)
     logger.info("Logged out of Robinhood successfully.")
+
+
+@login_required
+def get_token():
+    """Retrieves the current authentication token.
+
+    :returns: The current authentication token or None if not logged in.
+
+    """
+    return get_session('Authorization')
 
 
 def _respond_to_challenge(challenge_id, sms_code):
