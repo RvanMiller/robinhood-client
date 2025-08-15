@@ -1,42 +1,37 @@
-name: Python application
+name: Deploy Python Package
 
 on:
   push:
     branches:
-      - master
+      - main
+  pull_request:
+    branches:
+      - main
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
+    environment: Non-Prod Environment
 
     steps:
     - uses: actions/checkout@v1
-    - name: Set up Python 3.9
+    - name: Set up Python
       uses: actions/setup-python@v1
       with:
-        python-version: 3.9
-    - name: Install dependencies
+        python-version: 3.12
+    - name: Install package
       run: |
         python -m pip install --upgrade pip
-        pip install -r requirements.txt
+        pip install -e .
     - name: Lint with flake8
       run: |
         pip install flake8
-        # stop the build if there are Python syntax errors or undefined names
-        flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
-        # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
-        flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
+        flake8 --count --statistics
     - name: Test robinhood with pytest
       env:
-        robin_username: ${{ secrets.username }}
-        robin_password: ${{ secrets.password }}
-        robin_mfa: ${{ secrets.mfa }}
-        account_number: ${{ secrets.account }}
-        zipcode: ${{ secrets.zipcode }}
-        crypto_account: ${{ secrets.crypto }}
+        rh_username: ${{ secrets.rh_username }}
+        rh_password: ${{ secrets.rh_password }}
+        rh_mfa_code: ${{ secrets.rh_mfa_code }}
       run: |
-        pip install pytest
-        pip install pytest-dotenv
-        pip install python-dateutil
-        pytest tests/test_robinhood.py
+        pip install -e ".[test]"
+        pytest tests/unit_tests.py

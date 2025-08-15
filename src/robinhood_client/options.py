@@ -1,24 +1,33 @@
 """Contains functions for getting information about options."""
 import sys
-from .helper import *
-from .urls import *
 
+from .helper import filter_data, get_output, id_for_chain, id_for_option, inputs_to_set, \
+    login_required, request_get
+from .urls import aggregate_url, chains_url, marketdata_options_url, option_historicals_url, \
+    option_instruments_url, option_orders_url, option_positions_url
+
+
+# TODO: Candidate for refactoring
 def spinning_cursor():
-    """ This is a generator function to yield a character. """
+    """This is a generator function to yield a character. """
     while True:
         for cursor in '|/-\\':
             yield cursor
 
+
 spinner = spinning_cursor()
 
+
+# TODO: Candidate for refactoring
 def write_spinner():
-    """ Function to create a spinning cursor to tell user that the code is working on getting market data. """
-    if get_output()==sys.stdout:
+    """Function to create a spinning cursor to tell user that the code is working on getting market data. """
+    if get_output() == sys.stdout:
         marketString = 'Loading Market Data '
         sys.stdout.write(marketString)
         sys.stdout.write(next(spinner))
         sys.stdout.flush()
         sys.stdout.write('\b'*(len(marketString)+1))
+
 
 @login_required
 def get_aggregate_positions(info=None, account_number=None):
@@ -32,7 +41,8 @@ def get_aggregate_positions(info=None, account_number=None):
     """
     url = aggregate_url(account_number=account_number)
     data = request_get(url, 'pagination')
-    return(filter_data(data, info))
+    return (filter_data(data, info))
+
 
 @login_required
 def get_aggregate_open_positions(info=None, account_number=None):
@@ -47,7 +57,7 @@ def get_aggregate_open_positions(info=None, account_number=None):
     url = aggregate_url(account_number=account_number)
     payload = {'nonzero': 'True'}
     data = request_get(url, 'pagination', payload)
-    return(filter_data(data, info))
+    return (filter_data(data, info))
 
 
 @login_required
@@ -63,7 +73,7 @@ def get_market_options(info=None):
     url = option_orders_url()
     data = request_get(url, 'pagination')
 
-    return(filter_data(data, info))
+    return (filter_data(data, info))
 
 
 @login_required
@@ -78,15 +88,15 @@ def get_all_option_positions(info=None, account_number=None):
     """
     url = option_positions_url(account_number=account_number)
     data = request_get(url, 'pagination')
-    return(filter_data(data, info))
+    return (filter_data(data, info))
 
 
 @login_required
 def get_open_option_positions(account_number=None, info=None):
     """Returns all open option positions for the account.
-    
-    :param acccount_number: the robinhood account number.
-    :type acccount_number: Optional[str]
+
+    :param account_number: the robinhood account number.
+    :type account_number: Optional[str]
     :param info: Will filter the results to get a specific value.
     :type info: Optional[str]
     :returns: Returns a list of dictionaries of key/value pairs for each option. If info parameter is provided, \
@@ -97,7 +107,7 @@ def get_open_option_positions(account_number=None, info=None):
     payload = {'nonzero': 'True'}
     data = request_get(url, 'pagination', payload)
 
-    return(filter_data(data, info))
+    return (filter_data(data, info))
 
 
 def get_chains(symbol, info=None):
@@ -120,7 +130,8 @@ def get_chains(symbol, info=None):
     url = chains_url(symbol)
     data = request_get(url)
 
-    return(filter_data(data, info))
+    return (filter_data(data, info))
+
 
 @login_required
 def find_tradable_options(symbol, expirationDate=None, strikePrice=None, optionType=None, info=None):
@@ -163,7 +174,8 @@ def find_tradable_options(symbol, expirationDate=None, strikePrice=None, optionT
         payload['type'] = optionType
 
     data = request_get(url, 'pagination', payload)
-    return(filter_data(data, info))
+    return (filter_data(data, info))
+
 
 @login_required
 def find_options_by_expiration(inputSymbols, expirationDate, optionType=None, info=None):
@@ -177,8 +189,9 @@ def find_options_by_expiration(inputSymbols, expirationDate, optionType=None, in
     :type optionType: Optional[str]
     :param info: Will filter the results to get a specific value.
     :type info: Optional[str]
-    :returns: Returns a list of dictionaries of key/value pairs for all options of the stock that match the search parameters. \
-    If info parameter is provided, a list of strings is returned where the strings are the value of the key that matches info.
+    :returns: Returns a list of dictionaries of key/value pairs for all options of the stock that match the \
+        search parameters. If info parameter is provided, a list of strings is returned where the strings are \
+        the value of the key that matches info.
 
     """
     try:
@@ -202,7 +215,8 @@ def find_options_by_expiration(inputSymbols, expirationDate, optionType=None, in
 
         data.extend(filteredOptions)
 
-    return(filter_data(data, info))
+    return (filter_data(data, info))
+
 
 @login_required
 def find_options_by_strike(inputSymbols, strikePrice, optionType=None, info=None):
@@ -216,8 +230,9 @@ def find_options_by_strike(inputSymbols, strikePrice, optionType=None, info=None
     :type optionType: Optional[str]
     :param info: Will filter the results to get a specific value.
     :type info: Optional[str]
-    :returns: Returns a list of dictionaries of key/value pairs for all options of the stock that match the search parameters. \
-    If info parameter is provided, a list of strings is returned where the strings are the value of the key that matches info.
+    :returns: Returns a list of dictionaries of key/value pairs for all options of the stock that match the \
+        search parameters. If info parameter is provided, a list of strings is returned where the strings are \
+        the value of the key that matches info.
 
     """
     try:
@@ -240,7 +255,8 @@ def find_options_by_strike(inputSymbols, strikePrice, optionType=None, info=None
 
         data.extend(filteredOptions)
 
-    return(filter_data(data, info))
+    return (filter_data(data, info))
+
 
 @login_required
 def find_options_by_expiration_and_strike(inputSymbols, expirationDate, strikePrice, optionType=None, info=None):
@@ -256,8 +272,9 @@ def find_options_by_expiration_and_strike(inputSymbols, expirationDate, strikePr
     :type optionType: Optional[str]
     :param info: Will filter the results to get a specific value.
     :type info: Optional[str]
-    :returns: Returns a list of dictionaries of key/value pairs for all options of the stock that match the search parameters. \
-    If info parameter is provided, a list of strings is returned where the strings are the value of the key that matches info.
+    :returns: Returns a list of dictionaries of key/value pairs for all options of the stock that match the \
+        search parameters. If info parameter is provided, a list of strings is returned where the strings are \
+        the value of the key that matches info.
 
     """
     try:
@@ -283,8 +300,10 @@ def find_options_by_expiration_and_strike(inputSymbols, expirationDate, strikePr
 
     return filter_data(data, info)
 
+
 @login_required
-def find_options_by_specific_profitability(inputSymbols, expirationDate=None, strikePrice=None, optionType=None, typeProfit="chance_of_profit_short", profitFloor=0.0, profitCeiling=1.0, info=None):
+def find_options_by_specific_profitability(inputSymbols, expirationDate=None, strikePrice=None, optionType=None,
+                                           typeProfit="chance_of_profit_short", profitFloor=0.0, profitCeiling=1.0, info=None):
     """Returns a list of option market data for several stock tickers that match a range of profitability.
 
     :param inputSymbols: May be a single stock ticker or a list of stock tickers.
@@ -303,7 +322,7 @@ def find_options_by_specific_profitability(inputSymbols, expirationDate=None, st
     :type profitCeiling: int
     :param info: Will filter the results to get a specific value.
     :type info: Optional[str]
-    :returns: Returns a list of dictionaries of key/value pairs for all stock option market data. \
+    :returns: Returns a list of dictionaries of key/value pairs for all stock option market data.
     If info parameter is provided, a list of strings is returned where the strings are the value of the key that matches info.
 
     """
@@ -321,7 +340,7 @@ def find_options_by_specific_profitability(inputSymbols, expirationDate=None, st
                 continue
 
             market_data = get_option_market_data_by_id(option['id'])
-            
+
             if len(market_data):
                 option.update(market_data[0])
                 write_spinner()
@@ -330,10 +349,12 @@ def find_options_by_specific_profitability(inputSymbols, expirationDate=None, st
                     floatValue = float(option[typeProfit])
                     if (floatValue >= profitFloor and floatValue <= profitCeiling):
                         data.append(option)
-                except:
+                except Exception:
+                    # TODO: Log exception
                     pass
 
-    return(filter_data(data, info))
+    return (filter_data(data, info))
+
 
 @login_required
 def get_option_market_data_by_id(id, info=None):
@@ -344,22 +365,26 @@ def get_option_market_data_by_id(id, info=None):
     :type id: str
     :param info: Will filter the results to get a specific value.
     :type info: Optional[str]
-    :returns: Returns a dictionary of key/value pairs for the stock. \
+    :returns: Returns a dictionary of key/value pairs for the stock.
     If info parameter is provided, the value of the key that matches info is extracted.
 
     """
     instrument = get_option_instrument_data_by_id(id)
+    # TODO: Refactor candidate / logging
     if instrument is None:
-      # e.g. 503 Server Error: Service Unavailable for url: https://api.robinhood.com/options/instruments/d1058013-09a2-4063-b6b0-92717e17d0c0/
-      return None  # just return None which the caller can easily check; do NOT use faked empty data, it will only cause future problem
+        # e.g. 503 Server Error: Service Unavailable for url:
+        # https://api.robinhood.com/options/instruments/d1058013-09a2-4063-b6b0-92717e17d0c0/
+        # Just return None which the caller can easily check; do NOT use faked empty data, it will only cause future problems
+        return None
     else:
-      payload = {
-          "instruments" : instrument['url']
-      }
-      url = marketdata_options_url()
-      data = request_get(url, 'results', payload)
+        payload = {
+            "instruments": instrument['url'],
+        }
+        url = marketdata_options_url()
+        data = request_get(url, 'results', payload)
 
-    return(filter_data(data, info))
+    return (filter_data(data, info))
+
 
 @login_required
 def get_option_market_data(inputSymbols, expirationDate, strikePrice, optionType, info=None):
@@ -394,7 +419,7 @@ def get_option_market_data(inputSymbols, expirationDate, strikePrice, optionType
         marketData = get_option_market_data_by_id(optionID)
         data.append(marketData)
 
-    return(filter_data(data, info))
+    return (filter_data(data, info))
 
 
 def get_option_instrument_data_by_id(id, info=None):
@@ -410,7 +435,7 @@ def get_option_instrument_data_by_id(id, info=None):
     """
     url = option_instruments_url(id)
     data = request_get(url)
-    return(filter_data(data, info))
+    return (filter_data(data, info))
 
 
 def get_option_instrument_data(symbol, expirationDate, strikePrice, optionType, info=None):
@@ -441,10 +466,11 @@ def get_option_instrument_data(symbol, expirationDate, strikePrice, optionType, 
     url = option_instruments_url(optionID)
     data = request_get(url)
 
-    return(filter_data(data, info))
+    return (filter_data(data, info))
 
 
-def get_option_historicals(symbol, expirationDate, strikePrice, optionType, interval='hour', span='week', bounds='regular', info=None):
+def get_option_historicals(symbol, expirationDate, strikePrice, optionType, interval='hour', span='week',
+                           bounds='regular', info=None):
     """Returns the data that is used to make the graphs.
 
     :param symbol: The ticker of the stock.
@@ -459,8 +485,9 @@ def get_option_historicals(symbol, expirationDate, strikePrice, optionType, inte
     :type interval: Optional[str]
     :param span: Sets the range of the data to be either 'day', 'week', 'year', or '5year'. Default is 'week'.
     :type span: Optional[str]
-    :param bounds: Represents if graph will include extended trading hours or just regular trading hours. Values are 'regular', 'trading', and 'extended'. \
-    regular hours are 6 hours long, trading hours are 9 hours long, and extended hours are 16 hours long. Default is 'regular'
+    :param bounds: Represents if graph will include extended trading hours or just regular trading hours. \
+        Values are 'regular', 'trading', and 'extended'. Regular hours are 6 hours long, trading hours are \
+        9 hours long, and extended hours are 16 hours long. Default is 'regular'.
     :type bounds: Optional[str]
     :param info: Will filter the results to have a list of the values that correspond to key that matches info.
     :type info: Optional[str]
@@ -481,13 +508,13 @@ def get_option_historicals(symbol, expirationDate, strikePrice, optionType, inte
     if interval not in interval_check:
         print(
             'ERROR: Interval must be "5minute","10minute","hour","day",or "week"', file=get_output())
-        return([None])
+        return ([None])
     if span not in span_check:
         print('ERROR: Span must be "day", "week", "year", or "5year"', file=get_output())
-        return([None])
+        return ([None])
     if bounds not in bounds_check:
         print('ERROR: Bounds must be "extended","regular",or "trading"', file=get_output())
-        return([None])
+        return ([None])
 
     optionID = id_for_option(symbol, expirationDate, strikePrice, optionType)
 
@@ -496,7 +523,7 @@ def get_option_historicals(symbol, expirationDate, strikePrice, optionType, inte
                'interval': interval,
                'bounds': bounds}
     data = request_get(url, 'regular', payload)
-    if (data == None or data == [None]):
+    if (data is None or data == [None]):
         return data
 
     histData = []
@@ -504,4 +531,4 @@ def get_option_historicals(symbol, expirationDate, strikePrice, optionType, inte
         subitem['symbol'] = symbol
         histData.append(subitem)
 
-    return(filter_data(histData, info))
+    return (filter_data(histData, info))

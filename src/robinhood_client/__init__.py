@@ -1,3 +1,11 @@
+# Public API for Robinhood Client
+
+# Import logging configuration first to ensure it's set up before other modules
+from .logging import configure_logging
+
+# Configure the default logger for the package
+configure_logging()
+
 from .account import (build_holdings, build_user_profile,
                       delete_symbols_from_watchlist,
                       deposit_funds_to_robinhood_account,
@@ -15,7 +23,7 @@ from .account import (build_holdings, build_user_profile,
                       get_wire_transfers, load_phoenix_account,
                       post_symbols_to_watchlist, unlink_bank_account,
                       withdrawl_funds_to_bank_account)
-from .authentication import login, logout
+from .authentication import login, logout, get_token
 from .crypto import (get_crypto_currency_pairs, get_crypto_historicals,
                      get_crypto_info, get_crypto_positions, get_crypto_quote,
                      get_crypto_quote_from_id, load_crypto_profile)
@@ -23,7 +31,7 @@ from .export import (export_completed_crypto_orders,
                      export_completed_option_orders,
                      export_completed_stock_orders)
 from .helper import (filter_data, get_output, request_delete, request_document,
-                     request_get, request_post, set_output, update_session)
+                     request_get, request_post, set_output, update_session, get_session)
 from .markets import (get_all_stocks_from_market_tag, get_currency_pairs,
                       get_market_hours, get_market_next_open_hours,
                       get_market_next_open_hours_after_date,

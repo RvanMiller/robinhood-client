@@ -26,7 +26,7 @@ authors = [
     { name = "Ryan Miller", email = "mrzodge@gmail.com" },
 ]
 keywords = ["robinhood", "http client", "api", "stocks", "options", "trading", "crypto", "investing"]
-requires-python = ">=3.9"
+requires-python = ">=3.12"
 dependencies = [
     "requests",
     "pyotp",
@@ -44,7 +44,15 @@ Homepage = "https://github.com/RvanMiller/robinhood-client"
 Repository = "https://github.com/RvanMiller/robinhood-client"
 
 [project.optional-dependencies]
-dev = [
+test = [
     "pytest",
     "ruff",
+    "pytest-dotenv",
+    "python-dateutil",
 ]
+
+[tool.pytest.ini_options]
+python_classes = ["Test", "Describe"]
+python_functions = ["test_", "it_", "and_", "but_", "they_"]
+python_files = ["test_*.py", "*_tests.py"]
+testpaths = ["tests",]

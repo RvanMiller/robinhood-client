@@ -1,14 +1,15 @@
 from csv import writer
 from datetime import date
 from pathlib import Path
-from .helper import *
-from .orders import *
-from .stocks import *
-from .crypto import *
+
+from .crypto import get_crypto_quote_from_id
+from .helper import login_required, request_get
+from .orders import get_all_crypto_orders, get_all_option_orders, get_all_stock_orders
+from .stocks import get_symbol_by_url
 
 
 def fix_file_extension(file_name):
-    """ Takes a file extension and makes it end with .csv
+    """Takes a file extension and makes it end with .csv
 
     :param file_name: Name of the file.
     :type file_name: str
@@ -19,12 +20,14 @@ def fix_file_extension(file_name):
     path = path.with_suffix('.csv')
     return path.resolve()
 
+
 def create_absolute_csv(dir_path, file_name, order_type):
-    """ Creates a filepath given a directory and file name.
+    """Creates a filepath given a directory and file name.
 
     :param dir_path: Absolute or relative path to the directory the file will be written.
     :type dir_path: str
-    :param file_name: An optional argument for the name of the file. If not defined, filename will be stock_orders_{current date}
+    :param file_name: An optional argument for the name of the file. If not defined, filename will be \
+        stock_orders_{current date}
     :type file_name: str
     :param file_name: Will be 'stock', 'option', or 'crypto'
     :type file_name: str
@@ -37,7 +40,7 @@ def create_absolute_csv(dir_path, file_name, order_type):
         file_name = "{}_orders_{}.csv".format(order_type, date.today().strftime('%b-%d-%Y'))
     else:
         file_name = fix_file_extension(file_name)
-    return(Path.joinpath(directory, file_name))
+    return (Path.joinpath(directory, file_name))
 
 
 @login_required
@@ -46,7 +49,8 @@ def export_completed_stock_orders(dir_path, file_name=None, account_number=None)
 
     :param dir_path: Absolute or relative path to the directory the file will be written.
     :type dir_path: str
-    :param file_name: An optional argument for the name of the file. If not defined, filename will be stock_orders_{current date}
+    :param file_name: An optional argument for the name of the file. If not defined, filename will be \
+        stock_orders_{current date}
     :type file_name: Optional[str]
 
     """
@@ -88,20 +92,22 @@ def export_completed_stock_orders(dir_path, file_name=None, account_number=None)
                     order['average_price']
                 ])
         f.close()
-    
+
+
 @login_required
 def export_completed_crypto_orders(dir_path, file_name=None):
     """Write all completed crypto orders to a csv file
 
     :param dir_path: Absolute or relative path to the directory the file will be written.
     :type dir_path: str
-    :param file_name: An optional argument for the name of the file. If not defined, filename will be crypto_orders_{current date}
+    :param file_name: An optional argument for the name of the file. If not defined, filename will be \
+        crypto_orders_{current date}
     :type file_name: Optional[str]
 
     """
     file_path = create_absolute_csv(dir_path, file_name, 'crypto')
     all_orders = get_all_crypto_orders()
-    
+
     with open(file_path, 'w', newline='') as f:
         csv_writer = writer(f)
         csv_writer.writerow([
@@ -137,7 +143,8 @@ def export_completed_option_orders(dir_path, file_name=None):
 
         :param dir_path: Absolute or relative path to the directory the file will be written.
         :type dir_path: str
-        :param file_name: An optional argument for the name of the file. If not defined, filename will be option_orders_{current date}
+        :param file_name: An optional argument for the name of the file. If not defined, filename will be \
+            option_orders_{current date}
         :type file_name: Optional[str]
 
     """

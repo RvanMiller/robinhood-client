@@ -13,9 +13,9 @@ two-factor loggin in works.
 # load environment variables.
 load_dotenv()
 # Login using two-factor code.
-totp = pyotp.TOTP(os.environ['robin_mfa']).now()
-login = rh.login(os.environ['robin_username'],
-                os.environ['robin_password'], store_session=True, mfa_code=totp)
+totp = pyotp.TOTP(os.environ['rh_mfa_code']).now()
+login = rh.login(os.environ['rh_username'],
+                os.environ['rh_password'], store_session=True, mfa_code=totp)
 # Get 500 technology stocks data.
 stocks = rh.request_get(
     "https://api.robinhood.com/midlands/tags/tag/technology/")

@@ -21,8 +21,8 @@ sleep_time = 1 # in seconds
 # Load environment variables
 load_dotenv()
 # Login using two-factor code
-totp = pyotp.TOTP(os.environ['robin_mfa']).now()
-login = rh.login(os.environ['robin_username'], os.environ['robin_password'], store_session=True, mfa_code=totp)
+totp = pyotp.TOTP(os.environ['rh_mfa_code']).now()
+login = rh.login(os.environ['rh_username'], os.environ['rh_password'], store_session=True, mfa_code=totp)
 # Here it is important to set jsonify=False so that you can check
 # status code of your order request. 200 is ok, 400 is bad request,
 # and 404 is unknown url.
