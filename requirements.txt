@@ -4,6 +4,8 @@
 #
 #    pip-compile --output-file=requirements.txt pyproject.toml
 #
+annotated-types==0.7.0
+    # via pydantic
 certifi==2025.8.3
     # via requests
 cffi==1.17.1
@@ -16,11 +18,22 @@ idna==3.10
     # via requests
 pycparser==2.22
     # via cffi
+pydantic==2.11.7
+    # via robinhood-client (pyproject.toml)
+pydantic-core==2.33.2
+    # via pydantic
 pyotp==2.9.0
     # via robinhood-client (pyproject.toml)
 python-dotenv==1.1.1
     # via robinhood-client (pyproject.toml)
 requests==2.32.4
     # via robinhood-client (pyproject.toml)
+typing-extensions==4.14.1
+    # via
+    #   pydantic
+    #   pydantic-core
+    #   typing-inspection
+typing-inspection==0.4.1
+    # via pydantic
 urllib3==2.5.0
     # via requests
