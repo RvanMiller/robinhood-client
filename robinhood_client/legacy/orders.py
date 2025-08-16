@@ -1,6 +1,7 @@
 """Contains all functions for placing orders for stocks, options, and crypto."""
 from uuid import uuid4
 
+
 from .crypto import get_crypto_id, get_crypto_quote_from_id, load_crypto_profile
 from .helper import error_argument_not_key_in_dictionary, filter_data, get_output, id_for_option, \
     login_required, request_get, request_post, round_price

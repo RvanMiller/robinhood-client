@@ -28,10 +28,11 @@ authors = [
 keywords = ["robinhood", "http client", "api", "stocks", "options", "trading", "crypto", "investing"]
 requires-python = ">=3.12"
 dependencies = [
-    "requests",
+    "cryptography",
+    "pydantic",
     "pyotp",
     "python-dotenv",
-    "cryptography",
+    "requests",
 ]
 classifiers = [
     "Programming Language :: Python :: 3",

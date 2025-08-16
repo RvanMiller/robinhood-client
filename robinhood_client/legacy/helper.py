@@ -1,9 +1,12 @@
 """Contains decorator functions and functions for interacting with global data.
 """
-from functools import wraps
-
+import logging
 import requests
+from functools import wraps
 from .globals import LOGGED_IN, OUTPUT, SESSION
+
+# Get logger for this module
+logger = logging.getLogger(__name__)
 
 
 def set_login_state(logged_in):
@@ -328,8 +331,18 @@ def request_get(url, dataType='regular', payload=None, jsonify_data=True):
     return (data)
 
 
-def request_get_ex(url: str) -> list[dict]:
-    pass
+def request_get_ex(url: str,
+                   params: dict = None,
+                   ) -> list[dict]:
+    logger.debug("Making GET request to %s", url)
+    try:
+        res = SESSION.get(url, params=params)
+        res.raise_for_status()
+        data = res.json()
+    except Exception as message:
+        logger.error("Error in request_get_ex: %s", message)
+        data = []
+    return data
 
 
 def request_post(url, payload=None, timeout=16, json=False, jsonify_data=True):
