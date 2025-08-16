@@ -20,7 +20,7 @@ class OrdersDataClient(BaseOAuthClient):
                 account_number: The Robinhood account number
                 order_id: The ID of the order to retrieve
                 start_date: Optional date to filter orders
-                
+
         Returns:
             GetStockOrderResponse with the order information
         """
@@ -39,13 +39,12 @@ class OrdersDataClient(BaseOAuthClient):
             request: A GetStockOrdersRequest containing:
                 account_number: The Robinhood account number
                 start_date: Optional date filter for orders
-                page_size: Optional number of results per page (default: 10)
-                
+
         Returns:
             GetStockOrdersResponse with paginated order results
         """
         params = {}
-        url = f"/orders/{request.order_id}/"
+        url = f"/orders/"
         if request.account_number is not None:
             params["account_number"] = request.account_number
         if request.start_date is not None:
