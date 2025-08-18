@@ -12,6 +12,7 @@ where = ["src"]
 include = ["*"]
 exclude = [
     "tests*",
+    "integration*",
     "docs*",
     "examples*",
 ]
@@ -55,5 +56,5 @@ test = [
 [tool.pytest.ini_options]
 python_classes = ["Test", "Describe"]
 python_functions = ["test_", "it_", "and_", "but_", "they_"]
-python_files = ["test_*.py", "*_tests.py"]
+python_files = ["*_tests.py"]
 testpaths = ["tests",]

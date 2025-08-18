@@ -31,24 +31,26 @@ class BaseClient(ABC):
             "Connection": "keep-alive",
             "User-Agent": "*"
         }
-    
+
     def request_get(self, url: str, params: dict = None) -> list[dict]:
         logger.debug("Making GET request to %s", url)
         res = None
         try:
             res = self._session.get(url, params=params)
             res.raise_for_status()
+            return res.json()
         except Exception as message:
             logger.error("Error in BaseClient request_get: %s", message)
-        return res.json()
+            return {}
 
-    def request_post(self, url: str, payload: dict = None, json_request: bool = False, json_response = True, timeout: int = 16):
+    def request_post(self, url: str, payload: dict = None, json_request: bool = False, json_response: bool = True,
+                     timeout: int = 16):
         res = None
         try:
             if json_request:
                 self._session.headers.update({'Content-Type': 'application/json'})
                 res = self._session.post(url, json=payload, timeout=timeout)
-                self._session.headers.update({'Content-Type', 'application/x-www-form-urlencoded; charset=utf-8'})
+                self._session.headers.update({'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8'})
             else:
                 res = self._session.post(url, data=payload, timeout=timeout)
             if res.status_code not in [200, 201, 202, 204, 301, 302, 303, 304, 307, 400, 401, 402, 403]:
@@ -56,16 +58,17 @@ class BaseClient(ABC):
         except Exception as message:
             logger.error("Error in BaseClient request_post: %s", message)
         if json_response:
-            return res.json()
+            return res.json() if res else {}
         else:
             return res
 
 
-class BaseOAuthClient(ABC):
+class BaseOAuthClient(BaseClient):
     """Base class for all Robinhood clients with OAuth authentication."""
 
     def __init__(self, url: str, session_storage: SessionStorage):
-        super().__init__(url)
+        super().__init__()
+        self._url = url
         self._is_authenticated = False
         self._session_storage = session_storage
 
@@ -116,18 +119,19 @@ class BaseOAuthClient(ABC):
         return True
 
     def _login_using_storage(self) -> bool:
-        logger.debug("Attempting to log in using stored session...")
         loaded_session = self._session_storage.load()
-        if loaded_session is not None:
-            self._session = loaded_session
-            if self._test_auth_connection():
-                self._is_authenticated = True
-                logger.debug("Loaded session from storage.")
-                return True
-            else:
-                logger.error("Stored session is invalid. Failed to authenticate.")
-        else:
+        if loaded_session is None:
             logger.debug("No existing session found.")
+            return False
+
+        logger.debug("Attempting to log in using stored session...")
+        self._session = loaded_session
+        if self._test_auth_connection():
+            self._is_authenticated = True
+            logger.debug("Loaded session from storage.")
+            return True
+        else:
+            logger.error("Stored session is invalid. Failed to authenticate.")
             return False
 
     def _login_using_request(self, username=None, password=None, *, expiresIn, scope,
@@ -135,7 +139,8 @@ class BaseOAuthClient(ABC):
                              mfa_code,
                              ) -> dict | AuthenticationError:
         logger.debug("Attempting to log in normally...")
-        # Try to log in normally.
+
+        payload = {}
         if not username:
             username = input("Robinhood username: ")
             payload['username'] = username
@@ -143,7 +148,7 @@ class BaseOAuthClient(ABC):
         if not password:
             password = getpass.getpass("Robinhood password: ")
             payload['password'] = password
-        
+
         payload = {
             'client_id': 'c82SH0WZOsabOXGP2sxqcj34FxkvfnWRZBKlBjFS',
             'expires_in': expiresIn,
@@ -159,13 +164,13 @@ class BaseOAuthClient(ABC):
 
         if mfa_code:
             payload['mfa_code'] = mfa_code
-        
+
         response = self.request_post(API_LOGIN_URL, payload)
 
         if response is None:
             logger.error("Login failed: No response from Robinhood API.")
             return False
-        
+
         if 'verification_workflow' in response:
             logger.info("Verification workflow required. Please check your Robinhood Mobile app.")
             workflow_id = response['verification_workflow']['id']
@@ -201,11 +206,9 @@ class BaseOAuthClient(ABC):
         self._session_storage.clear()
         logger.info("Logged out of Robinhood successfully.")
 
-
     def get_access_token(self):
         """Retrieve the access token from the session."""
         return self._session.headers.get("Authorization")
-
 
     def _validate_sherrif_id(self, device_token: str, workflow_id: str):
         """Handles Robinhood's verification workflow."""
@@ -264,7 +267,7 @@ class BaseOAuthClient(ABC):
                 inquiries_payload = {"sequence": 0, "user_input": {"status": "continue"}}
                 inquiries_response = self.request_post(url=inquiries_url, payload=inquiries_payload, json=True)
                 if "type_context" in inquiries_response and \
-                inquiries_response["type_context"]["result"] == "workflow_status_approved":
+                        inquiries_response["type_context"]["result"] == "workflow_status_approved":
                     logger.info("Verification successful!")
                     return
                 else:
