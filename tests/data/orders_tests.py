@@ -193,6 +193,7 @@ class TestOrdersDataClient(unittest.TestCase):
         self.assertIsNone(response.next)
         self.assertIsNone(response.previous)
 
+        # Verify request_get was called with the right parameters
         mock_request_get.assert_called_once_with(
             "/orders/", params={"account_number": "account789", "page_size": 10}
         )
@@ -214,6 +215,7 @@ class TestOrdersDataClient(unittest.TestCase):
         self.assertIsNone(response.next)
         self.assertIsNone(response.previous)
 
+        # Verify request_get was called with the right parameters
         mock_request_get.assert_called_once_with(
             "/orders/", params={"account_number": "empty_account", "page_size": 10}
         )

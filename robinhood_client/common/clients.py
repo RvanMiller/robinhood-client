@@ -7,6 +7,7 @@ import requests
 
 from abc import ABC
 from requests import Session
+from urllib.parse import urljoin
 
 from .auth import generate_device_token
 from .exceptions import AuthenticationError
@@ -33,11 +34,26 @@ class BaseClient(ABC):
             "User-Agent": "*",
         }
 
+    def _join_url(self, url: str) -> str:
+        """Join a URL with the base URL if applicable.
+
+        This method is meant to be overridden by subclasses that have a base URL.
+        Base implementation returns the URL unchanged.
+
+        Args:
+            url: The URL or endpoint path
+
+        Returns:
+            The full URL
+        """
+        return url
+
     def request_get(self, url: str, params: dict = None) -> list[dict]:
         logger.debug("Making GET request to %s", url)
         res = None
         try:
-            res = self._session.get(url, params=params)
+            full_url = self._join_url(url)
+            res = self._session.get(full_url, params=params)
             res.raise_for_status()
             return res.json()
         except Exception as message:
@@ -54,14 +70,15 @@ class BaseClient(ABC):
     ):
         res = None
         try:
+            full_url = self._join_url(url)
             if json_request:
                 self._session.headers.update({"Content-Type": "application/json"})
-                res = self._session.post(url, json=payload, timeout=timeout)
+                res = self._session.post(full_url, json=payload, timeout=timeout)
                 self._session.headers.update(
                     {"Content-Type": "application/x-www-form-urlencoded; charset=utf-8"}
                 )
             else:
-                res = self._session.post(url, data=payload, timeout=timeout)
+                res = self._session.post(full_url, data=payload, timeout=timeout)
             if res.status_code not in [
                 200,
                 201,
@@ -96,6 +113,30 @@ class BaseOAuthClient(BaseClient):
         self._url = url
         self._is_authenticated = False
         self._session_storage = session_storage
+
+    def _join_url(self, endpoint: str) -> str:
+        """Join the base URL with an endpoint using urllib.parse.urljoin.
+
+        Args:
+            endpoint: The API endpoint path (with or without leading slash)
+
+        Returns:
+            The full URL
+        """
+        # If the URL is already absolute, return it as is
+        if endpoint.startswith("http://") or endpoint.startswith("https://"):
+            return endpoint
+
+        # Ensure endpoint starts with a slash
+        if not endpoint.startswith("/"):
+            endpoint = "/" + endpoint
+
+        # urljoin needs the base URL to end with a slash to preserve the path
+        base = self._url
+        if not base.endswith("/"):
+            base = base + "/"
+
+        return urljoin(base, endpoint.lstrip("/"))
 
     def login(
         self,
@@ -178,7 +219,7 @@ class BaseOAuthClient(BaseClient):
             payload["username"] = username
 
         if not password:
-            password = getpass.getpass("Robinhood password: ")
+            password = getpass("Robinhood password: ")
             payload["password"] = password
 
         payload = {

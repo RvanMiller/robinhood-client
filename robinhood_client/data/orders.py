@@ -31,11 +31,11 @@ class OrdersDataClient(BaseOAuthClient):
             StockOrderResponse with the order information
         """
         params = {}
-        url = f"/orders/{request.order_id}/"
+        endpoint = f"/orders/{request.order_id}/"
         if request.account_number is not None:
             params["account_number"] = request.account_number
 
-        res = self.request_get(url, params=params)
+        res = self.request_get(endpoint, params=params)
         return StockOrderResponse(**res)
 
     def get_stock_orders(self, request: StockOrdersRequest) -> StockOrdersResponse:
@@ -45,18 +45,22 @@ class OrdersDataClient(BaseOAuthClient):
             request: A StockOrdersRequest containing:
                 account_number: The Robinhood account number
                 start_date: Optional date filter for orders
+                page_size: Optional pagination page size
 
         Returns:
             StockOrdersResponse with paginated order results
         """
-        params = {}
-        url = f"/orders/"
-        if request.account_number is not None:
-            params["account_number"] = request.account_number
+        params = {"account_number": request.account_number}
+        endpoint = "/orders/"
+
         if request.start_date is not None:
             params["start_date"] = request.start_date
+
         if request.page_size is not None:
             params["page_size"] = request.page_size
+        else:
+            # Add default page_size only if not provided in request
+            params["page_size"] = 10
 
-        res = self.request_get(url, params=params)
+        res = self.request_get(endpoint, params=params)
         return StockOrdersResponse(**res)

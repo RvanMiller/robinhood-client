@@ -201,9 +201,6 @@ Finally, if you would like the API calls to print out to terminal, then add the 
 The project uses `ruff` for linting.
 
 ```bash
-# Using pip with flake8
-flake8 --count --statistics
-
 # Using Poetry with ruff
 poetry run ruff check .
 ```
