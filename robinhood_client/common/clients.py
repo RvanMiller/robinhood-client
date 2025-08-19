@@ -1,4 +1,5 @@
 """Base clients used in the Robinhood Client library."""
+
 from getpass import getpass
 import logging
 import time
@@ -29,7 +30,7 @@ class BaseClient(ABC):
             "Content-Type": "application/x-www-form-urlencoded; charset=utf-8",
             "X-Robinhood-API-Version": "1.431.4",
             "Connection": "keep-alive",
-            "User-Agent": "*"
+            "User-Agent": "*",
         }
 
     def request_get(self, url: str, params: dict = None) -> list[dict]:
@@ -43,18 +44,42 @@ class BaseClient(ABC):
             logger.error("Error in BaseClient request_get: %s", message)
             return {}
 
-    def request_post(self, url: str, payload: dict = None, json_request: bool = False, json_response: bool = True,
-                     timeout: int = 16):
+    def request_post(
+        self,
+        url: str,
+        payload: dict = None,
+        json_request: bool = False,
+        json_response: bool = True,
+        timeout: int = 16,
+    ):
         res = None
         try:
             if json_request:
-                self._session.headers.update({'Content-Type': 'application/json'})
+                self._session.headers.update({"Content-Type": "application/json"})
                 res = self._session.post(url, json=payload, timeout=timeout)
-                self._session.headers.update({'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8'})
+                self._session.headers.update(
+                    {"Content-Type": "application/x-www-form-urlencoded; charset=utf-8"}
+                )
             else:
                 res = self._session.post(url, data=payload, timeout=timeout)
-            if res.status_code not in [200, 201, 202, 204, 301, 302, 303, 304, 307, 400, 401, 402, 403]:
-                raise Exception("Error code from Robinhood API: " + str(res.status_code))
+            if res.status_code not in [
+                200,
+                201,
+                202,
+                204,
+                301,
+                302,
+                303,
+                304,
+                307,
+                400,
+                401,
+                402,
+                403,
+            ]:
+                raise Exception(
+                    "Error code from Robinhood API: " + str(res.status_code)
+                )
         except Exception as message:
             logger.error("Error in BaseClient request_post: %s", message)
         if json_response:
@@ -72,14 +97,15 @@ class BaseOAuthClient(BaseClient):
         self._is_authenticated = False
         self._session_storage = session_storage
 
-    def login(self,
-              username=None,
-              password=None,
-              expiresIn=86400,
-              scope='internal',
-              persist_session=True,
-              mfa_code=None,
-              ) -> bool:
+    def login(
+        self,
+        username=None,
+        password=None,
+        expiresIn=86400,
+        scope="internal",
+        persist_session=True,
+        mfa_code=None,
+    ) -> bool:
         """This function will effectively log the user into robinhood by getting
         an authentication token and saving it to the session header.
 
@@ -102,17 +128,17 @@ class BaseOAuthClient(BaseClient):
             expiresIn=expiresIn,
             scope=scope,
             device_token=device_token,
-            mfa_code=mfa_code
+            mfa_code=mfa_code,
         )
 
         if persist_session:
             logger.debug("Saving authentication session.")
             self._session_storage.store(
                 AuthSession(
-                    token_type=response['token_type'],
-                    access_token=response['access_token'],
-                    refresh_token=response['refresh_token'],
-                    device_token=device_token
+                    token_type=response["token_type"],
+                    access_token=response["access_token"],
+                    refresh_token=response["refresh_token"],
+                    device_token=device_token,
                 )
             )
 
@@ -134,36 +160,42 @@ class BaseOAuthClient(BaseClient):
             logger.error("Stored session is invalid. Failed to authenticate.")
             return False
 
-    def _login_using_request(self, username=None, password=None, *, expiresIn, scope,
-                             device_token,
-                             mfa_code,
-                             ) -> dict | AuthenticationError:
+    def _login_using_request(
+        self,
+        username=None,
+        password=None,
+        *,
+        expiresIn,
+        scope,
+        device_token,
+        mfa_code,
+    ) -> dict | AuthenticationError:
         logger.debug("Attempting to log in normally...")
 
         payload = {}
         if not username:
             username = input("Robinhood username: ")
-            payload['username'] = username
+            payload["username"] = username
 
         if not password:
             password = getpass.getpass("Robinhood password: ")
-            payload['password'] = password
+            payload["password"] = password
 
         payload = {
-            'client_id': 'c82SH0WZOsabOXGP2sxqcj34FxkvfnWRZBKlBjFS',
-            'expires_in': expiresIn,
-            'grant_type': 'password',
-            'password': password,
-            'scope': scope,
-            'username': username,
-            'device_token': device_token,
-            'try_passkeys': False,
-            'token_request_path': '/login',
-            'create_read_only_secondary_token': True,
+            "client_id": "c82SH0WZOsabOXGP2sxqcj34FxkvfnWRZBKlBjFS",
+            "expires_in": expiresIn,
+            "grant_type": "password",
+            "password": password,
+            "scope": scope,
+            "username": username,
+            "device_token": device_token,
+            "try_passkeys": False,
+            "token_request_path": "/login",
+            "create_read_only_secondary_token": True,
         }
 
         if mfa_code:
-            payload['mfa_code'] = mfa_code
+            payload["mfa_code"] = mfa_code
 
         response = self.request_post(API_LOGIN_URL, payload)
 
@@ -171,27 +203,36 @@ class BaseOAuthClient(BaseClient):
             logger.error("Login failed: No response from Robinhood API.")
             return False
 
-        if 'verification_workflow' in response:
-            logger.info("Verification workflow required. Please check your Robinhood Mobile app.")
-            workflow_id = response['verification_workflow']['id']
-            self._validate_sherrif_id(device_token=device_token, workflow_id=workflow_id)
+        if "verification_workflow" in response:
+            logger.info(
+                "Verification workflow required. Please check your Robinhood Mobile app."
+            )
+            workflow_id = response["verification_workflow"]["id"]
+            self._validate_sherrif_id(
+                device_token=device_token, workflow_id=workflow_id
+            )
             response = self.request_post(API_LOGIN_URL, payload)
 
-        if 'access_token' in response:
-            token = '{0} {1}'.format(response['token_type'], response['access_token'])
-            self._session.headers.update({'Authorization': token})
+        if "access_token" in response:
+            token = "{0} {1}".format(response["token_type"], response["access_token"])
+            self._session.headers.update({"Authorization": token})
             self._is_authenticated = True
             logger.debug("Logged in with existing session.")
         else:
-            if 'detail' in response:
-                raise AuthenticationError(response['detail'])
+            if "detail" in response:
+                raise AuthenticationError(response["detail"])
             raise AuthenticationError(f"Received an error response {response}")
 
         return response
 
     def _test_auth_connection(self) -> bool:
         logger.debug("Testing authentication connection...")
-        res = self.request_get(f"{BASE_API_URL}/accounts/", "pagination", {"nonzero": "true"}, jsonify_data=False)
+        res = self.request_get(
+            f"{BASE_API_URL}/accounts/",
+            "pagination",
+            {"nonzero": "true"},
+            jsonify_data=False,
+        )
         res.raise_for_status()
         return True
 
@@ -214,8 +255,14 @@ class BaseOAuthClient(BaseClient):
         """Handles Robinhood's verification workflow."""
         logger.debug("Validating sheriff challenge...")
         pathfinder_url = f"{BASE_API_URL}/pathfinder/user_machine/"
-        machine_payload = {'device_id': device_token, 'flow': 'suv', 'input': {'workflow_id': workflow_id}}
-        machine_data = self.request_post(url=pathfinder_url, payload=machine_payload, json=True)
+        machine_payload = {
+            "device_id": device_token,
+            "flow": "suv",
+            "input": {"workflow_id": workflow_id},
+        }
+        machine_data = self.request_post(
+            url=pathfinder_url, payload=machine_payload, json=True
+        )
 
         machine_id = machine_data.get("id", None)
         inquiries_url = f"{BASE_API_URL}/pathfinder/inquiries/{machine_id}/user_view/"
@@ -230,14 +277,19 @@ class BaseOAuthClient(BaseClient):
                 logger.warning("Error: No response from Robinhood API. Retrying...")
                 continue
 
-            if "context" in inquiries_response and "sheriff_challenge" in inquiries_response["context"]:
+            if (
+                "context" in inquiries_response
+                and "sheriff_challenge" in inquiries_response["context"]
+            ):
                 challenge = inquiries_response["context"]["sheriff_challenge"]
                 challenge_type = challenge["type"]
                 challenge_status = challenge["status"]
                 challenge_id = challenge["id"]
                 if challenge_type == "prompt":
                     logger.info("Waiting for approval from Robinhood Mobile app...")
-                    prompt_url = f"{BASE_API_URL}/push/{challenge_id}/get_prompts_status/"
+                    prompt_url = (
+                        f"{BASE_API_URL}/push/{challenge_id}/get_prompts_status/"
+                    )
                     while True:
                         time.sleep(5)
                         prompt_challenge_status = self.request_get(url=prompt_url)
@@ -250,10 +302,14 @@ class BaseOAuthClient(BaseClient):
                     break  # Stop polling once verification is complete
 
                 if challenge_type in ["sms", "email"] and challenge_status == "issued":
-                    user_code = input(f"Enter the {challenge_type} verification code sent to your device: ")
+                    user_code = input(
+                        f"Enter the {challenge_type} verification code sent to your device: "
+                    )
                     challenge_url = f"{BASE_API_URL}/challenge/{challenge_id}/respond/"
                     challenge_payload = {"response": user_code}
-                    challenge_response = self.request_post(url=challenge_url, payload=challenge_payload)
+                    challenge_response = self.request_post(
+                        url=challenge_url, payload=challenge_payload
+                    )
 
                     if challenge_response.get("status") == "validated":
                         break
@@ -264,20 +320,32 @@ class BaseOAuthClient(BaseClient):
         retry_attempts = 5  # Allow up to 5 retries in case of 500 errors
         while time.time() - start_time < 120:  # 2-minute timeout
             try:
-                inquiries_payload = {"sequence": 0, "user_input": {"status": "continue"}}
-                inquiries_response = self.request_post(url=inquiries_url, payload=inquiries_payload, json=True)
-                if "type_context" in inquiries_response and \
-                        inquiries_response["type_context"]["result"] == "workflow_status_approved":
+                inquiries_payload = {
+                    "sequence": 0,
+                    "user_input": {"status": "continue"},
+                }
+                inquiries_response = self.request_post(
+                    url=inquiries_url, payload=inquiries_payload, json=True
+                )
+                if (
+                    "type_context" in inquiries_response
+                    and inquiries_response["type_context"]["result"]
+                    == "workflow_status_approved"
+                ):
                     logger.info("Verification successful!")
                     return
                 else:
-                    time.sleep(5)  # **Increase delay between requests to prevent rate limits**
+                    time.sleep(
+                        5
+                    )  # **Increase delay between requests to prevent rate limits**
             except requests.exceptions.RequestException as e:
                 time.sleep(5)
                 logger.error("API request failed: %s", e)
                 retry_attempts -= 1
                 if retry_attempts == 0:
-                    raise AuthenticationError(f"Max retries reached. Login failed: {str(e)}")
+                    raise AuthenticationError(
+                        f"Max retries reached. Login failed: {str(e)}"
+                    )
                 logger.info("Retrying workflow status check...")
                 continue
 
@@ -286,10 +354,14 @@ class BaseOAuthClient(BaseClient):
                 logger.warning("Error: No response from Robinhood API. Retrying...")
                 retry_attempts -= 1
                 if retry_attempts == 0:
-                    raise AuthenticationError("Max retries reached. Login verification failed.")
+                    raise AuthenticationError(
+                        "Max retries reached. Login verification failed."
+                    )
                 continue
 
-            workflow_status = inquiries_response.get("verification_workflow", {}).get("workflow_status")
+            workflow_status = inquiries_response.get("verification_workflow", {}).get(
+                "workflow_status"
+            )
 
             if workflow_status == "workflow_status_approved":
                 logger.info("Workflow status approved! Proceeding with login...")
@@ -299,6 +371,8 @@ class BaseOAuthClient(BaseClient):
             else:
                 retry_attempts -= 1
                 if retry_attempts == 0:
-                    raise AuthenticationError("Max retries reached. Unable to confirm verification.")
+                    raise AuthenticationError(
+                        "Max retries reached. Unable to confirm verification."
+                    )
 
         raise AuthenticationError("Timeout reached. Unable to confirm verification.")

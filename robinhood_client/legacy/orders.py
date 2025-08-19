@@ -1,14 +1,31 @@
 """Contains all functions for placing orders for stocks, options, and crypto."""
+
 from uuid import uuid4
 
 
 from .crypto import get_crypto_id, get_crypto_quote_from_id, load_crypto_profile
-from .helper import error_argument_not_key_in_dictionary, filter_data, get_output, id_for_option, \
-    login_required, request_get, request_post, round_price
+from .helper import (
+    error_argument_not_key_in_dictionary,
+    filter_data,
+    get_output,
+    id_for_option,
+    login_required,
+    request_get,
+    request_post,
+    round_price,
+)
 from .profiles import load_account_profile
 from .stocks import get_instruments_by_symbols, get_latest_price
-from .urls import cancel_url, crypto_cancel_url, crypto_orders_url, option_cancel_url, option_instruments_url, \
-    option_orders_url, order_crypto_url, orders_url
+from .urls import (
+    cancel_url,
+    crypto_cancel_url,
+    crypto_orders_url,
+    option_cancel_url,
+    option_instruments_url,
+    option_orders_url,
+    order_crypto_url,
+    orders_url,
+)
 
 
 @login_required
@@ -25,8 +42,8 @@ def get_all_stock_orders(info=None, account_number=None, start_date=None):
 
     """
     url = orders_url(account_number=account_number, start_date=start_date)
-    data = request_get(url, 'pagination')
-    return (filter_data(data, info))
+    data = request_get(url, "pagination")
+    return filter_data(data, info)
 
 
 @login_required
@@ -43,8 +60,8 @@ def get_all_option_orders(info=None, account_number=None, start_date=None):
 
     """
     url = option_orders_url(account_number=account_number, start_date=start_date)
-    data = request_get(url, 'pagination')
-    return (filter_data(data, info))
+    data = request_get(url, "pagination")
+    return filter_data(data, info)
 
 
 @login_required
@@ -58,8 +75,8 @@ def get_all_crypto_orders(info=None):
 
     """
     url = crypto_orders_url()
-    data = request_get(url, 'pagination')
-    return (filter_data(data, info))
+    data = request_get(url, "pagination")
+    return filter_data(data, info)
 
 
 @login_required
@@ -73,11 +90,11 @@ def get_all_open_stock_orders(info=None, account_number=None):
 
     """
     url = orders_url(account_number=account_number)
-    data = request_get(url, 'pagination')
+    data = request_get(url, "pagination")
 
-    data = [item for item in data if item['cancel'] is not None]
+    data = [item for item in data if item["cancel"] is not None]
 
-    return (filter_data(data, info))
+    return filter_data(data, info)
 
 
 @login_required
@@ -91,11 +108,11 @@ def get_all_open_option_orders(info=None, account_number=None):
 
     """
     url = option_orders_url(account_number=account_number)
-    data = request_get(url, 'pagination')
+    data = request_get(url, "pagination")
 
-    data = [item for item in data if item['cancel_url'] is not None]
+    data = [item for item in data if item["cancel_url"] is not None]
 
-    return (filter_data(data, info))
+    return filter_data(data, info)
 
 
 @login_required
@@ -109,11 +126,11 @@ def get_all_open_crypto_orders(info=None):
 
     """
     url = crypto_orders_url()
-    data = request_get(url, 'pagination')
+    data = request_get(url, "pagination")
 
-    data = [item for item in data if item['cancel_url'] is not None]
+    data = [item for item in data if item["cancel_url"] is not None]
 
-    return (filter_data(data, info))
+    return filter_data(data, info)
 
 
 @login_required
@@ -128,7 +145,7 @@ def get_stock_order_info(orderID):
     """
     url = orders_url(orderID)
     data = request_get(url)
-    return (data)
+    return data
 
 
 @login_required
@@ -169,22 +186,23 @@ def find_stock_orders(**arguments):
 
     """
     url = orders_url()
-    data = request_get(url, 'pagination')
+    data = request_get(url, "pagination")
 
-    if (len(arguments) == 0):
-        return (data)
+    if len(arguments) == 0:
+        return data
 
     for item in data:
-        item['quantity'] = str(float(item['quantity']))
-        item['cumulative_quantity'] = str(float(item['cumulative_quantity']))
+        item["quantity"] = str(float(item["quantity"]))
+        item["cumulative_quantity"] = str(float(item["cumulative_quantity"]))
 
-    if 'symbol' in arguments.keys():
-        arguments['instrument'] = get_instruments_by_symbols(
-            arguments['symbol'], info='url')[0]
-        del arguments['symbol']
+    if "symbol" in arguments.keys():
+        arguments["instrument"] = get_instruments_by_symbols(
+            arguments["symbol"], info="url"
+        )[0]
+        del arguments["symbol"]
 
-    if 'quantity' in arguments.keys():
-        arguments['quantity'] = str(arguments['quantity'])
+    if "quantity" in arguments.keys():
+        arguments["quantity"] = str(arguments["quantity"])
 
     stop = len(arguments.keys()) - 1
     list_of_orders = []
@@ -192,13 +210,13 @@ def find_stock_orders(**arguments):
         for i, (key, value) in enumerate(arguments.items()):
             if key not in item:
                 print(error_argument_not_key_in_dictionary(key), file=get_output())
-                return ([None])
+                return [None]
             if value != item[key]:
                 break
             if i == stop:
                 list_of_orders.append(item)
 
-    return (list_of_orders)
+    return list_of_orders
 
 
 @login_required
@@ -214,8 +232,8 @@ def cancel_stock_order(orderID):
     data = request_post(url)
 
     if data:
-        print('Order ' + str(orderID) + ' cancelled', file=get_output())
-    return (data)
+        print("Order " + str(orderID) + " cancelled", file=get_output())
+    return data
 
 
 @login_required
@@ -231,8 +249,8 @@ def cancel_option_order(orderID):
     data = request_post(url)
 
     if data:
-        print('Order ' + str(orderID) + ' cancelled', file=get_output())
-    return (data)
+        print("Order " + str(orderID) + " cancelled", file=get_output())
+    return data
 
 
 @login_required
@@ -248,8 +266,8 @@ def cancel_crypto_order(orderID):
     data = request_post(url)
 
     if data:
-        print('Order ' + str(orderID) + ' cancelled', file=get_output())
-    return (data)
+        print("Order " + str(orderID) + " cancelled", file=get_output())
+    return data
 
 
 @login_required
@@ -260,15 +278,15 @@ def cancel_all_stock_orders(account_number=None):
 
     """
     url = orders_url(account_number=account_number)
-    data = request_get(url, 'pagination')
+    data = request_get(url, "pagination")
 
-    data = [item for item in data if item['cancel'] is not None]
+    data = [item for item in data if item["cancel"] is not None]
 
     for item in data:
-        request_post(item['cancel'])
+        request_post(item["cancel"])
 
-    print('All Stock Orders Cancelled', file=get_output())
-    return (data)
+    print("All Stock Orders Cancelled", file=get_output())
+    return data
 
 
 @login_required
@@ -279,15 +297,15 @@ def cancel_all_option_orders(account_number=None):
 
     """
     url = option_orders_url(account_number=account_number)
-    data = request_get(url, 'pagination')
+    data = request_get(url, "pagination")
 
-    data = [item for item in data if item['cancel_url'] is not None]
+    data = [item for item in data if item["cancel_url"] is not None]
 
     for item in data:
-        request_post(item['cancel_url'])
+        request_post(item["cancel_url"])
 
-    print('All Option Orders Cancelled', file=get_output())
-    return (data)
+    print("All Option Orders Cancelled", file=get_output())
+    return data
 
 
 @login_required
@@ -298,19 +316,26 @@ def cancel_all_crypto_orders():
 
     """
     url = crypto_orders_url()
-    data = request_get(url, 'pagination')
+    data = request_get(url, "pagination")
 
-    data = [item for item in data if item['cancel_url'] is not None]
+    data = [item for item in data if item["cancel_url"] is not None]
 
     for item in data:
-        request_post(item['cancel_url'])
+        request_post(item["cancel_url"])
 
-    print('All Crypto Orders Cancelled', file=get_output())
-    return (data)
+    print("All Crypto Orders Cancelled", file=get_output())
+    return data
 
 
 @login_required
-def order_buy_market(symbol, quantity, account_number=None, timeInForce='gtc', extendedHours=False, jsonify=True):
+def order_buy_market(
+    symbol,
+    quantity,
+    account_number=None,
+    timeInForce="gtc",
+    extendedHours=False,
+    jsonify=True,
+):
     """Submits a market order to be executed immediately.
 
     :param symbol: The stock ticker of the stock to purchase.
@@ -331,12 +356,28 @@ def order_buy_market(symbol, quantity, account_number=None, timeInForce='gtc', e
     the price, and the quantity.
 
     """
-    return order(symbol, quantity, "buy", None, None, account_number, timeInForce, extendedHours, jsonify)
+    return order(
+        symbol,
+        quantity,
+        "buy",
+        None,
+        None,
+        account_number,
+        timeInForce,
+        extendedHours,
+        jsonify,
+    )
 
 
 @login_required
-def order_buy_fractional_by_quantity(symbol, quantity, account_number=None, timeInForce='gfd',
-                                     extendedHours=False, jsonify=True):
+def order_buy_fractional_by_quantity(
+    symbol,
+    quantity,
+    account_number=None,
+    timeInForce="gfd",
+    extendedHours=False,
+    jsonify=True,
+):
     """Submits a market order to be executed immediately for fractional shares by specifying the amount that you \
         want to trade. Good for share fractions up to 6 decimal places. Robinhood does not currently support placing \
         limit, stop, or stop loss orders for fractional trades.
@@ -358,12 +399,29 @@ def order_buy_fractional_by_quantity(symbol, quantity, account_number=None, time
     the price, and the quantity.
 
     """
-    return order(symbol, quantity, "buy", None, None, account_number, timeInForce, extendedHours, jsonify)
+    return order(
+        symbol,
+        quantity,
+        "buy",
+        None,
+        None,
+        account_number,
+        timeInForce,
+        extendedHours,
+        jsonify,
+    )
 
 
 @login_required
-def order_buy_fractional_by_price(symbol, amountInDollars, account_number=None, timeInForce='gfd', extendedHours=False,
-                                  jsonify=True, market_hours='regular_hours'):
+def order_buy_fractional_by_price(
+    symbol,
+    amountInDollars,
+    account_number=None,
+    timeInForce="gfd",
+    extendedHours=False,
+    jsonify=True,
+    market_hours="regular_hours",
+):
     """Submits a market order to be executed immediately for fractional shares by specifying the amount in dollars that \
         you want to trade. Good for share fractions up to 6 decimal places. Robinhood does not currently support placing \
         limit, stop, or stop loss orders for fractional trades.
@@ -386,19 +444,41 @@ def order_buy_fractional_by_price(symbol, amountInDollars, account_number=None, 
 
     """
     if amountInDollars < 1:
-        print("ERROR: Fractional share price should meet minimum 1.00.", file=get_output())
+        print(
+            "ERROR: Fractional share price should meet minimum 1.00.", file=get_output()
+        )
         return None
 
     # Turn the money amount into decimal number of shares
-    price = next(iter(get_latest_price(symbol, 'ask_price', extendedHours)), 0.00)
-    fractional_shares = 0 if (price == 0.00) else round_price(amountInDollars / float(price))
+    price = next(iter(get_latest_price(symbol, "ask_price", extendedHours)), 0.00)
+    fractional_shares = (
+        0 if (price == 0.00) else round_price(amountInDollars / float(price))
+    )
 
-    return order(symbol, fractional_shares, "buy", None, None, account_number, timeInForce, extendedHours,
-                 jsonify, market_hours)
+    return order(
+        symbol,
+        fractional_shares,
+        "buy",
+        None,
+        None,
+        account_number,
+        timeInForce,
+        extendedHours,
+        jsonify,
+        market_hours,
+    )
 
 
 @login_required
-def order_buy_limit(symbol, quantity, limitPrice, account_number=None, timeInForce='gtc', extendedHours=False, jsonify=True):
+def order_buy_limit(
+    symbol,
+    quantity,
+    limitPrice,
+    account_number=None,
+    timeInForce="gtc",
+    extendedHours=False,
+    jsonify=True,
+):
     """Submits a limit order to be executed once a certain price is reached.
 
     :param symbol: The stock ticker of the stock to purchase.
@@ -421,12 +501,29 @@ def order_buy_limit(symbol, quantity, limitPrice, account_number=None, timeInFor
     the price, and the quantity.
 
     """
-    return order(symbol, quantity, "buy", limitPrice, None, account_number, timeInForce, extendedHours, jsonify)
+    return order(
+        symbol,
+        quantity,
+        "buy",
+        limitPrice,
+        None,
+        account_number,
+        timeInForce,
+        extendedHours,
+        jsonify,
+    )
 
 
 @login_required
-def order_buy_stop_loss(symbol, quantity, stopPrice, account_number=None, timeInForce='gtc', extendedHours=False,
-                        jsonify=True):
+def order_buy_stop_loss(
+    symbol,
+    quantity,
+    stopPrice,
+    account_number=None,
+    timeInForce="gtc",
+    extendedHours=False,
+    jsonify=True,
+):
     """Submits a stop order to be turned into a market order once a certain stop price is reached.
 
     :param symbol: The stock ticker of the stock to purchase.
@@ -449,12 +546,30 @@ def order_buy_stop_loss(symbol, quantity, stopPrice, account_number=None, timeIn
     the price, and the quantity.
 
     """
-    return order(symbol, quantity, "buy", None, stopPrice, account_number, timeInForce, extendedHours, jsonify)
+    return order(
+        symbol,
+        quantity,
+        "buy",
+        None,
+        stopPrice,
+        account_number,
+        timeInForce,
+        extendedHours,
+        jsonify,
+    )
 
 
 @login_required
-def order_buy_stop_limit(symbol, quantity, limitPrice, stopPrice, account_number=None, timeInForce='gtc',
-                         extendedHours=False, jsonify=True):
+def order_buy_stop_limit(
+    symbol,
+    quantity,
+    limitPrice,
+    stopPrice,
+    account_number=None,
+    timeInForce="gtc",
+    extendedHours=False,
+    jsonify=True,
+):
     """Submits a stop order to be turned into a limit order once a certain stop price is reached.
 
     :param symbol: The stock ticker of the stock to purchase.
@@ -479,12 +594,29 @@ def order_buy_stop_limit(symbol, quantity, limitPrice, stopPrice, account_number
     the price, and the quantity.
 
     """
-    return order(symbol, quantity, "buy", limitPrice, stopPrice, account_number, timeInForce, extendedHours, jsonify)
+    return order(
+        symbol,
+        quantity,
+        "buy",
+        limitPrice,
+        stopPrice,
+        account_number,
+        timeInForce,
+        extendedHours,
+        jsonify,
+    )
 
 
 @login_required
-def order_buy_trailing_stop(symbol, quantity, trailAmount, trailType='percentage', timeInForce='gtc', extendedHours=False,
-                            jsonify=True):
+def order_buy_trailing_stop(
+    symbol,
+    quantity,
+    trailAmount,
+    trailType="percentage",
+    timeInForce="gtc",
+    extendedHours=False,
+    jsonify=True,
+):
     """Submits a trailing stop buy order to be turned into a market order when traling stop price reached.
 
     :param symbol: The stock ticker of the stock to buy.
@@ -510,11 +642,28 @@ def order_buy_trailing_stop(symbol, quantity, trailAmount, trailType='percentage
     such as the order id, the state of order (queued, confired, filled, failed, canceled, etc.), \
     the price, and the quantity.
     """
-    return order_trailing_stop(symbol, quantity, "buy", trailAmount, trailType, None, timeInForce, extendedHours, jsonify)
+    return order_trailing_stop(
+        symbol,
+        quantity,
+        "buy",
+        trailAmount,
+        trailType,
+        None,
+        timeInForce,
+        extendedHours,
+        jsonify,
+    )
 
 
 @login_required
-def order_sell_market(symbol, quantity, account_number=None, timeInForce='gtc', extendedHours=False, jsonify=True):
+def order_sell_market(
+    symbol,
+    quantity,
+    account_number=None,
+    timeInForce="gtc",
+    extendedHours=False,
+    jsonify=True,
+):
     """Submits a market order to be executed immediately.
 
     :param symbol: The stock ticker of the stock to sell.
@@ -535,12 +684,30 @@ def order_sell_market(symbol, quantity, account_number=None, timeInForce='gtc', 
     the price, and the quantity.
 
     """
-    return order(symbol, quantity, "sell", None, None, account_number, timeInForce, extendedHours, jsonify)
+    return order(
+        symbol,
+        quantity,
+        "sell",
+        None,
+        None,
+        account_number,
+        timeInForce,
+        extendedHours,
+        jsonify,
+    )
 
 
 @login_required
-def order_sell_fractional_by_quantity(symbol, quantity, account_number=None, timeInForce='gfd', priceType='bid_price',
-                                      extendedHours=False, jsonify=True, market_hours='regular_hours'):
+def order_sell_fractional_by_quantity(
+    symbol,
+    quantity,
+    account_number=None,
+    timeInForce="gfd",
+    priceType="bid_price",
+    extendedHours=False,
+    jsonify=True,
+    market_hours="regular_hours",
+):
     """Submits a market order to be executed immediately for fractional shares by specifying the amount that you \
         want to trade. Good for share fractions up to 6 decimal places. Robinhood does not currently support placing \
         limit, stop, or stop loss orders for fractional trades.
@@ -562,12 +729,29 @@ def order_sell_fractional_by_quantity(symbol, quantity, account_number=None, tim
     the price, and the quantity.
 
     """
-    return order(symbol, quantity, "sell", None, None, account_number, timeInForce, extendedHours, jsonify, market_hours)
+    return order(
+        symbol,
+        quantity,
+        "sell",
+        None,
+        None,
+        account_number,
+        timeInForce,
+        extendedHours,
+        jsonify,
+        market_hours,
+    )
 
 
 @login_required
-def order_sell_fractional_by_price(symbol, amountInDollars, account_number=None, timeInForce='gfd', extendedHours=False,
-                                   jsonify=True):
+def order_sell_fractional_by_price(
+    symbol,
+    amountInDollars,
+    account_number=None,
+    timeInForce="gfd",
+    extendedHours=False,
+    jsonify=True,
+):
     """Submits a market order to be executed immediately for fractional shares by specifying the amount in dollars \
         that you want to trade. Good for share fractions up to 6 decimal places. Robinhood does not currently support \
         placing limit, stop, or stop loss orders for fractional trades.
@@ -590,18 +774,39 @@ def order_sell_fractional_by_price(symbol, amountInDollars, account_number=None,
 
     """
     if amountInDollars < 1:
-        print("ERROR: Fractional share price should meet minimum 1.00.", file=get_output())
+        print(
+            "ERROR: Fractional share price should meet minimum 1.00.", file=get_output()
+        )
         return None
     # turn the money amount into decimal number of shares
-    price = next(iter(get_latest_price(symbol, 'bid_price', extendedHours)), 0.00)
-    fractional_shares = 0 if (price == 0.00) else round_price(amountInDollars / float(price))
+    price = next(iter(get_latest_price(symbol, "bid_price", extendedHours)), 0.00)
+    fractional_shares = (
+        0 if (price == 0.00) else round_price(amountInDollars / float(price))
+    )
 
-    return order(symbol, fractional_shares, "sell", None, None, account_number, timeInForce, extendedHours, jsonify)
+    return order(
+        symbol,
+        fractional_shares,
+        "sell",
+        None,
+        None,
+        account_number,
+        timeInForce,
+        extendedHours,
+        jsonify,
+    )
 
 
 @login_required
-def order_sell_limit(symbol, quantity, limitPrice, account_number=None, timeInForce='gtc', extendedHours=False,
-                     jsonify=True):
+def order_sell_limit(
+    symbol,
+    quantity,
+    limitPrice,
+    account_number=None,
+    timeInForce="gtc",
+    extendedHours=False,
+    jsonify=True,
+):
     """Submits a limit order to be executed once a certain price is reached.
 
     :param symbol: The stock ticker of the stock to sell.
@@ -624,12 +829,29 @@ def order_sell_limit(symbol, quantity, limitPrice, account_number=None, timeInFo
     the price, and the quantity.
 
     """
-    return order(symbol, quantity, "sell", limitPrice, None, account_number, timeInForce, extendedHours, jsonify)
+    return order(
+        symbol,
+        quantity,
+        "sell",
+        limitPrice,
+        None,
+        account_number,
+        timeInForce,
+        extendedHours,
+        jsonify,
+    )
 
 
 @login_required
-def order_sell_stop_loss(symbol, quantity, stopPrice, account_number=None, timeInForce='gtc', extendedHours=False,
-                         jsonify=True):
+def order_sell_stop_loss(
+    symbol,
+    quantity,
+    stopPrice,
+    account_number=None,
+    timeInForce="gtc",
+    extendedHours=False,
+    jsonify=True,
+):
     """Submits a stop order to be turned into a market order once a certain stop price is reached.
 
     :param symbol: The stock ticker of the stock to sell.
@@ -652,12 +874,30 @@ def order_sell_stop_loss(symbol, quantity, stopPrice, account_number=None, timeI
     the price, and the quantity.
 
     """
-    return order(symbol, quantity, "sell", None, stopPrice, account_number, timeInForce, extendedHours, jsonify)
+    return order(
+        symbol,
+        quantity,
+        "sell",
+        None,
+        stopPrice,
+        account_number,
+        timeInForce,
+        extendedHours,
+        jsonify,
+    )
 
 
 @login_required
-def order_sell_stop_limit(symbol, quantity, limitPrice, stopPrice, account_number=None, timeInForce='gtc',
-                          extendedHours=False, jsonify=True):
+def order_sell_stop_limit(
+    symbol,
+    quantity,
+    limitPrice,
+    stopPrice,
+    account_number=None,
+    timeInForce="gtc",
+    extendedHours=False,
+    jsonify=True,
+):
     """Submits a stop order to be turned into a limit order once a certain stop price is reached.
 
     :param symbol: The stock ticker of the stock to sell.
@@ -682,12 +922,29 @@ def order_sell_stop_limit(symbol, quantity, limitPrice, stopPrice, account_numbe
     the price, and the quantity.
 
     """
-    return order(symbol, quantity, "sell", limitPrice, stopPrice, account_number, timeInForce, extendedHours, jsonify)
+    return order(
+        symbol,
+        quantity,
+        "sell",
+        limitPrice,
+        stopPrice,
+        account_number,
+        timeInForce,
+        extendedHours,
+        jsonify,
+    )
 
 
 @login_required
-def order_sell_trailing_stop(symbol, quantity, trailAmount, trailType='percentage', timeInForce='gtc',
-                             extendedHours=False, jsonify=True):
+def order_sell_trailing_stop(
+    symbol,
+    quantity,
+    trailAmount,
+    trailType="percentage",
+    timeInForce="gtc",
+    extendedHours=False,
+    jsonify=True,
+):
     """Submits a trailing stop sell order to be turned into a market order when traling stop price reached.
 
     :param symbol: The stock ticker of the stock to sell.
@@ -713,12 +970,31 @@ def order_sell_trailing_stop(symbol, quantity, trailAmount, trailType='percentag
     such as the order id, the state of order (queued, confired, filled, failed, canceled, etc.), \
     the price, and the quantity.
     """
-    return order_trailing_stop(symbol, quantity, "sell", trailAmount, trailType, None, timeInForce, extendedHours, jsonify)
+    return order_trailing_stop(
+        symbol,
+        quantity,
+        "sell",
+        trailAmount,
+        trailType,
+        None,
+        timeInForce,
+        extendedHours,
+        jsonify,
+    )
 
 
 @login_required
-def order_trailing_stop(symbol, quantity, side, trailAmount, trailType='percentage', account_number=None,
-                        timeInForce='gtc', extendedHours=False, jsonify=True):
+def order_trailing_stop(
+    symbol,
+    quantity,
+    side,
+    trailAmount,
+    trailType="percentage",
+    account_number=None,
+    timeInForce="gtc",
+    extendedHours=False,
+    jsonify=True,
+):
     """Submits a trailing stop order to be turned into a market order when traling stop price reached.
 
     :param symbol: The stock ticker of the stock to trade.
@@ -757,50 +1033,63 @@ def order_trailing_stop(symbol, quantity, side, trailAmount, trailType='percenta
     # find stop price based on whether trailType is "amount" or "percentage" and whether its buy or sell
     percentage = 0
     try:
-        if trailType == 'amount':
+        if trailType == "amount":
             margin = trailAmount
         else:
             margin = stock_price * trailAmount * 0.01
             percentage = trailAmount
     except Exception as e:
-        print('ERROR: {}'.format(e))
+        print("ERROR: {}".format(e))
         return None
 
     stopPrice = stock_price + margin if side == "buy" else stock_price - margin
     stopPrice = round_price(stopPrice)
 
     payload = {
-        'account': load_account_profile(account_number=account_number, info='url'),
-        'instrument': get_instruments_by_symbols(symbol, info='url')[0],
-        'symbol': symbol,
-        'quantity': quantity,
-        'ref_id': str(uuid4()),
-        'type': 'market',
-        'stop_price': stopPrice,
-        'time_in_force': timeInForce,
-        'trigger': 'stop',
-        'side': side,
-        'extended_hours': extendedHours
+        "account": load_account_profile(account_number=account_number, info="url"),
+        "instrument": get_instruments_by_symbols(symbol, info="url")[0],
+        "symbol": symbol,
+        "quantity": quantity,
+        "ref_id": str(uuid4()),
+        "type": "market",
+        "stop_price": stopPrice,
+        "time_in_force": timeInForce,
+        "trigger": "stop",
+        "side": side,
+        "extended_hours": extendedHours,
     }
 
     if side == "buy":
         # price should be greater than stopPrice, adding a 5% threshold
-        payload['price'] = round_price(stopPrice * 1.05)
+        payload["price"] = round_price(stopPrice * 1.05)
 
-    if trailType == 'amount':
-        payload['trailing_peg'] = {'type': 'price', 'price': {'amount': trailAmount, 'currency_code': 'USD'}}
+    if trailType == "amount":
+        payload["trailing_peg"] = {
+            "type": "price",
+            "price": {"amount": trailAmount, "currency_code": "USD"},
+        }
     else:
-        payload['trailing_peg'] = {'type': 'percentage', 'percentage': str(percentage)}
+        payload["trailing_peg"] = {"type": "percentage", "percentage": str(percentage)}
 
     url = orders_url(account_number=account_number)
     data = request_post(url, payload, json=True, jsonify_data=jsonify)
 
-    return (data)
+    return data
 
 
 @login_required
-def order(symbol, quantity, side, limitPrice=None, stopPrice=None, account_number=None, timeInForce='gtc',
-          extendedHours=False, jsonify=True, market_hours='regular_hours'):
+def order(
+    symbol,
+    quantity,
+    side,
+    limitPrice=None,
+    stopPrice=None,
+    account_number=None,
+    timeInForce="gtc",
+    extendedHours=False,
+    jsonify=True,
+    market_hours="regular_hours",
+):
     """A generic order function.
 
     :param symbol: The stock ticker of the stock to sell.
@@ -857,55 +1146,72 @@ def order(symbol, quantity, side, limitPrice=None, stopPrice=None, account_numbe
             price = None
         trigger = "stop"
     else:
-        price = round_price(next(iter(get_latest_price(symbol, priceType, extendedHours)), 0.00))
+        price = round_price(
+            next(iter(get_latest_price(symbol, priceType, extendedHours)), 0.00)
+        )
 
     from datetime import datetime
+
     payload = {
-        'account': load_account_profile(account_number=account_number, info='url'),
-        'instrument': get_instruments_by_symbols(symbol, info='url')[0],
-        'symbol': symbol,
-        'price': price,
-        'ask_price': round_price(next(iter(get_latest_price(symbol, "ask_price", extendedHours)), 0.00)),
-        'bid_ask_timestamp': datetime.now().strftime('%Y-%m-%d %H:%M:%S.%f'),
-        'bid_price': round_price(next(iter(get_latest_price(symbol, "bid_price", extendedHours)), 0.00)),
-        'quantity': quantity,
-        'ref_id': str(uuid4()),
-        'type': orderType,
-        'stop_price': stopPrice,
-        'time_in_force': timeInForce,
-        'trigger': trigger,
-        'side': side,
-        'market_hours': market_hours,  # choices are ['regular_hours', 'all_day_hours', 'extended_hours']
-        'extended_hours': extendedHours,
-        'order_form_version': 4
+        "account": load_account_profile(account_number=account_number, info="url"),
+        "instrument": get_instruments_by_symbols(symbol, info="url")[0],
+        "symbol": symbol,
+        "price": price,
+        "ask_price": round_price(
+            next(iter(get_latest_price(symbol, "ask_price", extendedHours)), 0.00)
+        ),
+        "bid_ask_timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S.%f"),
+        "bid_price": round_price(
+            next(iter(get_latest_price(symbol, "bid_price", extendedHours)), 0.00)
+        ),
+        "quantity": quantity,
+        "ref_id": str(uuid4()),
+        "type": orderType,
+        "stop_price": stopPrice,
+        "time_in_force": timeInForce,
+        "trigger": trigger,
+        "side": side,
+        "market_hours": market_hours,  # choices are ['regular_hours', 'all_day_hours', 'extended_hours']
+        "extended_hours": extendedHours,
+        "order_form_version": 4,
     }
     # adjust market orders
-    if orderType == 'market':
+    if orderType == "market":
         if trigger != "stop":
-            del payload['stop_price']
+            del payload["stop_price"]
         # if market_hours == 'regular_hours':
         #     del payload['extended_hours']
 
-    if market_hours == 'regular_hours':
+    if market_hours == "regular_hours":
         if side == "buy":
-            payload['preset_percent_limit'] = "0.05"
-            payload['type'] = 'limit'
+            payload["preset_percent_limit"] = "0.05"
+            payload["type"] = "limit"
         # regular market sell
-        elif orderType == 'market' and side == 'sell':
-            del payload['price']
-    elif market_hours in ('extended_hours', 'all_day_hours'):
-        payload['type'] = 'limit'
-        payload['quantity'] = int(payload['quantity'])  # round to integer instead of fractional
+        elif orderType == "market" and side == "sell":
+            del payload["price"]
+    elif market_hours in ("extended_hours", "all_day_hours"):
+        payload["type"] = "limit"
+        payload["quantity"] = int(
+            payload["quantity"]
+        )  # round to integer instead of fractional
 
     url = orders_url(account_number=account_number)
     # print(payload)
     data = request_post(url, payload, jsonify_data=jsonify)
 
-    return (data)
+    return data
 
 
 @login_required
-def order_option_credit_spread(price, symbol, quantity, spread, timeInForce='gtc', account_number=None, jsonify=True):
+def order_option_credit_spread(
+    price,
+    symbol,
+    quantity,
+    spread,
+    timeInForce="gtc",
+    account_number=None,
+    jsonify=True,
+):
     """Submits a limit order for an option credit spread.
 
     :param price: The limit price to trigger a sell of the option.
@@ -933,11 +1239,21 @@ def order_option_credit_spread(price, symbol, quantity, spread, timeInForce='gtc
     such as the order id, the state of order (queued, confired, filled, failed, canceled, etc.), \
     the price, and the quantity.
     """
-    return (order_option_spread("credit", price, symbol, quantity, spread, timeInForce, account_number, jsonify))
+    return order_option_spread(
+        "credit", price, symbol, quantity, spread, timeInForce, account_number, jsonify
+    )
 
 
 @login_required
-def order_option_debit_spread(price, symbol, quantity, spread, timeInForce='gtc', account_number=None, jsonify=True):
+def order_option_debit_spread(
+    price,
+    symbol,
+    quantity,
+    spread,
+    timeInForce="gtc",
+    account_number=None,
+    jsonify=True,
+):
     """Submits a limit order for an option debit spread.
 
     :param price: The limit price to trigger a sell of the option.
@@ -965,11 +1281,22 @@ def order_option_debit_spread(price, symbol, quantity, spread, timeInForce='gtc'
     such as the order id, the state of order (queued, confired, filled, failed, canceled, etc.), \
     the price, and the quantity.
     """
-    return (order_option_spread("debit", price, symbol, quantity, spread, timeInForce, account_number, jsonify))
+    return order_option_spread(
+        "debit", price, symbol, quantity, spread, timeInForce, account_number, jsonify
+    )
 
 
 @login_required
-def order_option_spread(direction, price, symbol, quantity, spread, account_number=None, timeInForce='gtc', jsonify=True):
+def order_option_spread(
+    direction,
+    price,
+    symbol,
+    quantity,
+    spread,
+    account_number=None,
+    timeInForce="gtc",
+    jsonify=True,
+):
     """Submits a limit order for an option spread. i.e. place a debit / credit spread
 
     :param direction: Can be "credit" or "debit".
@@ -1006,38 +1333,52 @@ def order_option_spread(direction, price, symbol, quantity, spread, account_numb
         return None
     legs = []
     for each in spread:
-        optionID = id_for_option(symbol,
-                                 each['expirationDate'],
-                                 each['strike'],
-                                 each['optionType'])
-        legs.append({'position_effect': each['effect'],
-                     'side': each['action'],
-                     'ratio_quantity': each['ratio_quantity'],
-                     'option': option_instruments_url(optionID)})
+        optionID = id_for_option(
+            symbol, each["expirationDate"], each["strike"], each["optionType"]
+        )
+        legs.append(
+            {
+                "position_effect": each["effect"],
+                "side": each["action"],
+                "ratio_quantity": each["ratio_quantity"],
+                "option": option_instruments_url(optionID),
+            }
+        )
 
     payload = {
-        'account': load_account_profile(account_number=account_number, info='url'),
-        'direction': direction,
-        'time_in_force': timeInForce,
-        'legs': legs,
-        'type': 'limit',
-        'trigger': 'immediate',
-        'price': price,
-        'quantity': quantity,
-        'override_day_trade_checks': False,
-        'override_dtbp_checks': False,
-        'ref_id': str(uuid4()),
+        "account": load_account_profile(account_number=account_number, info="url"),
+        "direction": direction,
+        "time_in_force": timeInForce,
+        "legs": legs,
+        "type": "limit",
+        "trigger": "immediate",
+        "price": price,
+        "quantity": quantity,
+        "override_day_trade_checks": False,
+        "override_dtbp_checks": False,
+        "ref_id": str(uuid4()),
     }
 
     url = option_orders_url(account_number=account_number)
     data = request_post(url, payload, json=True, jsonify_data=jsonify)
 
-    return (data)
+    return data
 
 
 @login_required
-def order_buy_option_limit(positionEffect, creditOrDebit, price, symbol, quantity, expirationDate,
-                           strike, optionType='both', account_number=None, timeInForce='gtc', jsonify=True):
+def order_buy_option_limit(
+    positionEffect,
+    creditOrDebit,
+    price,
+    symbol,
+    quantity,
+    expirationDate,
+    strike,
+    optionType="both",
+    account_number=None,
+    timeInForce="gtc",
+    jsonify=True,
+):
     """Submits a limit order for an option. i.e. place a long call or a long put.
 
     :param positionEffect: Either 'open' for a buy to open effect or 'close' for a buy to close effect.
@@ -1077,33 +1418,48 @@ def order_buy_option_limit(positionEffect, creditOrDebit, price, symbol, quantit
     optionID = id_for_option(symbol, expirationDate, strike, optionType)
 
     payload = {
-        'account': load_account_profile(account_number=account_number, info='url'),
-        'direction': creditOrDebit,
-        'time_in_force': timeInForce,
-        'legs': [
-            {'position_effect': positionEffect, 'side': 'buy',
-                'ratio_quantity': 1, 'option': option_instruments_url(optionID)},
+        "account": load_account_profile(account_number=account_number, info="url"),
+        "direction": creditOrDebit,
+        "time_in_force": timeInForce,
+        "legs": [
+            {
+                "position_effect": positionEffect,
+                "side": "buy",
+                "ratio_quantity": 1,
+                "option": option_instruments_url(optionID),
+            },
         ],
-        'type': 'limit',
-        'trigger': 'immediate',
-        'price': price,
-        'quantity': quantity,
-        'override_day_trade_checks': False,
-        'override_dtbp_checks': False,
-        'ref_id': str(uuid4()),
+        "type": "limit",
+        "trigger": "immediate",
+        "price": price,
+        "quantity": quantity,
+        "override_day_trade_checks": False,
+        "override_dtbp_checks": False,
+        "ref_id": str(uuid4()),
     }
 
     url = option_orders_url(account_number=account_number)
     # print(payload)
     data = request_post(url, payload, json=True, jsonify_data=jsonify)
 
-    return (data)
+    return data
 
 
 @login_required
-def order_buy_option_stop_limit(positionEffect, creditOrDebit, limitPrice, stopPrice, symbol, quantity,
-                                expirationDate, strike, optionType='both', account_number=None, timeInForce='gtc',
-                                jsonify=True):
+def order_buy_option_stop_limit(
+    positionEffect,
+    creditOrDebit,
+    limitPrice,
+    stopPrice,
+    symbol,
+    quantity,
+    expirationDate,
+    strike,
+    optionType="both",
+    account_number=None,
+    timeInForce="gtc",
+    jsonify=True,
+):
     """Submits a stop order to be turned into a limit order once a certain stop price is reached.
 
     :param positionEffect: Either 'open' for a buy to open effect or 'close' for a buy to close effect.
@@ -1145,32 +1501,47 @@ def order_buy_option_stop_limit(positionEffect, creditOrDebit, limitPrice, stopP
     optionID = id_for_option(symbol, expirationDate, strike, optionType)
 
     payload = {
-        'account': load_account_profile(account_number=account_number, info='url'),
-        'direction': creditOrDebit,
-        'time_in_force': timeInForce,
-        'legs': [
-            {'position_effect': positionEffect, 'side': 'buy',
-                'ratio_quantity': 1, 'option': option_instruments_url(optionID)},
+        "account": load_account_profile(account_number=account_number, info="url"),
+        "direction": creditOrDebit,
+        "time_in_force": timeInForce,
+        "legs": [
+            {
+                "position_effect": positionEffect,
+                "side": "buy",
+                "ratio_quantity": 1,
+                "option": option_instruments_url(optionID),
+            },
         ],
-        'type': 'limit',
-        'trigger': 'stop',
-        'price': limitPrice,
-        'stop_price': stopPrice,
-        'quantity': quantity,
-        'override_day_trade_checks': False,
-        'override_dtbp_checks': False,
-        'ref_id': str(uuid4()),
+        "type": "limit",
+        "trigger": "stop",
+        "price": limitPrice,
+        "stop_price": stopPrice,
+        "quantity": quantity,
+        "override_day_trade_checks": False,
+        "override_dtbp_checks": False,
+        "ref_id": str(uuid4()),
     }
 
     url = option_orders_url(account_number=account_number)
     data = request_post(url, payload, json=True, jsonify_data=jsonify)
 
-    return (data)
+    return data
 
 
-def order_sell_option_stop_limit(positionEffect, creditOrDebit, limitPrice, stopPrice, symbol, quantity,
-                                 expirationDate, strike, optionType='both', account_number=None, timeInForce='gtc',
-                                 jsonify=True):
+def order_sell_option_stop_limit(
+    positionEffect,
+    creditOrDebit,
+    limitPrice,
+    stopPrice,
+    symbol,
+    quantity,
+    expirationDate,
+    strike,
+    optionType="both",
+    account_number=None,
+    timeInForce="gtc",
+    jsonify=True,
+):
     """Submits a stop order to be turned into a limit order once a certain stop price is reached.
 
     :param positionEffect: Either 'open' for a buy to open effect or 'close' for a buy to close effect.
@@ -1212,32 +1583,47 @@ def order_sell_option_stop_limit(positionEffect, creditOrDebit, limitPrice, stop
     optionID = id_for_option(symbol, expirationDate, strike, optionType)
 
     payload = {
-        'account': load_account_profile(account_number=account_number, info='url'),
-        'direction': creditOrDebit,
-        'time_in_force': timeInForce,
-        'legs': [
-            {'position_effect': positionEffect, 'side': 'sell',
-                'ratio_quantity': 1, 'option': option_instruments_url(optionID)},
+        "account": load_account_profile(account_number=account_number, info="url"),
+        "direction": creditOrDebit,
+        "time_in_force": timeInForce,
+        "legs": [
+            {
+                "position_effect": positionEffect,
+                "side": "sell",
+                "ratio_quantity": 1,
+                "option": option_instruments_url(optionID),
+            },
         ],
-        'type': 'limit',
-        'trigger': 'stop',
-        'price': limitPrice,
-        'stop_price': stopPrice,
-        'quantity': quantity,
-        'override_day_trade_checks': False,
-        'override_dtbp_checks': False,
-        'ref_id': str(uuid4()),
+        "type": "limit",
+        "trigger": "stop",
+        "price": limitPrice,
+        "stop_price": stopPrice,
+        "quantity": quantity,
+        "override_day_trade_checks": False,
+        "override_dtbp_checks": False,
+        "ref_id": str(uuid4()),
     }
 
     url = option_orders_url(account_number=account_number)
     data = request_post(url, payload, json=True, jsonify_data=jsonify)
 
-    return (data)
+    return data
 
 
 @login_required
-def order_sell_option_limit(positionEffect, creditOrDebit, price, symbol, quantity, expirationDate, strike,
-                            optionType='both', account_number=None, timeInForce='gtc', jsonify=True):
+def order_sell_option_limit(
+    positionEffect,
+    creditOrDebit,
+    price,
+    symbol,
+    quantity,
+    expirationDate,
+    strike,
+    optionType="both",
+    account_number=None,
+    timeInForce="gtc",
+    jsonify=True,
+):
     """Submits a limit order for an option. i.e. place a short call or a short put.
 
     :param positionEffect: Either 'open' for a sell to open effect or 'close' for a sell to close effect.
@@ -1277,30 +1663,34 @@ def order_sell_option_limit(positionEffect, creditOrDebit, price, symbol, quanti
     optionID = id_for_option(symbol, expirationDate, strike, optionType)
 
     payload = {
-        'account': load_account_profile(account_number=account_number, info='url'),
-        'direction': creditOrDebit,
-        'time_in_force': timeInForce,
-        'legs': [
-            {'position_effect': positionEffect, 'side': 'sell',
-                'ratio_quantity': 1, 'option': option_instruments_url(optionID)},
+        "account": load_account_profile(account_number=account_number, info="url"),
+        "direction": creditOrDebit,
+        "time_in_force": timeInForce,
+        "legs": [
+            {
+                "position_effect": positionEffect,
+                "side": "sell",
+                "ratio_quantity": 1,
+                "option": option_instruments_url(optionID),
+            },
         ],
-        'type': 'limit',
-        'trigger': 'immediate',
-        'price': price,
-        'quantity': quantity,
-        'override_day_trade_checks': False,
-        'override_dtbp_checks': False,
-        'ref_id': str(uuid4()),
+        "type": "limit",
+        "trigger": "immediate",
+        "price": price,
+        "quantity": quantity,
+        "override_day_trade_checks": False,
+        "override_dtbp_checks": False,
+        "ref_id": str(uuid4()),
     }
 
     url = option_orders_url(account_number=account_number)
     data = request_post(url, payload, json=True, jsonify_data=jsonify)
 
-    return (data)
+    return data
 
 
 @login_required
-def order_buy_crypto_by_price(symbol, amountInDollars, timeInForce='gtc', jsonify=True):
+def order_buy_crypto_by_price(symbol, amountInDollars, timeInForce="gtc", jsonify=True):
     """Submits a market order for a crypto by specifying the amount in dollars that you want to trade.
     Good for share fractions up to 8 decimal places.
 
@@ -1317,11 +1707,13 @@ def order_buy_crypto_by_price(symbol, amountInDollars, timeInForce='gtc', jsonif
     the price, and the quantity.
 
     """
-    return order_crypto(symbol, "buy", amountInDollars, "price", None, timeInForce, jsonify)
+    return order_crypto(
+        symbol, "buy", amountInDollars, "price", None, timeInForce, jsonify
+    )
 
 
 @login_required
-def order_buy_crypto_by_quantity(symbol, quantity, timeInForce='gtc', jsonify=True):
+def order_buy_crypto_by_quantity(symbol, quantity, timeInForce="gtc", jsonify=True):
     """Submits a market order for a crypto by specifying the decimal amount of shares to buy.
     Good for share fractions up to 8 decimal places.
 
@@ -1342,7 +1734,9 @@ def order_buy_crypto_by_quantity(symbol, quantity, timeInForce='gtc', jsonify=Tr
 
 
 @login_required
-def order_buy_crypto_limit(symbol, quantity, limitPrice, timeInForce='gtc', jsonify=True):
+def order_buy_crypto_limit(
+    symbol, quantity, limitPrice, timeInForce="gtc", jsonify=True
+):
     """Submits a limit order for a crypto by specifying the decimal amount of shares to buy.
     Good for share fractions up to 8 decimal places.
 
@@ -1361,11 +1755,15 @@ def order_buy_crypto_limit(symbol, quantity, limitPrice, timeInForce='gtc', json
     the price, and the quantity.
 
     """
-    return order_crypto(symbol, "buy", quantity, "quantity", limitPrice, timeInForce, jsonify)
+    return order_crypto(
+        symbol, "buy", quantity, "quantity", limitPrice, timeInForce, jsonify
+    )
 
 
 @login_required
-def order_buy_crypto_limit_by_price(symbol, amountInDollars, limitPrice, timeInForce='gtc', jsonify=True):
+def order_buy_crypto_limit_by_price(
+    symbol, amountInDollars, limitPrice, timeInForce="gtc", jsonify=True
+):
     """Submits a limit order for a crypto by specifying the decimal price to buy.
     Good for share fractions up to 8 decimal places.
 
@@ -1384,11 +1782,15 @@ def order_buy_crypto_limit_by_price(symbol, amountInDollars, limitPrice, timeInF
     the price, and the quantity.
 
     """
-    return order_crypto(symbol, "buy", amountInDollars, "price", limitPrice, timeInForce, jsonify)
+    return order_crypto(
+        symbol, "buy", amountInDollars, "price", limitPrice, timeInForce, jsonify
+    )
 
 
 @login_required
-def order_sell_crypto_by_price(symbol, amountInDollars, timeInForce='gtc', jsonify=True):
+def order_sell_crypto_by_price(
+    symbol, amountInDollars, timeInForce="gtc", jsonify=True
+):
     """Submits a market order for a crypto by specifying the amount in dollars that you want to trade.
     Good for share fractions up to 8 decimal places.
 
@@ -1405,11 +1807,13 @@ def order_sell_crypto_by_price(symbol, amountInDollars, timeInForce='gtc', jsoni
     the price, and the quantity.
 
     """
-    return order_crypto(symbol, "sell", amountInDollars, "price", None, timeInForce, jsonify)
+    return order_crypto(
+        symbol, "sell", amountInDollars, "price", None, timeInForce, jsonify
+    )
 
 
 @login_required
-def order_sell_crypto_by_quantity(symbol, quantity, timeInForce='gtc', jsonify=True):
+def order_sell_crypto_by_quantity(symbol, quantity, timeInForce="gtc", jsonify=True):
     """Submits a market order for a crypto by specifying the decimal amount of shares to buy.
     Good for share fractions up to 8 decimal places.
 
@@ -1426,11 +1830,15 @@ def order_sell_crypto_by_quantity(symbol, quantity, timeInForce='gtc', jsonify=T
     the price, and the quantity.
 
     """
-    return order_crypto(symbol, "sell", quantity, "quantity", None, timeInForce, jsonify)
+    return order_crypto(
+        symbol, "sell", quantity, "quantity", None, timeInForce, jsonify
+    )
 
 
 @login_required
-def order_sell_crypto_limit(symbol, quantity, limitPrice, timeInForce='gtc', jsonify=True):
+def order_sell_crypto_limit(
+    symbol, quantity, limitPrice, timeInForce="gtc", jsonify=True
+):
     """Submits a limit order for a crypto by specifying the decimal amount of shares to sell.
     Good for share fractions up to 8 decimal places.
 
@@ -1449,11 +1857,15 @@ def order_sell_crypto_limit(symbol, quantity, limitPrice, timeInForce='gtc', jso
     the price, and the quantity.
 
     """
-    return order_crypto(symbol, "sell", quantity, "quantity", limitPrice, timeInForce, jsonify)
+    return order_crypto(
+        symbol, "sell", quantity, "quantity", limitPrice, timeInForce, jsonify
+    )
 
 
 @login_required
-def order_sell_crypto_limit_by_price(symbol, amountInDollars, limitPrice, timeInForce='gtc', jsonify=True):
+def order_sell_crypto_limit_by_price(
+    symbol, amountInDollars, limitPrice, timeInForce="gtc", jsonify=True
+):
     """Submits a limit order for a crypto by specifying the decimal price to sell.
     Good for share fractions up to 8 decimal places.
 
@@ -1472,11 +1884,21 @@ def order_sell_crypto_limit_by_price(symbol, amountInDollars, limitPrice, timeIn
     the price, and the quantity.
 
     """
-    return order_crypto(symbol, "sell", amountInDollars, "price", limitPrice, timeInForce, jsonify)
+    return order_crypto(
+        symbol, "sell", amountInDollars, "price", limitPrice, timeInForce, jsonify
+    )
 
 
 @login_required
-def order_crypto(symbol, side, quantityOrPrice, amountIn="quantity", limitPrice=None, timeInForce="gtc", jsonify=True):
+def order_crypto(
+    symbol,
+    side,
+    quantityOrPrice,
+    amountIn="quantity",
+    limitPrice=None,
+    timeInForce="gtc",
+    jsonify=True,
+):
     """Submits an order for a crypto.
 
     :param symbol: The crypto ticker of the crypto to trade.
@@ -1525,14 +1947,14 @@ def order_crypto(symbol, side, quantityOrPrice, amountIn="quantity", limitPrice=
         quantity = round_price(quantityOrPrice / price)
 
     payload = {
-        'account_id': load_crypto_profile(info="id"),
-        'currency_pair_id': crypto_id,
-        'price': price,
-        'quantity': quantity,
-        'ref_id': str(uuid4()),
-        'side': side,
-        'time_in_force': timeInForce,
-        'type': orderType
+        "account_id": load_crypto_profile(info="id"),
+        "currency_pair_id": crypto_id,
+        "price": price,
+        "quantity": quantity,
+        "ref_id": str(uuid4()),
+        "side": side,
+        "time_in_force": timeInForce,
+        "type": orderType,
     }
 
     url = order_crypto_url()
@@ -1546,4 +1968,4 @@ def order_crypto(symbol, side, quantityOrPrice, amountIn="quantity", limitPrice=
 
         attempts -= 1
 
-    return (data)
+    return data

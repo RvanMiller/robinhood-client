@@ -2,8 +2,10 @@
 
 from enum import Enum
 
+
 class OrderType(Enum):
     """Enumeration for order types."""
+
     MARKET = "market"
     LIMIT = "limit"
     STOP = "stop"

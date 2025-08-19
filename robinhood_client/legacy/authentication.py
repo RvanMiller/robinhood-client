@@ -1,4 +1,5 @@
 """Contains all functions for the purpose of logging in and out to Robinhood."""
+
 import getpass
 import os
 import pickle
@@ -9,15 +10,30 @@ import requests
 
 from .constants import BASE_API_URL
 from .exceptions import AuthenticationError
-from .helper import get_session, set_login_state, update_session, request_get, request_post, login_required
+from .helper import (
+    get_session,
+    set_login_state,
+    update_session,
+    request_get,
+    request_post,
+    login_required,
+)
 from .urls import challenge_url, login_url, positions_url
 
 # Get logger for this module
 logger = logging.getLogger(__name__)
 
 
-def login(username=None, password=None, expiresIn=86400, scope='internal',
-          store_session=True, mfa_code=None, pickle_path="", pickle_name=""):
+def login(
+    username=None,
+    password=None,
+    expiresIn=86400,
+    scope="internal",
+    store_session=True,
+    mfa_code=None,
+    pickle_path="",
+    pickle_name="",
+):
     """This function will effectively log the user into robinhood by getting an
     authentication token and saving it to the session header. By default, it
     will store the authentication token in a pickle file and load that value
@@ -66,20 +82,20 @@ def login(username=None, password=None, expiresIn=86400, scope='internal',
 
     url = login_url()
     payload = {
-        'client_id': 'c82SH0WZOsabOXGP2sxqcj34FxkvfnWRZBKlBjFS',
-        'expires_in': expiresIn,
-        'grant_type': 'password',
-        'password': password,
-        'scope': scope,
-        'username': username,
-        'device_token': device_token,
-        'try_passkeys': False,
-        'token_request_path': '/login',
-        'create_read_only_secondary_token': True,
+        "client_id": "c82SH0WZOsabOXGP2sxqcj34FxkvfnWRZBKlBjFS",
+        "expires_in": expiresIn,
+        "grant_type": "password",
+        "password": password,
+        "scope": scope,
+        "username": username,
+        "device_token": device_token,
+        "try_passkeys": False,
+        "token_request_path": "/login",
+        "create_read_only_secondary_token": True,
     }
 
     if mfa_code:
-        payload['mfa_code'] = mfa_code
+        payload["mfa_code"] = mfa_code
 
     # If authentication has been stored in pickle file then load it. Stops login server from being pinged so much.
     if os.path.isfile(pickle_path):
@@ -87,68 +103,86 @@ def login(username=None, password=None, expiresIn=86400, scope='internal',
         # Loading pickle file will fail if the acess_token has expired.
         if store_session:
             try:
-                with open(pickle_path, 'rb') as f:
+                with open(pickle_path, "rb") as f:
                     logger.debug("Loading existing authentication session.")
                     pickle_data = pickle.load(f)
-                    access_token = pickle_data['access_token']
-                    token_type = pickle_data['token_type']
+                    access_token = pickle_data["access_token"]
+                    token_type = pickle_data["token_type"]
 
                     # Set device_token to be the original device token when first logged in.
-                    pickle_device_token = pickle_data['device_token']
-                    payload['device_token'] = pickle_device_token
+                    pickle_device_token = pickle_data["device_token"]
+                    payload["device_token"] = pickle_device_token
 
                     # Set login status to True in order to try and get account info.
                     set_login_state(True)
-                    update_session('Authorization', '{0} {1}'.format(token_type, access_token))
+                    update_session(
+                        "Authorization", "{0} {1}".format(token_type, access_token)
+                    )
 
                     # Try to load account profile to check that authorization token is still valid.
-                    res = request_get(positions_url(), 'pagination', {'nonzero': 'true'}, jsonify_data=False)
+                    res = request_get(
+                        positions_url(),
+                        "pagination",
+                        {"nonzero": "true"},
+                        jsonify_data=False,
+                    )
                     res.raise_for_status()
                     logger.info("Successfully logged in to Robinhood.")
                     return True
             except Exception:
-                logger.warning("Authentication token may be expired - logging in normally.")
+                logger.warning(
+                    "Authentication token may be expired - logging in normally."
+                )
                 set_login_state(False)
-                update_session('Authorization', None)
+                update_session("Authorization", None)
         else:
             os.remove(pickle_path)
 
     # Try to log in normally.
     if not username:
         username = input("Robinhood username: ")
-        payload['username'] = username
+        payload["username"] = username
 
     if not password:
         password = getpass.getpass("Robinhood password: ")
-        payload['password'] = password
+        payload["password"] = password
 
     data = request_post(url, payload)
     # Handle case where mfa or challenge is required.
     if data:
-        if 'verification_workflow' in data:
-            logger.info("Verification workflow required. Please check your Robinhood Mobile app.")
-            workflow_id = data['verification_workflow']['id']
+        if "verification_workflow" in data:
+            logger.info(
+                "Verification workflow required. Please check your Robinhood Mobile app."
+            )
+            workflow_id = data["verification_workflow"]["id"]
             _validate_sherrif_id(device_token=device_token, workflow_id=workflow_id)
             data = request_post(url, payload)
         # Update Session data with authorization or raise exception with the information present in data.
-        if 'access_token' in data:
-            token = '{0} {1}'.format(data['token_type'], data['access_token'])
-            update_session('Authorization', token)
+        if "access_token" in data:
+            token = "{0} {1}".format(data["token_type"], data["access_token"])
+            update_session("Authorization", token)
             set_login_state(True)
             logger.debug("Logged in with existing session.")
             if store_session:
                 logger.debug("Saving authentication session.")
-                with open(pickle_path, 'wb') as f:
-                    pickle.dump({'token_type': data['token_type'],
-                                 'access_token': data['access_token'],
-                                 'refresh_token': data['refresh_token'],
-                                 'device_token': payload['device_token']}, f)
+                with open(pickle_path, "wb") as f:
+                    pickle.dump(
+                        {
+                            "token_type": data["token_type"],
+                            "access_token": data["access_token"],
+                            "refresh_token": data["refresh_token"],
+                            "device_token": payload["device_token"],
+                        },
+                        f,
+                    )
         else:
-            if 'detail' in data:
-                raise AuthenticationError(data['detail'])
+            if "detail" in data:
+                raise AuthenticationError(data["detail"])
             raise AuthenticationError(f"Received an error response {data}")
     else:
-        raise AuthenticationError('Trouble connecting to Robinhood API. Please check your Internet connection.')
+        raise AuthenticationError(
+            "Trouble connecting to Robinhood API. Please check your Internet connection."
+        )
     logger.info("Successfully logged in to Robinhood.")
     return True
 
@@ -161,7 +195,7 @@ def logout():
 
     """
     set_login_state(False)
-    update_session('Authorization', None)
+    update_session("Authorization", None)
     logger.info("Logged out of Robinhood successfully.")
 
 
@@ -172,7 +206,7 @@ def get_token():
     :returns: The current authentication token or None if not logged in.
 
     """
-    return get_session('Authorization')
+    return get_session("Authorization")
 
 
 def _respond_to_challenge(challenge_id, sms_code):
@@ -186,10 +220,8 @@ def _respond_to_challenge(challenge_id, sms_code):
 
     """
     url = challenge_url(challenge_id)
-    payload = {
-        'response': sms_code
-    }
-    return (request_post(url, payload))
+    payload = {"response": sms_code}
+    return request_post(url, payload)
 
 
 def _generate_device_token():
@@ -214,7 +246,11 @@ def _validate_sherrif_id(device_token: str, workflow_id: str):
     """Handles Robinhood's verification workflow, including email, SMS, and app-based approvals."""
     logger.debug("Validating sheriff challenge...")
     pathfinder_url = f"{BASE_API_URL}/pathfinder/user_machine/"
-    machine_payload = {'device_id': device_token, 'flow': 'suv', 'input': {'workflow_id': workflow_id}}
+    machine_payload = {
+        "device_id": device_token,
+        "flow": "suv",
+        "input": {"workflow_id": workflow_id},
+    }
     machine_data = request_post(url=pathfinder_url, payload=machine_payload, json=True)
 
     machine_id = _get_sherrif_id(machine_data)
@@ -230,7 +266,10 @@ def _validate_sherrif_id(device_token: str, workflow_id: str):
             logger.warning("Error: No response from Robinhood API. Retrying...")
             continue
 
-        if "context" in inquiries_response and "sheriff_challenge" in inquiries_response["context"]:
+        if (
+            "context" in inquiries_response
+            and "sheriff_challenge" in inquiries_response["context"]
+        ):
             challenge = inquiries_response["context"]["sheriff_challenge"]
             challenge_type = challenge["type"]
             challenge_status = challenge["status"]
@@ -250,10 +289,14 @@ def _validate_sherrif_id(device_token: str, workflow_id: str):
                 break  # Stop polling once verification is complete
 
             if challenge_type in ["sms", "email"] and challenge_status == "issued":
-                user_code = input(f"Enter the {challenge_type} verification code sent to your device: ")
+                user_code = input(
+                    f"Enter the {challenge_type} verification code sent to your device: "
+                )
                 challenge_url = f"{BASE_API_URL}/challenge/{challenge_id}/respond/"
                 challenge_payload = {"response": user_code}
-                challenge_response = request_post(url=challenge_url, payload=challenge_payload)
+                challenge_response = request_post(
+                    url=challenge_url, payload=challenge_payload
+                )
 
                 if challenge_response.get("status") == "validated":
                     break
@@ -265,19 +308,28 @@ def _validate_sherrif_id(device_token: str, workflow_id: str):
     while time.time() - start_time < 120:  # 2-minute timeout
         try:
             inquiries_payload = {"sequence": 0, "user_input": {"status": "continue"}}
-            inquiries_response = request_post(url=inquiries_url, payload=inquiries_payload, json=True)
-            if "type_context" in inquiries_response and \
-               inquiries_response["type_context"]["result"] == "workflow_status_approved":
+            inquiries_response = request_post(
+                url=inquiries_url, payload=inquiries_payload, json=True
+            )
+            if (
+                "type_context" in inquiries_response
+                and inquiries_response["type_context"]["result"]
+                == "workflow_status_approved"
+            ):
                 logger.info("Verification successful!")
                 return
             else:
-                time.sleep(5)  # **Increase delay between requests to prevent rate limits**
+                time.sleep(
+                    5
+                )  # **Increase delay between requests to prevent rate limits**
         except requests.exceptions.RequestException as e:
             time.sleep(5)
             logger.error("API request failed: %s", e)
             retry_attempts -= 1
             if retry_attempts == 0:
-                raise AuthenticationError(f"Max retries reached. Login failed: {str(e)}")
+                raise AuthenticationError(
+                    f"Max retries reached. Login failed: {str(e)}"
+                )
             logger.info("Retrying workflow status check...")
             continue
 
@@ -286,10 +338,14 @@ def _validate_sherrif_id(device_token: str, workflow_id: str):
             logger.warning("Error: No response from Robinhood API. Retrying...")
             retry_attempts -= 1
             if retry_attempts == 0:
-                raise AuthenticationError("Max retries reached. Login verification failed.")
+                raise AuthenticationError(
+                    "Max retries reached. Login verification failed."
+                )
             continue
 
-        workflow_status = inquiries_response.get("verification_workflow", {}).get("workflow_status")
+        workflow_status = inquiries_response.get("verification_workflow", {}).get(
+            "workflow_status"
+        )
 
         if workflow_status == "workflow_status_approved":
             logger.info("Workflow status approved! Proceeding with login...")
@@ -299,6 +355,8 @@ def _validate_sherrif_id(device_token: str, workflow_id: str):
         else:
             retry_attempts -= 1
             if retry_attempts == 0:
-                raise AuthenticationError("Max retries reached. Unable to confirm verification.")
+                raise AuthenticationError(
+                    "Max retries reached. Unable to confirm verification."
+                )
 
     raise AuthenticationError("Timeout reached. Unable to confirm verification.")

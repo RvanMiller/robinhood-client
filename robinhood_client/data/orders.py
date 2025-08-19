@@ -3,7 +3,12 @@
 from robinhood_client.common.clients import BaseOAuthClient
 from robinhood_client.common.session import SessionStorage
 
-from .requests import GetStockOrderRequest, GetStockOrderResponse, GetStockOrdersRequest, GetStockOrdersResponse
+from .requests import (
+    GetStockOrderRequest,
+    GetStockOrderResponse,
+    GetStockOrdersRequest,
+    GetStockOrdersResponse,
+)
 
 
 class OrdersDataClient(BaseOAuthClient):
@@ -14,7 +19,7 @@ class OrdersDataClient(BaseOAuthClient):
 
     def get_stock_order(self, request: GetStockOrderRequest) -> GetStockOrderResponse:
         """Gets information for a specific stock order.
-        
+
         Args:
             request: A GetStockOrderRequest containing:
                 account_number: The Robinhood account number
@@ -32,9 +37,11 @@ class OrdersDataClient(BaseOAuthClient):
         res = self.request_get(url, params=params)
         return GetStockOrderResponse(**res)
 
-    def get_stock_orders(self, request: GetStockOrdersRequest) -> GetStockOrdersResponse:
+    def get_stock_orders(
+        self, request: GetStockOrdersRequest
+    ) -> GetStockOrdersResponse:
         """Gets a list of all stock orders for an account with pagination support.
-        
+
         Args:
             request: A GetStockOrdersRequest containing:
                 account_number: The Robinhood account number
@@ -54,4 +61,3 @@ class OrdersDataClient(BaseOAuthClient):
 
         res = self.request_get(url, params=params)
         return GetStockOrdersResponse(**res)
-    

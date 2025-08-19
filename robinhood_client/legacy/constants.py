@@ -1,4 +1,5 @@
 """Contains all constants used in the Robinhood client."""
+
 BASE_API_URL = "https://api.robinhood.com"
 BASE_NUMMUS_URL = "https://nummus.robinhood.com"
 BASE_PHOENIX_URL = "https://phoenix.robinhood.com"

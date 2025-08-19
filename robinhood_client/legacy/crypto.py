@@ -1,7 +1,13 @@
 """Contains functions to get information about crypto-currencies."""
 
 from .helper import filter_data, get_output, inputs_to_set, login_required, request_get
-from .urls import crypto_account_url, crypto_currency_pairs_url, crypto_historical_url, crypto_holdings_url, crypto_quote_url
+from .urls import (
+    crypto_account_url,
+    crypto_currency_pairs_url,
+    crypto_historical_url,
+    crypto_holdings_url,
+    crypto_quote_url,
+)
 
 
 # TODO: Refactor this. Used for get_crypto_id()
@@ -28,8 +34,8 @@ def load_crypto_profile(info=None):
 
     """
     url = crypto_account_url()
-    data = request_get(url, 'indexzero')
-    return (filter_data(data, info))
+    data = request_get(url, "indexzero")
+    return filter_data(data, info)
 
 
 @login_required
@@ -53,8 +59,8 @@ def get_crypto_positions(info=None):
 
     """
     url = crypto_holdings_url()
-    data = request_get(url, 'pagination')
-    return (filter_data(data, info))
+    data = request_get(url, "pagination")
+    return filter_data(data, info)
 
 
 def get_crypto_currency_pairs(info=None):
@@ -79,8 +85,8 @@ def get_crypto_currency_pairs(info=None):
 
     """
     url = crypto_currency_pairs_url()
-    data = request_get(url, 'results')
-    return (filter_data(data, info))
+    data = request_get(url, "results")
+    return filter_data(data, info)
 
 
 def get_crypto_info(symbol, info=None):
@@ -106,13 +112,13 @@ def get_crypto_info(symbol, info=None):
 
     """
     url = crypto_currency_pairs_url()
-    data = request_get(url, 'results')
-    data = [x for x in data if x['asset_currency']['code'] == symbol]
+    data = request_get(url, "results")
+    data = [x for x in data if x["asset_currency"]["code"] == symbol]
     if len(data) > 0:
         data = data[0]
     else:
         data = None
-    return (filter_data(data, info))
+    return filter_data(data, info)
 
 
 def get_crypto_id(symbol):
@@ -128,7 +134,7 @@ def get_crypto_id(symbol):
     if symbol in SYMBOL_TO_ID_CACHE:
         return SYMBOL_TO_ID_CACHE[symbol]
 
-    id = get_crypto_info(symbol, 'id')
+    id = get_crypto_info(symbol, "id")
     if id:
         SYMBOL_TO_ID_CACHE[symbol] = id
     return id
@@ -156,10 +162,10 @@ def get_crypto_quote(symbol, info=None):
                       * volume
 
     """
-    id = get_crypto_info(symbol, info='id')
+    id = get_crypto_info(symbol, info="id")
     url = crypto_quote_url(id)
     data = request_get(url)
-    return (filter_data(data, info))
+    return filter_data(data, info)
 
 
 @login_required
@@ -186,11 +192,13 @@ def get_crypto_quote_from_id(id, info=None):
     """
     url = crypto_quote_url(id)
     data = request_get(url)
-    return (filter_data(data, info))
+    return filter_data(data, info)
 
 
 @login_required
-def get_crypto_historicals(symbol, interval='hour', span='week', bounds='24_7', info=None):
+def get_crypto_historicals(
+    symbol, interval="hour", span="week", bounds="24_7", info=None
+):
     """Gets historical information about a crypto including open price, close price, high price, and low price.
 
     :param symbol: The crypto ticker.
@@ -220,36 +228,45 @@ def get_crypto_historicals(symbol, interval='hour', span='week', bounds='24_7', 
                       * symbol
 
     """
-    interval_check = ['15second', '5minute', '10minute', 'hour', 'day', 'week']
-    span_check = ['hour', 'day', 'week', 'month', '3month', 'year', '5year']
-    bounds_check = ['24_7', 'extended', 'regular', 'trading']
+    interval_check = ["15second", "5minute", "10minute", "hour", "day", "week"]
+    span_check = ["hour", "day", "week", "month", "3month", "year", "5year"]
+    bounds_check = ["24_7", "extended", "regular", "trading"]
 
     if interval not in interval_check:
         print(
-            'Error: Interval must be "15second", "5minute", "10minute", "hour", "day", or "week"', file=get_output())
-        return ([None])
+            'Error: Interval must be "15second", "5minute", "10minute", "hour", "day", or "week"',
+            file=get_output(),
+        )
+        return [None]
     if span not in span_check:
-        print('Error: Span must be "hour", "day", "week", "month", "3month", "year", or "5year"', file=get_output())
-        return ([None])
+        print(
+            'Error: Span must be "hour", "day", "week", "month", "3month", "year", or "5year"',
+            file=get_output(),
+        )
+        return [None]
     if bounds not in bounds_check:
-        print('Error: Bounds must be "24_7", "extended", "regular", or "trading"', file=get_output())
-        return ([None])
-    if (bounds == 'extended' or bounds == 'trading') and span != 'day':
-        print('Error: extended and trading bounds can only be used with a span of "day"', file=get_output())
-        return ([None])
+        print(
+            'Error: Bounds must be "24_7", "extended", "regular", or "trading"',
+            file=get_output(),
+        )
+        return [None]
+    if (bounds == "extended" or bounds == "trading") and span != "day":
+        print(
+            'Error: extended and trading bounds can only be used with a span of "day"',
+            file=get_output(),
+        )
+        return [None]
 
     symbol = inputs_to_set(symbol)
-    id = get_crypto_info(symbol[0], info='id')
+    id = get_crypto_info(symbol[0], info="id")
     url = crypto_historical_url(id)
-    payload = {'interval': interval,
-               'span': span,
-               'bounds': bounds}
-    data = request_get(url, 'regular', payload)
+    payload = {"interval": interval, "span": span, "bounds": bounds}
+    data = request_get(url, "regular", payload)
 
     histData = []
-    cryptoSymbol = data['symbol']
-    for subitem in data['data_points']:
-        subitem['symbol'] = cryptoSymbol
+    cryptoSymbol = data["symbol"]
+    for subitem in data["data_points"]:
+        subitem["symbol"] = cryptoSymbol
         histData.append(subitem)
 
-    return (filter_data(histData, info))
+    return filter_data(histData, info)

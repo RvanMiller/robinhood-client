@@ -1,4 +1,5 @@
 """Contains helper functions related to authentication."""
+
 import secrets
 
 

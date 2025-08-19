@@ -1,4 +1,5 @@
 """Session Storage for managing authentication sessions."""
+
 import os
 import logging
 
@@ -12,7 +13,9 @@ logger = logging.getLogger(__name__)
 class AuthSession:
     """Class representing an authentication session."""
 
-    def __init__(self, token_type: str, access_token: str, refresh_token: str, device_token: str):
+    def __init__(
+        self, token_type: str, access_token: str, refresh_token: str, device_token: str
+    ):
         self.token_type = token_type
         self.access_token = access_token
         self.refresh_token = refresh_token
@@ -45,14 +48,22 @@ class SessionStorage(ABC):
 class FileSystemSessionStorage(SessionStorage):
     """Session provider that uses the filesystem to store session data."""
 
-    def __init__(self, file_path: str = "~", session_dir: str = ".tokens", session_file: str = "session.pkl"):
+    def __init__(
+        self,
+        file_path: str = "~",
+        session_dir: str = ".tokens",
+        session_file: str = "session.pkl",
+    ):
         super().__init__(file_path, session_dir)
         if file_path == "~":
             file_path = os.path.expanduser("~")
         session_dir_path = os.path.join(file_path, session_dir)
         os.makedirs(session_dir_path, exist_ok=True)
         self.session_file_path = os.path.join(session_dir_path, session_file)
-        logger.debug("FileSystemSessionProvider using session file path: %s", self.session_file_path)
+        logger.debug(
+            "FileSystemSessionProvider using session file path: %s",
+            self.session_file_path,
+        )
 
     def load(self) -> AuthSession:
         """Get a Session object from the file system."""
@@ -61,9 +72,14 @@ class FileSystemSessionStorage(SessionStorage):
         try:
             with open(self.session_file_path, "rb") as f:
                 session = pickle.load(f)
-                logger.debug("Loaded session data from file: %s", self.session_file_path)
+                logger.debug(
+                    "Loaded session data from file: %s", self.session_file_path
+                )
         except FileNotFoundError:
-            logger.debug("Session file not found: %s, returned None instead.", self.session_file_path)
+            logger.debug(
+                "Session file not found: %s, returned None instead.",
+                self.session_file_path,
+            )
             return None
         except Exception as e:
             logger.error("Error loading session data from file: %s", e)
@@ -78,7 +94,7 @@ class FileSystemSessionStorage(SessionStorage):
                 logger.debug("Stored session data to file: %s", self.session_file_path)
         except Exception as e:
             logger.error("Error storing session data to file: %s", e)
-    
+
     def clear(self):
         """Removes all session files from the file system."""
         try:
@@ -101,11 +117,16 @@ class AWSS3SessionStorage(SessionStorage):
         logger.debug("Loading existing authentication session file from AWS S3.")
         session = AuthSession()
         try:
-            s3_object = self._s3_client.get_object(Bucket=self.bucket_name, Key=self.object_key)
+            s3_object = self._s3_client.get_object(
+                Bucket=self.bucket_name, Key=self.object_key
+            )
             session = pickle.loads(s3_object["Body"].read())
             logger.debug("Loaded session data from S3: %s", self.object_key)
         except self._s3_client.exceptions.NoSuchKey:
-            logger.debug("Session file not found in S3: %s, returned None instead.", self.object_key)
+            logger.debug(
+                "Session file not found in S3: %s, returned None instead.",
+                self.object_key,
+            )
             return None
         except Exception as e:
             logger.error("Error loading session data from S3: %s", e)
@@ -115,7 +136,9 @@ class AWSS3SessionStorage(SessionStorage):
         """Store the session."""
         logger.debug("Storing authentication session file to AWS S3.")
         try:
-            self._s3_client.put_object(Bucket=self.bucket_name, Key=self.object_key, Body=pickle.dumps(session))
+            self._s3_client.put_object(
+                Bucket=self.bucket_name, Key=self.object_key, Body=pickle.dumps(session)
+            )
             logger.debug("Stored session data to S3: %s", self.object_key)
         except Exception as e:
             logger.error("Error storing session data to S3: %s", e)

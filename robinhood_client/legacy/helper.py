@@ -1,5 +1,5 @@
-"""Contains decorator functions and functions for interacting with global data.
-"""
+"""Contains decorator functions and functions for interacting with global data."""
+
 import logging
 import requests
 from functools import wraps
@@ -28,26 +28,31 @@ def get_output():
 
 def login_required(func):
     """A decorator for indicating which methods require the user to be logged
-       in."""
+    in."""
+
     @wraps(func)
     def login_wrapper(*args, **kwargs):
         if not LOGGED_IN:
-            raise Exception('{} can only be called when logged in'.format(
-                func.__name__))
-        return (func(*args, **kwargs))
-    return (login_wrapper)
+            raise Exception(
+                "{} can only be called when logged in".format(func.__name__)
+            )
+        return func(*args, **kwargs)
+
+    return login_wrapper
 
 
 def convert_none_to_string(func):
     """A decorator for converting a None Type into a blank string"""
+
     @wraps(func)
     def string_wrapper(*args, **kwargs):
         result = func(*args, **kwargs)
         if result:
-            return (result)
+            return result
         else:
-            return ("")
-    return (string_wrapper)
+            return ""
+
+    return string_wrapper
 
 
 def id_for_stock(symbol):
@@ -62,13 +67,13 @@ def id_for_stock(symbol):
         symbol = symbol.upper().strip()
     except AttributeError as message:
         print(message, file=get_output())
-        return (None)
+        return None
 
-    url = 'https://api.robinhood.com/instruments/'
-    payload = {'symbol': symbol}
-    data = request_get(url, 'indexzero', payload)
+    url = "https://api.robinhood.com/instruments/"
+    payload = {"symbol": symbol}
+    data = request_get(url, "indexzero", payload)
 
-    return (filter_data(data, 'id'))
+    return filter_data(data, "id")
 
 
 def id_for_chain(symbol):
@@ -83,17 +88,17 @@ def id_for_chain(symbol):
         symbol = symbol.upper().strip()
     except AttributeError as message:
         print(message, file=get_output())
-        return (None)
+        return None
 
-    url = 'https://api.robinhood.com/instruments/'
+    url = "https://api.robinhood.com/instruments/"
 
-    payload = {'symbol': symbol}
-    data = request_get(url, 'indexzero', payload)
+    payload = {"symbol": symbol}
+    data = request_get(url, "indexzero", payload)
 
     if data:
-        return (data['tradable_chain_id'])
+        return data["tradable_chain_id"]
     else:
-        return (data)
+        return data
 
 
 def id_for_group(symbol):
@@ -108,12 +113,11 @@ def id_for_group(symbol):
         symbol = symbol.upper().strip()
     except AttributeError as message:
         print(message, file=get_output())
-        return (None)
+        return None
 
-    url = 'https://api.robinhood.com/options/chains/{0}/'.format(
-        id_for_chain(symbol))
+    url = "https://api.robinhood.com/options/chains/{0}/".format(id_for_chain(symbol))
     data = request_get(url)
-    return (data['underlying_instruments'][0]['id'])
+    return data["underlying_instruments"][0]["id"]
 
 
 def id_for_option(symbol, expirationDate, strike, optionType):
@@ -133,22 +137,24 @@ def id_for_option(symbol, expirationDate, strike, optionType):
     symbol = symbol.upper()
     chain_id = id_for_chain(symbol)
     payload = {
-        'chain_id': chain_id,
-        'expiration_dates': expirationDate,
-        'strike_price': strike,
-        'type': optionType,
-        'state': 'active'
+        "chain_id": chain_id,
+        "expiration_dates": expirationDate,
+        "strike_price": strike,
+        "type": optionType,
+        "state": "active",
     }
-    url = 'https://api.robinhood.com/options/instruments/'
-    data = request_get(url, 'pagination', payload)
+    url = "https://api.robinhood.com/options/instruments/"
+    data = request_get(url, "pagination", payload)
 
     listOfOptions = [item for item in data if item["expiration_date"] == expirationDate]
-    if (len(listOfOptions) == 0):
-        print('Getting the option ID failed. Perhaps the expiration date is wrong format, or the strike price is wrong.',
-              file=get_output())
-        return (None)
+    if len(listOfOptions) == 0:
+        print(
+            "Getting the option ID failed. Perhaps the expiration date is wrong format, or the strike price is wrong.",
+            file=get_output(),
+        )
+        return None
 
-    return (listOfOptions[0]['id'])
+    return listOfOptions[0]["id"]
 
 
 def round_price(price):
@@ -180,13 +186,13 @@ def filter_data(data, info):
     :returns:  A list or string with the values that correspond to the info keyword.
 
     """
-    if (data is None):
-        return (data)
-    elif (data == [None]):
-        return ([])
+    if data is None:
+        return data
+    elif data == [None]:
+        return []
     elif isinstance(data, list):
-        if (len(data) == 0):
-            return ([])
+        if len(data) == 0:
+            return []
         compareDict = data[0]
         noneType = []
     elif isinstance(data, dict):
@@ -195,14 +201,14 @@ def filter_data(data, info):
 
     if info is not None:
         if info in compareDict and isinstance(data, list):
-            return ([x[info] for x in data])
+            return [x[info] for x in data]
         elif info in compareDict and isinstance(data, dict):
-            return (data[info])
+            return data[info]
         else:
             print(error_argument_not_key_in_dictionary(info), file=get_output())
-            return (noneType)
+            return noneType
     else:
-        return (data)
+        return data
 
 
 def inputs_to_set(inputSymbols):
@@ -227,12 +233,16 @@ def inputs_to_set(inputSymbols):
 
     if type(inputSymbols) is str:
         add_symbol(inputSymbols)
-    elif type(inputSymbols) is list or type(inputSymbols) is tuple or type(inputSymbols) is set:
+    elif (
+        type(inputSymbols) is list
+        or type(inputSymbols) is tuple
+        or type(inputSymbols) is set
+    ):
         inputSymbols = [comp for comp in inputSymbols if type(comp) is str]
         for item in inputSymbols:
             add_symbol(item)
 
-    return (symbols_list)
+    return symbols_list
 
 
 def request_document(url, payload=None):
@@ -248,12 +258,12 @@ def request_document(url, payload=None):
         res.raise_for_status()
     except requests.exceptions.HTTPError as message:
         print(message, file=get_output())
-        return (None)
+        return None
 
-    return (res)
+    return res
 
 
-def request_get(url, dataType='regular', payload=None, jsonify_data=True):
+def request_get(url, dataType="regular", payload=None, jsonify_data=True):
     """For a given url and payload, makes a get request and returns the data.
 
     :param url: The url to send a get request to.
@@ -272,7 +282,7 @@ def request_get(url, dataType='regular', payload=None, jsonify_data=True):
         other than <200> then either '[None]' or 'None' will be returned based on what the dataType parameter was set as.
 
     """
-    if (dataType == 'results' or dataType == 'pagination'):
+    if dataType == "results" or dataType == "pagination":
         data = [None]
     else:
         data = None
@@ -284,56 +294,65 @@ def request_get(url, dataType='regular', payload=None, jsonify_data=True):
             data = res.json()
         except (requests.exceptions.HTTPError, AttributeError) as message:
             print(message, file=get_output())
-            return (data)
+            return data
     else:
         res = SESSION.get(url, params=payload)
-        return (res)
+        return res
     # Only continue to filter data if jsonify_data=True, and Session.get returned status code <200>.
-    if (dataType == 'results'):
+    if dataType == "results":
         try:
-            data = data['results']
+            data = data["results"]
         except KeyError as message:
-            print("{0} is not a key in the dictionary".format(message), file=get_output())
-            return ([None])
-    elif (dataType == 'pagination'):
+            print(
+                "{0} is not a key in the dictionary".format(message), file=get_output()
+            )
+            return [None]
+    elif dataType == "pagination":
         counter = 2
         nextData = data
         try:
-            data = data['results']
+            data = data["results"]
         except KeyError as message:
-            print("{0} is not a key in the dictionary".format(message), file=get_output())
-            return ([None])
+            print(
+                "{0} is not a key in the dictionary".format(message), file=get_output()
+            )
+            return [None]
 
-        if nextData['next']:
-            print('Found Additional pages.', file=get_output())
-        while nextData['next']:
+        if nextData["next"]:
+            print("Found Additional pages.", file=get_output())
+        while nextData["next"]:
             try:
-                res = SESSION.get(nextData['next'])
+                res = SESSION.get(nextData["next"])
                 res.raise_for_status()
                 nextData = res.json()
             except Exception:
                 # TODO: Log exception
-                print('Additional pages exist but could not be loaded.', file=get_output())
-                return (data)
-            print('Loading page ' + str(counter) + ' ...', file=get_output())
+                print(
+                    "Additional pages exist but could not be loaded.", file=get_output()
+                )
+                return data
+            print("Loading page " + str(counter) + " ...", file=get_output())
             counter += 1
-            for item in nextData['results']:
+            for item in nextData["results"]:
                 data.append(item)
-    elif (dataType == 'indexzero'):
+    elif dataType == "indexzero":
         try:
-            data = data['results'][0]
+            data = data["results"][0]
         except KeyError as message:
-            print("{0} is not a key in the dictionary".format(message), file=get_output())
-            return (None)
+            print(
+                "{0} is not a key in the dictionary".format(message), file=get_output()
+            )
+            return None
         except IndexError:
-            return (None)
+            return None
 
-    return (data)
+    return data
 
 
-def request_get_ex(url: str,
-                   params: dict = None,
-                   ) -> list[dict]:
+def request_get_ex(
+    url: str,
+    params: dict = None,
+) -> list[dict]:
     logger.debug("Making GET request to %s", url)
     try:
         res = SESSION.get(url, params=params)
@@ -366,21 +385,36 @@ def request_post(url, payload=None, timeout=16, json=False, jsonify_data=True):
     res = None
     try:
         if json:
-            update_session('Content-Type', 'application/json')
+            update_session("Content-Type", "application/json")
             res = SESSION.post(url, json=payload, timeout=timeout)
             update_session(
-                'Content-Type', 'application/x-www-form-urlencoded; charset=utf-8')
+                "Content-Type", "application/x-www-form-urlencoded; charset=utf-8"
+            )
         else:
             res = SESSION.post(url, data=payload, timeout=timeout)
-        if res.status_code not in [200, 201, 202, 204, 301, 302, 303, 304, 307, 400, 401, 402, 403]:
+        if res.status_code not in [
+            200,
+            201,
+            202,
+            204,
+            301,
+            302,
+            303,
+            304,
+            307,
+            400,
+            401,
+            402,
+            403,
+        ]:
             raise Exception("Received " + str(res.status_code))
         data = res.json()
     except Exception as message:
         print("Error in request_post: {0}".format(message), file=get_output())
     if jsonify_data:
-        return (data)
+        return data
     else:
-        return (res)
+        return res
 
 
 def request_delete(url):
@@ -399,7 +433,7 @@ def request_delete(url):
         data = None
         print("Error in request_delete: {0}".format(message), file=get_output())
 
-    return (data)
+    return data
 
 
 def update_session(key, value):
@@ -428,12 +462,16 @@ def get_session(key, default=None):
 
 
 def error_argument_not_key_in_dictionary(keyword):
-    return ('Error: The keyword "{0}" is not a key in the dictionary.'.format(keyword))
+    return 'Error: The keyword "{0}" is not a key in the dictionary.'.format(keyword)
 
 
 def error_ticker_does_not_exist(ticker):
-    return ('Warning: "{0}" is not a valid stock ticker. It is being ignored'.format(ticker))
+    return 'Warning: "{0}" is not a valid stock ticker. It is being ignored'.format(
+        ticker
+    )
 
 
 def error_must_be_nonzero(keyword):
-    return ('Error: The input parameter "{0}" must be an integer larger than zero and non-negative'.format(keyword))
+    return 'Error: The input parameter "{0}" must be an integer larger than zero and non-negative'.format(
+        keyword
+    )

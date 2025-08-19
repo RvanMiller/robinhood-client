@@ -1,4 +1,5 @@
 """Default logging configuration for robinhood-client."""
+
 import logging
 import sys
 import os
@@ -20,7 +21,7 @@ def configure_logging(level=None, log_file=None):
         logging.Logger: The configured logger object
     """
     # Get root logger for the package
-    logger = logging.getLogger('robinhood_client')
+    logger = logging.getLogger("robinhood_client")
 
     # Clear any existing handlers to avoid duplicate logs
     if logger.handlers:
@@ -28,7 +29,7 @@ def configure_logging(level=None, log_file=None):
 
     # Determine log level - environment variable takes precedence
     if level is None:
-        env_level = os.environ.get('ROBINHOOD_LOG_LEVEL', 'INFO').upper()
+        env_level = os.environ.get("ROBINHOOD_LOG_LEVEL", "INFO").upper()
         level = getattr(logging, env_level, logging.INFO)
 
     logger.setLevel(level)
@@ -38,14 +39,16 @@ def configure_logging(level=None, log_file=None):
     console_handler.setLevel(level)
 
     # Create formatter and add it to the handler
-    formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+    formatter = logging.Formatter(
+        "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+    )
     console_handler.setFormatter(formatter)
 
     # Add handler to logger
     logger.addHandler(console_handler)
 
     # Add file handler if log_file is specified or in environment variable
-    log_file = log_file or os.environ.get('ROBINHOOD_LOG_FILE')
+    log_file = log_file or os.environ.get("ROBINHOOD_LOG_FILE")
     if log_file:
         file_handler = logging.FileHandler(log_file)
         file_handler.setLevel(level)
