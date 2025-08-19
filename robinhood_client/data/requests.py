@@ -2,12 +2,12 @@ from typing import Optional
 from pydantic import BaseModel
 
 
-class GetStockOrderRequest(BaseModel):
+class StockOrderRequest(BaseModel):
     account_number: Optional[str] = None
     order_id: str
 
 
-class GetStockOrderResponse(BaseModel):
+class StockOrderResponse(BaseModel):
     id: str
     instrument: dict
     quantity: int
@@ -18,13 +18,13 @@ class GetStockOrderResponse(BaseModel):
     updated_at: str
 
 
-class GetStockOrdersRequest(BaseModel):
+class StockOrdersRequest(BaseModel):
     account_number: str
     start_date: str | None = None
     page_size: int | None = 10
 
 
-class GetStockOrdersResponse(BaseModel):
-    results: list[GetStockOrderResponse]
+class StockOrdersResponse(BaseModel):
+    results: list[StockOrderResponse]
     next: str | None
     previous: str | None
