@@ -261,7 +261,9 @@ class BaseOAuthClient(BaseClient):
             logger.debug("Logged in with existing session.")
         else:
             if "detail" in response:
+                logger.error("Login failed: %s", response["detail"])
                 raise AuthenticationError(response["detail"])
+            logger.error("Login failed: %s", response)
             raise AuthenticationError(f"Received an error response {response}")
 
         return response
@@ -384,6 +386,7 @@ class BaseOAuthClient(BaseClient):
                 logger.error("API request failed: %s", e)
                 retry_attempts -= 1
                 if retry_attempts == 0:
+                    logger.error("Max retries reached. Login failed: %s", str(e))
                     raise AuthenticationError(
                         f"Max retries reached. Login failed: {str(e)}"
                     )
@@ -395,6 +398,7 @@ class BaseOAuthClient(BaseClient):
                 logger.warning("Error: No response from Robinhood API. Retrying...")
                 retry_attempts -= 1
                 if retry_attempts == 0:
+                    logger.error("Max retries reached. Login verification failed.")
                     raise AuthenticationError(
                         "Max retries reached. Login verification failed."
                     )
@@ -412,8 +416,10 @@ class BaseOAuthClient(BaseClient):
             else:
                 retry_attempts -= 1
                 if retry_attempts == 0:
+                    logger.error("Max retries reached. Unable to confirm verification.")
                     raise AuthenticationError(
                         "Max retries reached. Unable to confirm verification."
                     )
 
+        logger.error("Timeout reached. Unable to confirm verification.")
         raise AuthenticationError("Timeout reached. Unable to confirm verification.")

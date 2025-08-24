@@ -14,7 +14,11 @@ class AuthSession:
     """Class representing an authentication session."""
 
     def __init__(
-        self, token_type: str, access_token: str, refresh_token: str, device_token: str
+        self,
+        token_type: str = None,
+        access_token: str = None,
+        refresh_token: str = None,
+        device_token: str = None
     ):
         self.token_type = token_type
         self.access_token = access_token
@@ -111,6 +115,8 @@ class AWSS3SessionStorage(SessionStorage):
     def __init__(self, s3_client, bucket_name: str, object_key: str):
         super().__init__(bucket_name, object_key)
         self._s3_client = s3_client
+        self.bucket_name = bucket_name
+        self.object_key = object_key
 
     def load(self) -> AuthSession:
         """Get a Session object from AWS S3."""
@@ -122,13 +128,14 @@ class AWSS3SessionStorage(SessionStorage):
             )
             session = pickle.loads(s3_object["Body"].read())
             logger.debug("Loaded session data from S3: %s", self.object_key)
-        except self._s3_client.exceptions.NoSuchKey:
-            logger.debug(
-                "Session file not found in S3: %s, returned None instead.",
-                self.object_key,
-            )
-            return None
         except Exception as e:
+            # Handle NoSuchKey and other exceptions
+            if hasattr(self._s3_client, "exceptions") and hasattr(self._s3_client.exceptions, "NoSuchKey") and isinstance(e, self._s3_client.exceptions.NoSuchKey):
+                logger.debug(
+                    "Session file not found in S3: %s, returned None instead.",
+                    self.object_key,
+                )
+                return None
             logger.error("Error loading session data from S3: %s", e)
         return session
 
