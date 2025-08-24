@@ -31,4 +31,4 @@ jobs:
         poetry run ruff check .
     - name: Check Unit Tests
       run: |
-        poetry run pytest tests/common/unit_tests.py
+        poetry run pytest tests/
