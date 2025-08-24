@@ -23,3 +23,7 @@ __pycache__/
 
 # Ruff Linter
 .ruff_cache/
+
+# Remove legacy code for now
+robinhood_client/legacy/
+tests/legacy/
