@@ -20,3 +20,6 @@ __pycache__/
 *~
 [.]venv
 .pytest_cache/
+
+# Ruff Linter
+.ruff_cache/
