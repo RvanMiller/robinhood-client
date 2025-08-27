@@ -51,7 +51,6 @@ python_classes = ["Test", "Describe"]
 python_functions = ["test_", "it_", "and_", "but_", "they_"]
 python_files = ["*_tests.py"]
 testpaths = ["tests", "integration"]
-norecursedirs = ["tests/legacy"]
 
 [tool.ruff]
 # Exclude a variety of commonly ignored directories.

@@ -31,7 +31,7 @@ def test_get_stock_orders():
     totp = pyotp.TOTP(mfa_code).now()
 
     # Login using the client's login method
-    client.login2(
+    client.login(
         username=username, 
         password=password,
         mfa_code=totp,
