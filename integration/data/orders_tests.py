@@ -5,12 +5,10 @@ import pytest
 import pyotp
 from datetime import datetime, timedelta
 
-from robinhood_client.common.logging import configure_logging
 from robinhood_client.common.session import FileSystemSessionStorage
 from robinhood_client.data.orders import OrdersDataClient
 from robinhood_client.data.requests import StockOrdersRequest
 
-configure_logging()
 
 def test_get_stock_orders():
     """Integration test for getting stock orders."""
