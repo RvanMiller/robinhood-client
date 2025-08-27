@@ -2,12 +2,15 @@
 
 import os
 import pytest
+import pyotp
 from datetime import datetime, timedelta
 
+from robinhood_client.common.logging import configure_logging
 from robinhood_client.common.session import FileSystemSessionStorage
 from robinhood_client.data.orders import OrdersDataClient
 from robinhood_client.data.requests import StockOrdersRequest
 
+configure_logging()
 
 def test_get_stock_orders():
     """Integration test for getting stock orders."""
@@ -25,12 +28,14 @@ def test_get_stock_orders():
     if not username or not password:
         pytest.skip("RH_USERNAME and RH_PASSWORD environment variables are required")
     
+    totp = pyotp.TOTP(mfa_code).now()
+
     # Login using the client's login method
-    client.login(
+    client.login2(
         username=username, 
         password=password,
-        mfa_code=mfa_code,
-        persist_session=True
+        mfa_code=totp,
+        persist_session=True,
     )
     
     # Set account number from environment variable

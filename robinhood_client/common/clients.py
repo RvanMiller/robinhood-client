@@ -48,14 +48,22 @@ class BaseClient(ABC):
         """
         return url
 
-    def request_get(self, url: str, params: dict = None) -> list[dict]:
+    def request_get(
+        self,
+        url: str,
+        params: dict = None,
+        json_response: bool = True,
+    ) -> list[dict]:
         logger.debug("Making GET request to %s", url)
         res = None
         try:
             full_url = self._join_url(url)
             res = self._session.get(full_url, params=params)
             res.raise_for_status()
-            return res.json()
+            if json_response:
+                return res.json()
+            else:
+                return res
         except Exception as message:
             logger.error("Error in BaseClient request_get: %s", message)
             return {}
@@ -100,7 +108,7 @@ class BaseClient(ABC):
         except Exception as message:
             logger.error("Error in BaseClient request_post: %s", message)
         if json_response:
-            return res.json() if res else {}
+            return res.json()
         else:
             return res
 
@@ -113,6 +121,40 @@ class BaseOAuthClient(BaseClient):
         self._url = url
         self._is_authenticated = False
         self._session_storage = session_storage
+
+    def request_get(
+        self,
+        url: str,
+        params: dict = None,
+        json_response: bool = True,
+    ):
+        # Ensure Authorization header is set for authenticated requests
+        if self._is_authenticated and self._session.headers.get("Authorization"):
+            self._session.headers["Authorization"] = self._session.headers.get(
+                "Authorization"
+            )
+        return super().request_get(url, params, json_response=json_response)
+
+    def request_post(
+        self,
+        url: str,
+        payload: dict = None,
+        json_request: bool = False,
+        json_response: bool = True,
+        timeout: int = 16,
+    ):
+        # Ensure Authorization header is set for authenticated requests
+        if self._is_authenticated and self._session.headers.get("Authorization"):
+            self._session.headers["Authorization"] = self._session.headers.get(
+                "Authorization"
+            )
+        return super().request_post(
+            url,
+            payload,
+            json_request=json_request,
+            json_response=json_response,
+            timeout=timeout,
+        )
 
     def _join_url(self, endpoint: str) -> str:
         """Join the base URL with an endpoint using urllib.parse.urljoin.
@@ -152,27 +194,26 @@ class BaseOAuthClient(BaseClient):
 
         """
         logger.info("Logging in to Robinhood...")
-        device_token = generate_device_token()
-        logger.debug("Generated device token: %s", device_token)
 
         if persist_session:
             logger.debug("Session persistence is enabled.")
             if self._login_using_storage():
                 logger.debug("Successfully logged in to Robinhood.")
                 return True
-            else:
-                logger.debug("No stored session found. Proceeding with login.")
+
+        logger.debug("No stored session found. Proceeding with login.")
+        device_token = generate_device_token()
+        logger.debug("Generated device token: %s", device_token)
 
         response = self._login_using_request(
-            username,
-            password,
+            username=username,
+            password=password,
             expiresIn=expiresIn,
             scope=scope,
-            device_token=device_token,
             mfa_code=mfa_code,
         )
 
-        if persist_session:
+        if self._is_authenticated and persist_session:
             logger.debug("Saving authentication session.")
             self._session_storage.store(
                 AuthSession(
@@ -188,11 +229,14 @@ class BaseOAuthClient(BaseClient):
     def _login_using_storage(self) -> bool:
         loaded_session = self._session_storage.load()
         if loaded_session is None:
-            logger.debug("No existing session found.")
             return False
 
         logger.debug("Attempting to log in using stored session...")
-        self._session = loaded_session
+        self._session.headers.update(
+            {
+                "Authorization": f"{loaded_session.token_type} {loaded_session.access_token}"
+            }
+        )
         if self._test_auth_connection():
             self._is_authenticated = True
             logger.debug("Loaded session from storage.")
@@ -238,7 +282,7 @@ class BaseOAuthClient(BaseClient):
         if mfa_code:
             payload["mfa_code"] = mfa_code
 
-        response = self.request_post(API_LOGIN_URL, payload)
+        response = self.request_post(API_LOGIN_URL, payload, json_request=True)
 
         if response is None:
             logger.error("Login failed: No response from Robinhood API.")
@@ -249,7 +293,7 @@ class BaseOAuthClient(BaseClient):
                 "Verification workflow required. Please check your Robinhood Mobile app."
             )
             workflow_id = response["verification_workflow"]["id"]
-            self._validate_sherrif_id(
+            self._validate_sheriff_id(
                 device_token=device_token, workflow_id=workflow_id
             )
             response = self.request_post(API_LOGIN_URL, payload)
@@ -258,7 +302,7 @@ class BaseOAuthClient(BaseClient):
             token = "{0} {1}".format(response["token_type"], response["access_token"])
             self._session.headers.update({"Authorization": token})
             self._is_authenticated = True
-            logger.debug("Logged in with existing session.")
+            logger.debug("Logged in to Robinhood successfully.")
         else:
             if "detail" in response:
                 logger.error("Login failed: %s", response["detail"])
@@ -272,9 +316,8 @@ class BaseOAuthClient(BaseClient):
         logger.debug("Testing authentication connection...")
         res = self.request_get(
             f"{BASE_API_URL}/accounts/",
-            "pagination",
             {"nonzero": "true"},
-            jsonify_data=False,
+            json_response=False,
         )
         res.raise_for_status()
         return True
@@ -294,7 +337,13 @@ class BaseOAuthClient(BaseClient):
         """Retrieve the access token from the session."""
         return self._session.headers.get("Authorization")
 
-    def _validate_sherrif_id(self, device_token: str, workflow_id: str):
+    def _get_sheriff_id(self, data):
+        """Extracts the sheriff verification ID from the response."""
+        if "id" in data:
+            return data["id"]
+        raise Exception("Error: No verification ID returned in user-machine response")
+
+    def _validate_sheriff_id(self, device_token: str, workflow_id: str):
         """Handles Robinhood's verification workflow."""
         logger.debug("Validating sheriff challenge...")
         pathfinder_url = f"{BASE_API_URL}/pathfinder/user_machine/"
@@ -304,7 +353,7 @@ class BaseOAuthClient(BaseClient):
             "input": {"workflow_id": workflow_id},
         }
         machine_data = self.request_post(
-            url=pathfinder_url, payload=machine_payload, json=True
+            url=pathfinder_url, payload=machine_payload, json_request=True
         )
 
         machine_id = machine_data.get("id", None)
@@ -351,7 +400,7 @@ class BaseOAuthClient(BaseClient):
                     challenge_url = f"{BASE_API_URL}/challenge/{challenge_id}/respond/"
                     challenge_payload = {"response": user_code}
                     challenge_response = self.request_post(
-                        url=challenge_url, payload=challenge_payload
+                        url=challenge_url, payload=challenge_payload, json_request=True
                     )
 
                     if challenge_response.get("status") == "validated":
@@ -368,7 +417,7 @@ class BaseOAuthClient(BaseClient):
                     "user_input": {"status": "continue"},
                 }
                 inquiries_response = self.request_post(
-                    url=inquiries_url, payload=inquiries_payload, json=True
+                    url=inquiries_url, payload=inquiries_payload, json_request=True
                 )
                 if (
                     "type_context" in inquiries_response
@@ -378,9 +427,8 @@ class BaseOAuthClient(BaseClient):
                     logger.info("Verification successful!")
                     return
                 else:
-                    time.sleep(
-                        5
-                    )  # **Increase delay between requests to prevent rate limits**
+                    # Increase delay between requests to prevent rate limits
+                    time.sleep(5)
             except requests.exceptions.RequestException as e:
                 time.sleep(5)
                 logger.error("API request failed: %s", e)
@@ -393,7 +441,8 @@ class BaseOAuthClient(BaseClient):
                 logger.info("Retrying workflow status check...")
                 continue
 
-            if not inquiries_response:  # Handle None response
+            # Handle None response
+            if not inquiries_response:
                 time.sleep(5)
                 logger.warning("Error: No response from Robinhood API. Retrying...")
                 retry_attempts -= 1
