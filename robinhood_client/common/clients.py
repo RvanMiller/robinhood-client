@@ -76,6 +76,7 @@ class BaseClient(ABC):
         json_response: bool = True,
         timeout: int = 16,
     ):
+        logger.debug("Making POST request to %s", url)
         res = None
         try:
             full_url = self._join_url(url)
