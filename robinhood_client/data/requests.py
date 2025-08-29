@@ -1,5 +1,6 @@
 from typing import Optional
 from pydantic import BaseModel
+from robinhood_client.common.schema import StockOrder
 
 
 class StockOrderRequest(BaseModel):
@@ -8,14 +9,9 @@ class StockOrderRequest(BaseModel):
 
 
 class StockOrderResponse(BaseModel):
-    id: str
-    instrument: dict
-    quantity: int
-    price: float
-    side: str
-    status: str
-    created_at: str
-    updated_at: str
+    # For single order response, it's just the StockOrder itself
+    # This is a wrapper for consistency
+    pass  # Will be replaced with StockOrder fields or just use StockOrder directly
 
 
 class StockOrdersRequest(BaseModel):
@@ -25,6 +21,6 @@ class StockOrdersRequest(BaseModel):
 
 
 class StockOrdersResponse(BaseModel):
-    results: list[StockOrderResponse]
-    next: str | None
-    previous: str | None
+    results: list[StockOrder]
+    next: str | None = None
+    previous: str | None = None
