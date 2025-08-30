@@ -276,6 +276,42 @@ class TestOrdersDataClient(unittest.TestCase):
             "/orders/", params={"account_number": "empty_account", "page_size": 10}
         )
 
+    @patch.object(OrdersDataClient, "request_get")
+    def test_get_stock_orders_with_date_object(self, mock_request_get):
+        """Test getting stock orders with date object instead of string."""
+        from datetime import date
+        
+        # Arrange
+        mock_request_get.return_value = {
+            "results": [self._create_complete_order_data("order123")],
+            "next": None,
+            "previous": None,
+        }
+
+        request = StockOrdersRequest(
+            account_number="account123", 
+            start_date=date(2025, 1, 1),  # Pass date object instead of string
+            page_size=25
+        )
+
+        # Act
+        response = self.client.get_stock_orders(request)
+
+        # Assert
+        self.assertIsInstance(response, StockOrdersResponse)
+        self.assertEqual(len(response.results), 1)
+        self.assertEqual(response.results[0].id, "order123")
+
+        # Verify that the date object was converted to string format for the API
+        mock_request_get.assert_called_once_with(
+            "/orders/",
+            params={
+                "account_number": "account123",
+                "start_date": "2025-01-01",  # Should be converted to string
+                "page_size": 25,
+            },
+        )
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -1,3 +1,4 @@
+from datetime import date
 from typing import List, Optional
 
 from robinhood_client.common.schema import StockOrder
@@ -34,7 +35,7 @@ class GetStockOrdersResponse(BaseCursorResponse):
 #
 class GetOptionOrdersRequest(BaseCursorRequest):
     symbol: str
-    expirationDate: Optional[str] = None
+    expirationDate: Optional[date | str] = None
     strike: Optional[float] = None
     optionType: Optional[str] = None
 

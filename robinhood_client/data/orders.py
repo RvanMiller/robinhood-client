@@ -44,7 +44,7 @@ class OrdersDataClient(BaseOAuthClient):
         Args:
             request: A StockOrdersRequest containing:
                 account_number: The Robinhood account number
-                start_date: Optional date filter for orders
+                start_date: Optional date filter for orders (accepts string or date object)
                 page_size: Optional pagination page size
 
         Returns:
@@ -54,7 +54,11 @@ class OrdersDataClient(BaseOAuthClient):
         endpoint = "/orders/"
 
         if request.start_date is not None:
-            params["start_date"] = request.start_date
+            # Convert date object to string if needed, API expects string format
+            if hasattr(request.start_date, 'isoformat'):
+                params["start_date"] = request.start_date.isoformat()
+            else:
+                params["start_date"] = request.start_date
 
         if request.page_size is not None:
             params["page_size"] = request.page_size
