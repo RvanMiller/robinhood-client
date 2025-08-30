@@ -9,16 +9,40 @@ that do not have a noticable effect on performance are generally not accepted.
 1. Make sure that if you make any grammar or documentation changes, that they are in a seperate commit from
    any code changes.
 2. Make sure you update __init__.py to import new functions that are created.
-3. Make sure to update the version number in setup.py. The version number is in the format XX.YY.ZZ, where the
+3. Make sure to update the version number in pyproject.toml. The version number is in the format XX.YY.ZZ, where the
    XX is only changed when there is a fundamental and major change, YY is changed for features added, and ZZ is changed
    for bug fixes. When updating a number, all the numbers to the right get changed to zero. i.e. 1.23.50 => 1.24.0. Numbers
    are also allowed to go as high as you want, so 1.65289.0 is a valid version number.
 4. Write tests to cover the functionality of code you added.
 5. After submitting a pull request, please be on the lookout for any messages from me about things that need to be fixed before I merge the branch.
 
+## Development Setup
+
+This project uses Poetry for dependency management. To set up your development environment:
+
+1. Install Poetry (if you haven't already):
+   ```bash
+   pip install poetry
+   ```
+
+2. Install dependencies:
+   ```bash
+   poetry install
+   ```
+
+3. Activate the virtual environment:
+   ```bash
+   poetry shell
+   ```
+
 ## Testing
 
-Make sure to install pytest and pytest-dotenv from PyPi and run every test in test_github_actions.py. Add new tests to cover the changes you have made, but not if you need to test placing orders. Currently there is no way to submit fake orders, so any tests for orders would submit a real order.
+Make sure to run tests using Poetry:
+```bash
+poetry run pytest tests
+```
+
+Add new tests to cover the changes you have made, but not if you need to test placing orders. Currently there is no way to submit fake orders, so any tests for orders would submit a real order.
 
 ## Code of Conduct
 
