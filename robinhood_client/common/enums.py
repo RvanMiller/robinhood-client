@@ -48,6 +48,7 @@ class TriggerType(Enum):
     """Enumeration for trigger types."""
 
     IMMEDIATE = "immediate"
+    STOP = "stop"
     # TODO: Add others
 
 

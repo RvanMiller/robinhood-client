@@ -13,7 +13,7 @@ from robinhood_client.common.enums import (
 )
 
 
-class NotionalCurrency(BaseModel):
+class Currency(BaseModel):
     amount: str | float
     currency_code: CurrencyCode | str
     currency_id: str
@@ -29,12 +29,24 @@ class StockOrderExecution(BaseModel):
     ipo_access_execution_rank: Optional[str] = None  # TODO: Confirm type
     trade_execution_date: date | str
     fees: str | float
-    sec_fee: str | float
-    taf_fee: str | float
-    cat_fee: str | float
+    sec_fee: Optional[str | float] = None
+    taf_fee: Optional[str | float] = None
+    cat_fee: Optional[str | float] = None
     sales_taxes: List[str | float]  # TODO: Confirm type
 
+
 class StockOrder(BaseModel):
+    """Represents a stock order.
+
+    Args:
+        id (str): The unique identifier for the order.
+        ref_id (str): The reference identifier for the order.
+        url (str): The URL for the order details.
+        dollar_based_amount (NotionalCurrency): The dollar-based amount for the order when
+            Stock is bought based on Dollars and not number of Shares.
+
+    """
+
     id: str
     ref_id: str
     url: str
@@ -75,9 +87,9 @@ class StockOrder(BaseModel):
     last_trail_price: Optional[str | float] = None
     last_trail_price_updated_at: Optional[datetime | str] = None  # TODO: Confirm type
     last_trail_price_source: Optional[str] = None  # TODO: Confirm type
-    dollar_based_amount: Optional[str | float] = None  # TODO: Confirm type
-    total_notional: Optional[NotionalCurrency] = None
-    executed_notional: Optional[NotionalCurrency] = None
+    dollar_based_amount: Optional[Currency] = None
+    total_notional: Optional[Currency] = None
+    executed_notional: Optional[Currency] = None
     investment_schedule_id: Optional[str] = None
     is_ipo_access_order: bool
     ipo_access_cancellation_reason: Optional[str] = None  # TODO: Confirm type
@@ -98,4 +110,13 @@ class StockOrder(BaseModel):
     replaces: Optional[str] = None  # TODO: Confirm type
     user_cancel_request_state: str  # e.g. "order_finalized"
     tax_lot_selection_type: Optional[str] = None  # TODO: Confirm type
-    position_effect: PositionEffect
+    position_effect: Optional[PositionEffect] = None
+
+
+class StockOrdersPageResponse(BaseModel):
+    """Response model for paginated stock orders."""
+
+    results: List[StockOrder]
+    next: Optional[str] = None
+    previous: Optional[str] = None
+    count: Optional[int] = None
