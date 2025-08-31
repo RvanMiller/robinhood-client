@@ -14,7 +14,6 @@ class CursorResponse(BaseModel, Generic[T]):
     results: list[T]
     next: Optional[str] = None
     previous: Optional[str] = None
-    count: Optional[int] = None
 
 
 class Cursor(Generic[T], ABC):
@@ -188,12 +187,6 @@ class PaginatedResult(Generic[T]):
         """Get the previous page cursor URL."""
         current_page = self._cursor.current_page()
         return current_page.previous if current_page else None
-
-    @property
-    def count(self) -> Optional[int]:
-        """Get the total count if available."""
-        current_page = self._cursor.current_page()
-        return current_page.count if current_page else None
 
     def cursor(self) -> Cursor[T]:
         """Get the cursor for advanced pagination operations."""

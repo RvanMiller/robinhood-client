@@ -26,11 +26,9 @@ def example_traditional_pagination():
     for order in orders_response.results:
         print(f"  Order {order.id}: {order.state} - {order.side} {order.quantity}")
 
-    print("(Commented out - add credentials to test)")
-
 
 def example_cursor_pagination():
-    """Example using the new cursor-based pagination."""
+    """Example using cursor-based pagination."""
     print("\n=== Cursor Pattern Example ===")
 
     session_storage = FileSystemSessionStorage()
@@ -40,13 +38,12 @@ def example_cursor_pagination():
 
     request = StockOrdersRequest(account_number=account_number, page_size=5)
 
-    # New cursor approach
+    # Cursor approach
     response = client.get_stock_orders_cursor(request)
 
     print("--- Method 1: Direct access to current page ---")
     print(f"Current page has {len(response.results)} orders")
     print(f"Has next page: {response.cursor().has_next()}")
-    print(f"Total count: {response.count}")
 
     # Process current page only
     for order in response.results:
