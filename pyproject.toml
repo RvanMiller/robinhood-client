@@ -1,58 +1,132 @@
-[build-system]
-requires = ["setuptools >= 77.0.3"]
-build-backend = "setuptools.build_meta"
-
-[tool.setuptools]
-# Include package data files if any are specified (e.g., via MANIFEST.in or package_data)
-include-package-data = true
-
-# Use the src directory as the package root
-[tool.setuptools.packages.find]
-where = ["src"]
-include = ["*"]
-exclude = [
-    "tests*",
-    "docs*",
-    "examples*",
-]
-
 [project]
 name = "robinhood-client"
-version = "1.0.0"
-description = "An unofficial Python client for Robinhood API"
-readme = { file = "README.md", content-type = "text/markdown" }
-license = "MIT"
-authors = [
-    { name = "Ryan Miller", email = "mrzodge@gmail.com" },
-]
-keywords = ["robinhood", "http client", "api", "stocks", "options", "trading", "crypto", "investing"]
+version = "0.1.0"
+description = "An unofficial Python REST client for Robinhood API."
+license = { file = "LICENSE" }
+readme = "README.md"
 requires-python = ">=3.12"
-dependencies = [
-    "requests",
-    "pyotp",
-    "python-dotenv",
-    "cryptography",
+authors = [
+    {name = "Ryan Miller", email = "mrzodge@gmail.com"}
 ]
+keywords = [
+    "robinhood",
+    "api",
+    "client",
+    "stocks",
+    "trading",
+    "crypto",
+    "investing"
+]
+
+[tool.poetry.dependencies]
+python = ">=3.12"
+cryptography = "~45.0.6"
+pydantic = "~2.11.7"
+pyotp = "~2.9.0"
+python-dotenv = "~1.1.1"
+requests = "~2.32.4"
+
+[tool.poetry.group.dev.dependencies]
+pytest = "~8.4.1"
+ruff = "~0.12.9"
+pytest-dotenv = "~0.5.2"
+python-dateutil = "~2.9.0.post0"
+
+[tool.poetry]
+repository = "https://github.com/RvanMiller/robinhood-client"
+homepage = "https://github.com/RvanMiller/robinhood-client"
+packages = [{include = "robinhood_client"}]
 classifiers = [
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3 :: Only",
     "Operating System :: OS Independent",
 ]
 
-[project.urls]
-Homepage = "https://github.com/RvanMiller/robinhood-client"
-Repository = "https://github.com/RvanMiller/robinhood-client"
-
-[project.optional-dependencies]
-test = [
-    "pytest",
-    "ruff",
-    "pytest-dotenv",
-    "python-dateutil",
-]
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
 
 [tool.pytest.ini_options]
 python_classes = ["Test", "Describe"]
 python_functions = ["test_", "it_", "and_", "but_", "they_"]
-python_files = ["test_*.py", "*_tests.py"]
-testpaths = ["tests",]
+python_files = ["*_tests.py"]
+testpaths = ["tests"]
+
+[tool.ruff]
+# Exclude a variety of commonly ignored directories.
+exclude = [
+    ".bzr",
+    ".direnv",
+    ".eggs",
+    ".git",
+    ".git-rewrite",
+    ".hg",
+    ".ipynb_checkpoints",
+    ".mypy_cache",
+    ".nox",
+    ".pants.d",
+    ".pyenv",
+    ".pytest_cache",
+    ".pytype",
+    ".ruff_cache",
+    ".svn",
+    ".tox",
+    ".venv",
+    ".vscode",
+    "__pypackages__",
+    "_build",
+    "buck-out",
+    "build",
+    "dist",
+    "node_modules",
+    "site-packages",
+    "venv",
+]
+
+# Same as Black.
+line-length = 88
+indent-width = 4
+
+# Assume Python 3.9
+target-version = "py39"
+
+[tool.ruff.lint]
+# Enable Pyflakes (`F`) and a subset of the pycodestyle (`E`) codes by default.
+# Unlike Flake8, Ruff doesn't enable pycodestyle warnings (`W`) or
+# McCabe complexity (`C901`) by default.
+select = ["E4", "E7", "E9", "F"]
+ignore = []
+
+# Allow fix for all enabled rules (when `--fix`) is provided.
+fixable = ["ALL"]
+unfixable = []
+
+# Allow unused variables when underscore-prefixed.
+dummy-variable-rgx = "^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$"
+
+[tool.ruff.format]
+# Like Black, use double quotes for strings.
+quote-style = "double"
+
+# Like Black, indent with spaces, rather than tabs.
+indent-style = "space"
+
+# Like Black, respect magic trailing commas.
+skip-magic-trailing-comma = false
+
+# Like Black, automatically detect the appropriate line ending.
+line-ending = "auto"
+
+# Enable auto-formatting of code examples in docstrings. Markdown,
+# reStructuredText code/literal blocks and doctests are all supported.
+#
+# This is currently disabled by default, but it is planned for this
+# to be opt-out in the future.
+docstring-code-format = false
+
+# Set the line length limit used when formatting code snippets in
+# docstrings.
+#
+# This only has an effect when the `docstring-code-format` setting is
+# enabled.
+docstring-code-line-length = "dynamic"
