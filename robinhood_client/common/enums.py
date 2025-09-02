@@ -40,7 +40,7 @@ class TimeInForce(Enum):
     """Enumeration for time in force options."""
 
     GFD = "gfd"  # Good for day
-    GTC = "gtc"  # Good till cancelled 
+    GTC = "gtc"  # Good till cancelled
     # TODO: Add others
 
 

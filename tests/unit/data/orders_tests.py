@@ -89,7 +89,7 @@ class TestOrdersDataClient(unittest.TestCase):
             "tax_lot_selection_type": None,
             "position_effect": "open",
         }
-        
+
         # Apply any overrides
         default_data.update(overrides)
         return default_data
@@ -280,7 +280,7 @@ class TestOrdersDataClient(unittest.TestCase):
     def test_get_stock_orders_with_date_object(self, mock_request_get):
         """Test getting stock orders with date object instead of string."""
         from datetime import date
-        
+
         # Arrange
         mock_request_get.return_value = {
             "results": [self._create_complete_order_data("order123")],
@@ -289,9 +289,9 @@ class TestOrdersDataClient(unittest.TestCase):
         }
 
         request = StockOrdersRequest(
-            account_number="account123", 
+            account_number="account123",
             start_date=date(2025, 1, 1),  # Pass date object instead of string
-            page_size=25
+            page_size=25,
         )
 
         # Act

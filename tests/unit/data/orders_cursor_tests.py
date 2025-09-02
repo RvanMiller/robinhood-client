@@ -76,29 +76,29 @@ class TestOrdersDataClientCursor:
             "replaces": None,
             "user_cancel_request_state": "order_finalized",
             "tax_lot_selection_type": None,
-            "position_effect": "open"
+            "position_effect": "open",
         }
 
-    @patch('robinhood_client.data.orders.OrdersDataClient.__init__', return_value=None)
+    @patch("robinhood_client.data.orders.OrdersDataClient.__init__", return_value=None)
     def test_get_stock_orders_cursor_returns_paginated_result(self, mock_init):
         """Test that get_stock_orders_cursor returns a PaginatedResult."""
         # Setup
         client = OrdersDataClient.__new__(OrdersDataClient)
-        
+
         # Mock the request_get method to return mock data
         mock_response = {
             "results": [self.create_mock_stock_order_data("order1")],
             "next": "https://api.robinhood.com/orders/?cursor=next",
             "previous": None,
-            "count": 1
+            "count": 1,
         }
         client.request_get = Mock(return_value=mock_response)
-        
+
         request = StockOrdersRequest(account_number="123456", page_size=10)
-        
+
         # Execute
         result = client.get_stock_orders_cursor(request)
-        
+
         # Verify
         assert isinstance(result, PaginatedResult)
         assert len(result.results) == 1
@@ -106,75 +106,75 @@ class TestOrdersDataClientCursor:
         assert result.results[0].id == "order1"
         assert result.next == "https://api.robinhood.com/orders/?cursor=next"
 
-    @patch('robinhood_client.data.orders.OrdersDataClient.__init__', return_value=None)
+    @patch("robinhood_client.data.orders.OrdersDataClient.__init__", return_value=None)
     def test_cursor_iteration_across_pages(self, mock_init):
         """Test that cursor can iterate across multiple pages."""
         # Setup
         client = OrdersDataClient.__new__(OrdersDataClient)
-        
+
         # Mock responses for pagination
         page1_response = {
             "results": [self.create_mock_stock_order_data("order1")],
             "next": "https://api.robinhood.com/orders/?cursor=page2",
             "previous": None,
-            "count": 2
+            "count": 2,
         }
-        
+
         page2_response = {
             "results": [self.create_mock_stock_order_data("order2")],
             "next": None,
             "previous": "https://api.robinhood.com/orders/?cursor=page1",
-            "count": 2
+            "count": 2,
         }
-        
+
         client.request_get = Mock(side_effect=[page1_response, page2_response])
-        
+
         request = StockOrdersRequest(account_number="123456", page_size=1)
         result = client.get_stock_orders_cursor(request)
-        
+
         # Execute - iterate through all pages
         all_orders = list(result)
-        
+
         # Verify
         assert len(all_orders) == 2
         assert all_orders[0].id == "order1"
         assert all_orders[1].id == "order2"
         assert client.request_get.call_count == 2
 
-    @patch('robinhood_client.data.orders.OrdersDataClient.__init__', return_value=None)
+    @patch("robinhood_client.data.orders.OrdersDataClient.__init__", return_value=None)
     def test_cursor_manual_pagination(self, mock_init):
         """Test manual pagination with cursor methods."""
         # Setup
         client = OrdersDataClient.__new__(OrdersDataClient)
-        
+
         page1_response = {
             "results": [self.create_mock_stock_order_data("order1")],
             "next": "https://api.robinhood.com/orders/?cursor=page2",
             "previous": None,
-            "count": 2
+            "count": 2,
         }
-        
+
         page2_response = {
             "results": [self.create_mock_stock_order_data("order2")],
             "next": None,
             "previous": "https://api.robinhood.com/orders/?cursor=page1",
-            "count": 2
+            "count": 2,
         }
-        
+
         client.request_get = Mock(side_effect=[page1_response, page2_response])
-        
+
         request = StockOrdersRequest(account_number="123456", page_size=1)
         result = client.get_stock_orders_cursor(request)
-        
+
         # Execute manual pagination
         cursor = result.cursor()
-        
+
         # Check first page
         first_page = cursor.current_page()
         assert len(first_page.results) == 1
         assert first_page.results[0].id == "order1"
         assert cursor.has_next()
-        
+
         # Move to next page
         second_page = cursor.next()
         assert len(second_page.results) == 1
@@ -182,26 +182,27 @@ class TestOrdersDataClientCursor:
         assert not cursor.has_next()
         assert cursor.has_previous()
 
-    @patch('robinhood_client.data.orders.OrdersDataClient.__init__', return_value=None)
+    @patch("robinhood_client.data.orders.OrdersDataClient.__init__", return_value=None)
     def test_traditional_get_stock_orders_still_works(self, mock_init):
         """Test that the traditional get_stock_orders method still works."""
         # Setup
         client = OrdersDataClient.__new__(OrdersDataClient)
-        
+
         mock_response = {
             "results": [self.create_mock_stock_order_data("order1")],
             "next": "https://api.robinhood.com/orders/?cursor=next",
-            "previous": None
+            "previous": None,
         }
         client.request_get = Mock(return_value=mock_response)
-        
+
         request = StockOrdersRequest(account_number="123456", page_size=10)
-        
+
         # Execute traditional method
         result = client.get_stock_orders(request)
-        
+
         # Verify it returns the traditional response type
         from robinhood_client.data.requests import StockOrdersResponse
+
         assert isinstance(result, StockOrdersResponse)
         assert len(result.results) == 1
         assert isinstance(result.results[0], StockOrder)

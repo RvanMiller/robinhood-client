@@ -179,6 +179,7 @@ class TestBaseOAuthClient(unittest.TestCase):
         self, mock_login_using_request, mock_login_using_storage
     ):
         """Test login with username and password."""
+
         # Arrange
         def mock_login_side_effect(*args, **kwargs):
             # Simulate the real behavior of setting _is_authenticated = True
@@ -283,7 +284,9 @@ class TestBaseOAuthClient(unittest.TestCase):
             "token_request_path": "/login",
             "create_read_only_secondary_token": True,
         }
-        mock_request_post.assert_called_with(API_LOGIN_URL, expected_payload, json_request=True)
+        mock_request_post.assert_called_with(
+            API_LOGIN_URL, expected_payload, json_request=True
+        )
 
     @patch.object(BaseOAuthClient, "request_post")
     def test_login_using_request_with_mfa(self, mock_request_post):
@@ -320,7 +323,9 @@ class TestBaseOAuthClient(unittest.TestCase):
             "token_request_path": "/login",
             "create_read_only_secondary_token": True,
         }
-        mock_request_post.assert_called_with(API_LOGIN_URL, expected_payload, json_request=True)
+        mock_request_post.assert_called_with(
+            API_LOGIN_URL, expected_payload, json_request=True
+        )
 
     # TODO: Causes tests to freeze / timeout
     # @patch.object(BaseOAuthClient, "request_post")
