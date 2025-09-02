@@ -26,21 +26,16 @@ The CI/CD pipeline consists of two main jobs:
   - Package building
   - Publishing to Test PyPI
 
-## Required GitHub Secrets
+## Required GitHub Configuration
 
-You need to configure the following secret in your GitHub repository:
+### Trusted Publishing Setup
+This repository uses PyPI's Trusted Publishing feature, which eliminates the need for API tokens. The publishing is authenticated using GitHub's OIDC tokens.
 
-### TEST_PYPI_API_TOKEN
-1. Go to [Test PyPI](https://test.pypi.org/)
-2. Create an account or log in
-3. Go to Account Settings → API tokens
-4. Create a new API token with upload permissions
-5. Copy the token (starts with `pypi-`)
-6. In your GitHub repository:
-   - Go to Settings → Secrets and variables → Actions
-   - Click "New repository secret"
-   - Name: `TEST_PYPI_API_TOKEN`
-   - Value: Paste your Test PyPI token
+**No secrets configuration required!** The workflow uses trusted publishing with the following setup:
+- Publisher: GitHub Actions
+- Repository: `RvanMiller/robinhood-client` 
+- Workflow: `ci-publish.yml`
+- Environment: Not specified (publishes from main branch)
 
 ## How It Works
 
@@ -51,7 +46,8 @@ You need to configure the following secret in your GitHub repository:
 
 ### For Main Branch Pushes (After PR Merge)
 - All tests run again to ensure main branch stability
-- If tests pass, the package is automatically built and published to Test PyPI
+- If tests pass, the package is automatically built and published to Test PyPI using trusted publishing
+- No manual token management required - authentication happens automatically via GitHub OIDC
 - Version bumping is handled by Poetry based on `pyproject.toml`
 
 ## Local Development
@@ -101,14 +97,15 @@ To publish a new version:
 
 ## Test PyPI vs PyPI
 
-Currently configured for **Test PyPI** only:
+Currently configured for **Test PyPI** with trusted publishing:
 - Test PyPI URL: https://test.pypi.org/
 - Package URL will be: https://test.pypi.org/project/robinhood-client/
+- Authentication: GitHub OIDC (no tokens needed)
 
 When ready for production, you can:
-1. Create a production PyPI account and API token
-2. Add `PYPI_API_TOKEN` secret to GitHub
-3. Modify the workflow to publish to PyPI instead of Test PyPI
+1. Configure trusted publishing for production PyPI in your PyPI account settings
+2. Change the `repository-url` in the workflow from Test PyPI to production PyPI (remove the repository-url line entirely)
+3. The same trusted publishing setup will work for production PyPI
 
 ## Troubleshooting
 
@@ -117,9 +114,11 @@ When ready for production, you can:
 - Run tests locally to debug: `poetry run pytest tests/unit/ -v`
 
 ### Publishing Failing
-- Verify `TEST_PYPI_API_TOKEN` secret is correctly set
-- Ensure the version in `pyproject.toml` hasn't been published before
-- Check that the package name `robinhood-client` is available on Test PyPI
+- Verify that trusted publishing is correctly configured in your Test PyPI account settings
+- Ensure the repository name, workflow name, and branch match your trusted publishing configuration
+- Check that the version in `pyproject.toml` hasn't been published before
+- Verify that the package name `robinhood-client` is available on Test PyPI
+- Make sure the workflow has `id-token: write` permissions
 
 ### Linting Errors
 - Run `poetry run ruff check . --fix` to auto-fix issues
