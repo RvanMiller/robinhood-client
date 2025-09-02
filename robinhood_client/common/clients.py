@@ -6,7 +6,7 @@ import time
 import requests
 
 from abc import ABC
-from requests import Session
+from requests import Response, Session
 from urllib.parse import urljoin
 
 from .auth import generate_device_token
@@ -53,7 +53,7 @@ class BaseClient(ABC):
         url: str,
         params: dict = None,
         json_response: bool = True,
-    ) -> list[dict]:
+    ) -> list[dict] | Response:
         logger.debug("Making GET request to %s", url)
         res = None
         try:
@@ -66,7 +66,7 @@ class BaseClient(ABC):
                 return res
         except Exception as message:
             logger.error("Error in BaseClient request_get: %s", message)
-            return {}
+            return res
 
     def request_post(
         self,
@@ -212,6 +212,7 @@ class BaseOAuthClient(BaseClient):
             expiresIn=expiresIn,
             scope=scope,
             mfa_code=mfa_code,
+            device_token=device_token,
         )
 
         if self._is_authenticated and persist_session:
@@ -320,7 +321,8 @@ class BaseOAuthClient(BaseClient):
             {"nonzero": "true"},
             json_response=False,
         )
-        res.raise_for_status()
+        if isinstance(res, Response):
+            res.raise_for_status()
         return True
 
     def logout(self):
