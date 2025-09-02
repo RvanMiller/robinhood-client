@@ -18,16 +18,19 @@ Trusted Publishing is a security feature that allows you to publish packages to 
 ### 1. Test PyPI Setup (Current Configuration)
 
 1. Go to [Test PyPI](https://test.pypi.org/) and log in or create an account
-2. Navigate to your account settings
-3. Go to the "Publishing" section
-4. Click "Add a new pending publisher"
-5. Fill in the form:
+2. Navigate to your account settings: https://test.pypi.org/manage/account/publishing/
+3. Click "Add a new pending publisher"
+4. Fill in the form with **EXACTLY** these values:
    - **PyPI project name**: `robinhood-client`
    - **Owner**: `RvanMiller`
    - **Repository name**: `robinhood-client`
    - **Workflow filename**: `ci-publish.yml`
-   - **Environment name**: Leave empty (publishes from main branch)
-6. Click "Add"
+   - **Environment name**: Leave empty
+5. Click "Add"
+
+**Important**: The values must match exactly what GitHub sends in the OIDC claims. Based on your error, use these exact values:
+- Repository: `RvanMiller/robinhood-client`
+- Workflow: `ci-publish.yml` (just the filename, not the full path)
 
 ### 2. Production PyPI Setup (When Ready)
 
@@ -63,6 +66,33 @@ After setup, when you push to the main branch:
 4. No manual intervention or secret configuration required
 
 ## Troubleshooting
+
+### "Publisher with matching claims was not found" Error
+
+If you get this exact error, it means the trusted publisher configuration doesn't match the workflow claims. Here's how to fix it:
+
+1. **Check your Test PyPI trusted publisher configuration**:
+   - Go to https://test.pypi.org/manage/account/publishing/
+   - Look for an entry with project name `robinhood-client`
+   - If it doesn't exist, add it using the exact values above
+   - If it exists, verify the configuration matches exactly
+
+2. **Verify these exact claim values in your Test PyPI config**:
+   - **Repository**: `RvanMiller/robinhood-client`
+   - **Workflow**: `ci-publish.yml`
+   - **Environment**: (leave empty)
+
+3. **If the publisher exists but still fails**:
+   - Delete the existing publisher configuration
+   - Create a new one with the exact values above
+   - Wait a few minutes for the configuration to propagate
+
+### Package Name Issues
+
+If you get a "project does not exist" error:
+1. The package name `robinhood-client` might not be available
+2. You may need to choose a different name (e.g., `robinhood-api-client`)
+3. Update the name in `pyproject.toml` and reconfigure trusted publishing
 
 ### Common Issues
 
