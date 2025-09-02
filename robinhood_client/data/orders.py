@@ -56,7 +56,7 @@ class OrdersDataClient(BaseOAuthClient):
 
         if request.start_date is not None:
             # Convert date object to string if needed, API expects string format
-            if hasattr(request.start_date, 'isoformat'):
+            if hasattr(request.start_date, "isoformat"):
                 params["start_date"] = request.start_date.isoformat()
             else:
                 params["start_date"] = request.start_date
@@ -70,7 +70,9 @@ class OrdersDataClient(BaseOAuthClient):
         res = self.request_get(endpoint, params=params)
         return StockOrdersResponse(**res)
 
-    def get_stock_orders_cursor(self, request: StockOrdersRequest) -> PaginatedResult[StockOrder]:
+    def get_stock_orders_cursor(
+        self, request: StockOrdersRequest
+    ) -> PaginatedResult[StockOrder]:
         """Gets a cursor-based paginated result for stock orders.
 
         This method returns a PaginatedResult object that supports both direct access
@@ -91,19 +93,19 @@ class OrdersDataClient(BaseOAuthClient):
         Example:
             >>> request = StockOrdersRequest(account_number="123")
             >>> result = client.get_stock_orders_cursor(request)
-            >>> 
+            >>>
             >>> # Access current page
             >>> current_orders = result.results
-            >>> 
+            >>>
             >>> # Iterate through all pages
             >>> for order in result:
             >>>     print(f"Order {order.id}: {order.state}")
-            >>> 
+            >>>
             >>> # Manual pagination
             >>> cursor = result.cursor()
             >>> if cursor.has_next():
             >>>     next_page = cursor.next()
-            >>> 
+            >>>
             >>> # Get all orders from all pages
             >>> all_orders = result.cursor().all()
         """
@@ -112,7 +114,7 @@ class OrdersDataClient(BaseOAuthClient):
 
         if request.start_date is not None:
             # Convert date object to string if needed, API expects string format
-            if hasattr(request.start_date, 'isoformat'):
+            if hasattr(request.start_date, "isoformat"):
                 params["start_date"] = request.start_date.isoformat()
             else:
                 params["start_date"] = request.start_date
@@ -128,7 +130,7 @@ class OrdersDataClient(BaseOAuthClient):
             client=self,
             endpoint=endpoint,
             response_model=StockOrdersPageResponse,
-            base_params=params
+            base_params=params,
         )
 
         return PaginatedResult(cursor)

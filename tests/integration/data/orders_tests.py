@@ -381,7 +381,9 @@ def test_get_stock_order(authenticated_client: OrdersDataClient, account_number:
     print("✓ Single order matches original order from list")
 
 
-def test_get_stock_orders_cursor_basic(authenticated_client: OrdersDataClient, account_number: str):
+def test_get_stock_orders_cursor_basic(
+    authenticated_client: OrdersDataClient, account_number: str
+):
     """Integration test for cursor-based stock orders retrieval."""
     # Create a request for recent orders
     one_week_ago = (datetime.now() - timedelta(days=7)).strftime("%Y-%m-%d")
@@ -395,6 +397,7 @@ def test_get_stock_orders_cursor_basic(authenticated_client: OrdersDataClient, a
     # Verify the result structure
     assert result is not None
     from robinhood_client.common.cursor import PaginatedResult
+
     assert isinstance(result, PaginatedResult)
 
     # Verify current page access
@@ -409,24 +412,26 @@ def test_get_stock_orders_cursor_basic(authenticated_client: OrdersDataClient, a
     if current_page_results:
         first_order = current_page_results[0]
         assert isinstance(first_order, StockOrder)
-        assert hasattr(first_order, 'id')
-        assert hasattr(first_order, 'state')
-        assert hasattr(first_order, 'side')
-        
+        assert hasattr(first_order, "id")
+        assert hasattr(first_order, "state")
+        assert hasattr(first_order, "side")
+
         print(f"✓ First order: {first_order.id} - {first_order.state}")
 
     # Test cursor navigation properties
     cursor = result.cursor()
     current_page = cursor.current_page()
     assert current_page is not None
-    assert hasattr(current_page, 'results')
-    assert hasattr(current_page, 'next')
-    assert hasattr(current_page, 'previous')
+    assert hasattr(current_page, "results")
+    assert hasattr(current_page, "next")
+    assert hasattr(current_page, "previous")
 
     print("✓ Cursor basic functionality verified")
 
 
-def test_get_stock_orders_cursor_iteration(authenticated_client: OrdersDataClient, account_number: str):
+def test_get_stock_orders_cursor_iteration(
+    authenticated_client: OrdersDataClient, account_number: str
+):
     """Integration test for iterating through multiple pages with cursor."""
     # Create a request with small page size to test pagination
     one_week_ago = (datetime.now() - timedelta(days=7)).strftime("%Y-%m-%d")
@@ -440,22 +445,22 @@ def test_get_stock_orders_cursor_iteration(authenticated_client: OrdersDataClien
     # Test iteration through all pages
     all_orders_via_iteration = []
     page_count = 0
-    
+
     cursor = result.cursor()
     while True:
         current_page = cursor.current_page()
         page_count += 1
         print(f"Page {page_count}: {len(current_page.results)} orders")
-        
+
         for order in current_page.results:
             all_orders_via_iteration.append(order)
             assert isinstance(order, StockOrder)
-        
+
         if not cursor.has_next():
             break
-        
+
         cursor.next()
-        
+
         # Safety check to prevent infinite loops in tests
         if page_count >= 5:
             print("Stopping at page 5 for test safety")
@@ -464,7 +469,7 @@ def test_get_stock_orders_cursor_iteration(authenticated_client: OrdersDataClien
     # # Test automatic iteration
     # cursor.reset()
     # all_orders_auto = list(result)
-    
+
     # # Both methods should return the same orders (up to the page limit we set)
     # if page_count < 5:  # Only compare if we didn't hit our safety limit
     #     assert len(all_orders_via_iteration) == len(all_orders_auto)
@@ -475,7 +480,9 @@ def test_get_stock_orders_cursor_iteration(authenticated_client: OrdersDataClien
     # print(f"✓ Auto iteration: {len(all_orders_auto)} orders")
 
 
-def test_get_stock_orders_cursor_compatibility(authenticated_client: OrdersDataClient, account_number: str):
+def test_get_stock_orders_cursor_compatibility(
+    authenticated_client: OrdersDataClient, account_number: str
+):
     """Integration test to verify cursor and traditional methods return same data."""
     # Create identical requests
     one_week_ago = (datetime.now() - timedelta(days=7)).strftime("%Y-%m-%d")
@@ -489,14 +496,16 @@ def test_get_stock_orders_cursor_compatibility(authenticated_client: OrdersDataC
 
     # Verify both return the same first page data
     assert len(traditional_response.results) == len(cursor_result.results)
-    
+
     # Compare pagination URLs
     assert traditional_response.next == cursor_result.next
     assert traditional_response.previous == cursor_result.previous
 
     # If orders exist, verify they're the same
     if traditional_response.results and cursor_result.results:
-        for trad_order, cursor_order in zip(traditional_response.results, cursor_result.results):
+        for trad_order, cursor_order in zip(
+            traditional_response.results, cursor_result.results
+        ):
             assert trad_order.id == cursor_order.id
             assert trad_order.state == cursor_order.state
             assert trad_order.side == cursor_order.side

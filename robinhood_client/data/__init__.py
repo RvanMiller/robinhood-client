@@ -6,6 +6,6 @@ from .requests import StockOrdersRequest, StockOrderRequest, StockOrdersResponse
 __all__ = [
     "OrdersDataClient",
     "StockOrdersRequest",
-    "StockOrderRequest", 
+    "StockOrderRequest",
     "StockOrdersResponse",
 ]

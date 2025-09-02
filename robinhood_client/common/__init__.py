@@ -6,7 +6,7 @@ from .session import SessionStorage, FileSystemSessionStorage, AuthSession
 
 __all__ = [
     "Cursor",
-    "ApiCursor", 
+    "ApiCursor",
     "PaginatedResult",
     "CursorResponse",
     "StockOrder",

@@ -1,7 +1,12 @@
 import pickle
 import tempfile
 from unittest.mock import MagicMock
-from robinhood_client.common.session import AuthSession, FileSystemSessionStorage, AWSS3SessionStorage
+from robinhood_client.common.session import (
+    AuthSession,
+    FileSystemSessionStorage,
+    AWSS3SessionStorage,
+)
+
 
 class TestFileSystemSessionStorage:
     def setup_method(self):
@@ -9,14 +14,19 @@ class TestFileSystemSessionStorage:
         self.storage = FileSystemSessionStorage(
             file_path=self.temp_dir.name,
             session_dir=".tokens",
-            session_file="session_test.pkl"
+            session_file="session_test.pkl",
         )
 
     def teardown_method(self):
         self.temp_dir.cleanup()
 
     def test_store_and_load(self):
-        session = AuthSession(token_type="Bearer", access_token="abc", refresh_token="def", device_token="xyz")
+        session = AuthSession(
+            token_type="Bearer",
+            access_token="abc",
+            refresh_token="def",
+            device_token="xyz",
+        )
         self.storage.store(session)
         loaded = self.storage.load()
         assert loaded.token_type == "Bearer"
@@ -34,6 +44,7 @@ class TestFileSystemSessionStorage:
         self.storage.clear()  # Ensure file is gone
         assert self.storage.load() is None
 
+
 class TestAWSS3SessionStorage:
     def setup_method(self):
         self.mock_s3 = MagicMock()
@@ -44,7 +55,9 @@ class TestAWSS3SessionStorage:
     def test_store_and_load(self):
         session = AuthSession(token_type="Bearer", access_token="abc")
         pickled = pickle.dumps(session)
-        self.mock_s3.get_object.return_value = {"Body": MagicMock(read=MagicMock(return_value=pickled))}
+        self.mock_s3.get_object.return_value = {
+            "Body": MagicMock(read=MagicMock(return_value=pickled))
+        }
         self.storage.store(session)
         loaded = self.storage.load()
         assert loaded.token_type == "Bearer"
@@ -59,4 +72,6 @@ class TestAWSS3SessionStorage:
 
     def test_clear(self):
         self.storage.clear()
-        self.mock_s3.delete_object.assert_called_once_with(Bucket=self.bucket, Key=self.key)
+        self.mock_s3.delete_object.assert_called_once_with(
+            Bucket=self.bucket, Key=self.key
+        )
