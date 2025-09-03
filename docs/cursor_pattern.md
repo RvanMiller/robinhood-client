@@ -2,12 +2,11 @@
 
 ## Overview
 
-The Robinhood Client now supports a Cursor Pattern for handling paginated API responses. This provides a clean and efficient way to work with large datasets that are split across multiple pages.
+The Robinhood Client uses a Cursor Pattern for handling paginated API responses. This provides a clean and efficient way to work with large datasets that are split across multiple pages.
 
 ## Features
 
-- **Backward Compatibility**: Existing `get_stock_orders()` method continues to work unchanged
-- **New Cursor Method**: `get_stock_orders_cursor()` returns a `PaginatedResult` object
+- **Cursor-Based Pagination**: The `get_stock_orders()` method returns a `PaginatedResult` object
 - **Multiple Usage Patterns**: Direct access, iteration, and manual pagination
 - **Efficient**: Only fetches pages as needed (lazy loading)
 
@@ -27,7 +26,7 @@ client.login(username, password, mfa_code)
 request = StockOrdersRequest(account_number="123456", page_size=10)
 
 # Get paginated result
-result = client.get_stock_orders_cursor(request)
+result = client.get_stock_orders(request)
 
 # Access current page
 current_orders = result.results  # List[StockOrder]
@@ -149,10 +148,10 @@ if next_url:
     # Would need to manually construct next request...
 ```
 
-### New Cursor Approach
+### Cursor Approach
 ```python
-# Much cleaner with cursor pattern
-result = client.get_stock_orders_cursor(request)
+# Clean cursor pattern
+result = client.get_stock_orders(request)
 
 # Automatic pagination
 for order in result:
@@ -172,7 +171,7 @@ The cursor pattern handles errors gracefully:
 
 ```python
 try:
-    result = client.get_stock_orders_cursor(request)
+    result = client.get_stock_orders(request)
     for order in result:
         process_order(order)
 except Exception as e:

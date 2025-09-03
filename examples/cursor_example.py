@@ -39,7 +39,7 @@ def example_cursor_pagination():
     request = StockOrdersRequest(account_number=account_number, page_size=5)
 
     # Cursor approach
-    response = client.get_stock_orders_cursor(request)
+    response = client.get_stock_orders(request)
 
     print("--- Method 1: Direct access to current page ---")
     print(f"Current page has {len(response.results)} orders")
@@ -99,7 +99,7 @@ def example_error_handling():
     request = StockOrdersRequest(account_number="123456", page_size=5)
 
     try:
-        result = client.get_stock_orders_cursor(request)
+        result = client.get_stock_orders(request)
         # This would trigger the first API call
         result.cursor().current_page()
         print("Successfully fetched orders")
