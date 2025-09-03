@@ -479,5 +479,3 @@ def test_get_stock_orders_iteration(
 
     # print(f"✓ Manual iteration: {len(all_orders_via_iteration)} orders across {page_count} pages")
     # print(f"✓ Auto iteration: {len(all_orders_auto)} orders")
-
-

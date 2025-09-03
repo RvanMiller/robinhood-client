@@ -405,16 +405,44 @@ class TestBaseOAuthClient(unittest.TestCase):
     def test_test_auth_connection(self, mock_request_get):
         """Test _test_auth_connection method."""
         # Arrange
-        mock_response = MagicMock()
+        mock_response = MagicMock(spec=requests.Response)
         mock_request_get.return_value = mock_response
 
         # Act
-        result = self.client._test_auth_connection()
+        with self.assertLogs(level="DEBUG") as log:
+            result = self.client._test_auth_connection()
 
         # Assert
         self.assertTrue(result)
-        mock_request_get.assert_called_once()
+        mock_request_get.assert_called_once_with(
+            f"{BASE_API_URL}/accounts/", {"nonzero": "true"}, json_response=False
+        )
         mock_response.raise_for_status.assert_called_once()
+        self.assertIn(
+            "DEBUG:robinhood_client.common.clients:Testing authentication connection...",
+            log.output[0],
+        )
+
+    @patch.object(BaseOAuthClient, "request_get")
+    def test_test_auth_connection_non_response_object(self, mock_request_get):
+        """Test _test_auth_connection method with non-Response object."""
+        # Arrange
+        mock_dict_response = {"status": "ok"}
+        mock_request_get.return_value = mock_dict_response
+
+        # Act
+        with self.assertLogs(level="DEBUG") as log:
+            result = self.client._test_auth_connection()
+
+        # Assert
+        self.assertTrue(result)
+        mock_request_get.assert_called_once_with(
+            f"{BASE_API_URL}/accounts/", {"nonzero": "true"}, json_response=False
+        )
+        self.assertIn(
+            "DEBUG:robinhood_client.common.clients:Testing authentication connection...",
+            log.output[0],
+        )
 
     def test_logout(self):
         """Test logout method."""

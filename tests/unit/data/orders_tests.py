@@ -156,5 +156,6 @@ class TestOrdersDataClient(unittest.TestCase):
 
         mock_request_get.assert_called_once_with("/orders/order456/", params={})
 
+
 if __name__ == "__main__":
     unittest.main()

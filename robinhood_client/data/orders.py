@@ -38,7 +38,9 @@ class OrdersDataClient(BaseOAuthClient):
         res = self.request_get(endpoint, params=params)
         return StockOrder(**res)
 
-    def get_stock_orders(self, request: StockOrdersRequest) -> PaginatedResult[StockOrder]:
+    def get_stock_orders(
+        self, request: StockOrdersRequest
+    ) -> PaginatedResult[StockOrder]:
         """Gets a cursor-based paginated result for stock orders.
 
         This method returns a PaginatedResult object that supports both direct access
