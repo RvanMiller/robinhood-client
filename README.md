@@ -1,4 +1,7 @@
-[![Unit Tests](https://github.com/RvanMiller/robinhood-client/actions/workflows/ci-publish.yml/badge.svg)](https://github.com/RvanMiller/robinhood-client/actions/workflows/ci-publish.yml)
+![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/RvanMiller/robinhood-client/ci-publish.yml?label=tests)
+![PyPI - Python Version](https://img.shields.io/pypi/pyversions/robinhood-client)
+![GitHub License](https://img.shields.io/github/license/RvanMiller/robinhood-client)
+
 
 # A Lightweight Robinhood API Client
 
