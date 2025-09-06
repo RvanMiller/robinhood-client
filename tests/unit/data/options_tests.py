@@ -47,16 +47,16 @@ class TestOptionsDataClient(unittest.TestCase):
                             "price": "1.51000000",
                             "quantity": "69.00000",
                             "settlement_date": "2025-09-05",
-                            "timestamp": "2025-09-04T14:44:31.104000Z"
+                            "timestamp": "2025-09-04T14:44:31.104000Z",
                         },
                         {
                             "id": "68b9a5cf-8c42-46ac-9ca5-edad7d07cc6a",
                             "price": "1.51000000",
                             "quantity": "1.00000",
                             "settlement_date": "2025-09-05",
-                            "timestamp": "2025-09-04T14:44:31.104000Z"
-                        }
-                    ]
+                            "timestamp": "2025-09-04T14:44:31.104000Z",
+                        },
+                    ],
                 }
             ],
             "pending_quantity": "0.00000",
@@ -92,9 +92,9 @@ class TestOptionsDataClient(unittest.TestCase):
             "is_replaceable": False,
             "strategy": "short_call",
             "derived_state": "filled",
-            "sales_taxes": []
+            "sales_taxes": [],
         }
-        
+
         # Apply any overrides
         default_data.update(overrides)
         return default_data
@@ -108,10 +108,7 @@ class TestOptionsDataClient(unittest.TestCase):
         expected_data = self._create_complete_options_order_data(order_id)
         mock_request_get.return_value = expected_data
 
-        request = OptionsOrderRequest(
-            order_id=order_id,
-            account_number=account_number
-        )
+        request = OptionsOrderRequest(order_id=order_id, account_number=account_number)
 
         # Act
         result = self.client.get_options_order(request)
@@ -123,17 +120,16 @@ class TestOptionsDataClient(unittest.TestCase):
         self.assertEqual(result.chain_symbol, "AMZN")
         self.assertEqual(result.direction, "credit")
         self.assertEqual(len(result.legs), 1)
-        
+
         # Check the first leg
         first_leg = result.legs[0]
         self.assertEqual(first_leg.position_effect, "close")
         self.assertEqual(first_leg.side, "sell")
         self.assertEqual(first_leg.option_type, "call")
         self.assertEqual(len(first_leg.executions), 2)
-        
+
         mock_request_get.assert_called_once_with(
-            f"/options/orders/{order_id}/",
-            params={"account_number": account_number}
+            f"/options/orders/{order_id}/", params={"account_number": account_number}
         )
 
     @patch.object(OptionsDataClient, "request_get")
@@ -152,10 +148,9 @@ class TestOptionsDataClient(unittest.TestCase):
         # Assert
         self.assertIsInstance(result, OptionsOrder)
         self.assertEqual(result.id, order_id)
-        
+
         mock_request_get.assert_called_once_with(
-            f"/options/orders/{order_id}/",
-            params={}
+            f"/options/orders/{order_id}/", params={}
         )
 
     def test_get_options_order_with_position_effect_close(self):
@@ -166,19 +161,16 @@ class TestOptionsDataClient(unittest.TestCase):
 
         with patch.object(self.client, "request_get") as mock_request_get:
             expected_data = self._create_complete_options_order_data(
-                order_id, 
-                direction="debit",
-                closing_strategy="short_call"
+                order_id, direction="debit", closing_strategy="short_call"
             )
             # Update the leg to have position_effect "open" instead of "close"
             expected_data["legs"][0]["position_effect"] = "open"
             expected_data["legs"][0]["side"] = "buy"
-            
+
             mock_request_get.return_value = expected_data
 
             request = OptionsOrderRequest(
-                order_id=order_id,
-                account_number=account_number
+                order_id=order_id, account_number=account_number
             )
 
             # Act
@@ -200,7 +192,7 @@ class TestOptionsDataClient(unittest.TestCase):
             opening_strategy=None,
             closing_strategy=None,
             stop_price=None,
-            response_category=None
+            response_category=None,
         )
         mock_request_get.return_value = minimal_data
 

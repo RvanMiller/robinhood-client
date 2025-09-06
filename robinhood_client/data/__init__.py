@@ -3,7 +3,7 @@
 from .orders import OrdersDataClient
 from .options import OptionsDataClient
 from .requests import (
-    StockOrdersRequest, 
+    StockOrdersRequest,
     StockOrderRequest,
     OptionsOrdersRequest,
     OptionsOrderRequest,

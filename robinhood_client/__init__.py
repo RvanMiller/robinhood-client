@@ -7,7 +7,7 @@ from robinhood_client.common.session import (
     FileSystemSessionStorage,
     AWSS3SessionStorage,
 )
-from robinhood_client.data.orders import OrdersDataClient  
+from robinhood_client.data.orders import OrdersDataClient
 from robinhood_client.data.options import OptionsDataClient
 
 # Import logging configuration first to ensure it's set up before other modules
