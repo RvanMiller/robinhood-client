@@ -1,3 +1,8 @@
+![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/RvanMiller/robinhood-client/ci-publish.yml?label=tests)
+![PyPI - Python Version](https://img.shields.io/pypi/pyversions/robinhood-client)
+![GitHub License](https://img.shields.io/github/license/RvanMiller/robinhood-client)
+
+
 # A Lightweight Robinhood API Client
 
 🚧 Under Construction 🚧
@@ -16,7 +21,7 @@ pip install robinhood-client
 poetry add robinhood-client
 ```
 
-Also be sure that Python 3.12 or higher is installed. If you need to install python you can download it from [Python.org](https://www.python.org/downloads/).
+Also be sure that Python 3.10 or higher is installed. If you need to install python you can download it from [Python.org](https://www.python.org/downloads/).
 
 ## Basic Usage
 

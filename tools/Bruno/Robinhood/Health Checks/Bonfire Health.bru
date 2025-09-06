@@ -1,0 +1,15 @@
+meta {
+  name: Bonfire Health
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{bonfire_url}}/
+  body: none
+  auth: inherit
+}
+
+settings {
+  encodeUrl: true
+}

@@ -1,0 +1,19 @@
+meta {
+  name: Margin Calls
+  type: http
+  seq: 3
+}
+
+get {
+  url: {{base_url}}/margin/calls/
+  body: none
+  auth: inherit
+}
+
+headers {
+  Authorization: Bearer {{access_token}}
+}
+
+settings {
+  encodeUrl: true
+}

@@ -1,0 +1,32 @@
+meta {
+  name: Orders
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{base_url}}/options/orders?page_size=10
+  body: none
+  auth: inherit
+}
+
+params:query {
+  page_size: 10
+  ~cursor: {{cursor_next}}
+  ~updated_at[gte]: 2025-08-7
+  ~updated_at[gte]: 2025-08-5
+  ~cursor: {{cursor_prev}}
+}
+
+headers {
+  Authorization: Bearer {{access_token}}
+}
+
+vars:post-response {
+  cursor_next: decodeURIComponent((res.body.next?.match(/[?&]cursor=([^&]+)/) || [])[1] || null)
+  cursor_prev: decodeURIComponent((res.body.previous?.match(/[?&]cursor=([^&]+)/) || [])[1] || null)
+}
+
+settings {
+  encodeUrl: true
+}

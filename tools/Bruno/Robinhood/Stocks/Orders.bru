@@ -1,0 +1,59 @@
+meta {
+  name: Orders
+  type: http
+  seq: 3
+}
+
+get {
+  url: {{base_url}}/orders/?page_size=10
+  body: none
+  auth: inherit
+}
+
+params:query {
+  page_size: 10
+  ~state: filled
+  ~cursor: {{cursor_next}}
+  ~cursor: {{cursor_prev}}
+  ~account_numbers: {{account_id}}
+  ~updated_at[gte]: 2025-08-7
+  ~updated_at[gte]: 2025-08-5
+}
+
+headers {
+  Authorization: Bearer {{access_token}}
+}
+
+vars:post-response {
+  cursor_next: decodeURIComponent((res.body.next?.match(/[?&]cursor=([^&]+)/) || [])[1] || null)
+  cursor_prev: decodeURIComponent((res.body.previous?.match(/[?&]cursor=([^&]+)/) || [])[1] || null)
+}
+
+settings {
+  encodeUrl: true
+}
+
+docs {
+  # Field Descriptions
+  ---
+  
+  ## State
+  State can be one or many values.
+  
+  Valid State values:
+  - queued
+  - new
+  - confirmed
+  - unconfirmed
+  - partially_filled
+  - pending_cancelled
+  
+  Examples:
+  - state=filled
+  - ate=queued,new,confirmed,unconfirmed,partially_filled,pending_cancelled
+  
+  
+  ---
+  # General Notes
+  - This endpoint does not support `nonzero`.
+}

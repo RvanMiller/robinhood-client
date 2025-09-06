@@ -1,0 +1,19 @@
+meta {
+  name: Prompt Status
+  type: http
+  seq: 4
+}
+
+get {
+  url: {{base_url}}/push/:challenge_id/get_prompts_status/
+  body: none
+  auth: inherit
+}
+
+params:path {
+  challenge_id: {{challenge_id}}
+}
+
+settings {
+  encodeUrl: true
+}

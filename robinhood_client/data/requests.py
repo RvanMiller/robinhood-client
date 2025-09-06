@@ -1,7 +1,6 @@
 from datetime import date
 from typing import Optional
 from pydantic import BaseModel
-from robinhood_client.common.schema import StockOrder
 
 
 class StockOrderRequest(BaseModel):
@@ -21,7 +20,12 @@ class StockOrdersRequest(BaseModel):
     page_size: Optional[int] = 10
 
 
-class StockOrdersResponse(BaseModel):
-    results: list[StockOrder]
-    next: Optional[str] = None
-    previous: Optional[str] = None
+class OptionsOrderRequest(BaseModel):
+    account_number: Optional[str] = None
+    order_id: str
+
+
+class OptionsOrdersRequest(BaseModel):
+    account_number: str
+    start_date: Optional[date | str] = None
+    page_size: Optional[int] = 10

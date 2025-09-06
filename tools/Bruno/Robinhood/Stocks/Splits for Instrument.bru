@@ -1,0 +1,23 @@
+meta {
+  name: Splits for Instrument
+  type: http
+  seq: 7
+}
+
+get {
+  url: {{base_url}}/instruments/:instrument_id/splits/
+  body: none
+  auth: inherit
+}
+
+params:path {
+  instrument_id: e84dc27d-7b8e-4f21-b3bd-5b02a5c99bc6
+}
+
+settings {
+  encodeUrl: true
+}
+
+docs {
+  ## Does not require auth.
+}

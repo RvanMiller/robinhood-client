@@ -1,0 +1,32 @@
+meta {
+  name: Position by Id
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{base_url}}/positions/:account_number/:position_id/
+  body: none
+  auth: inherit
+}
+
+params:path {
+  position_id: position-guid
+  account_number: {{account_id}}
+}
+
+headers {
+  Authorization: Bearer {{access_token}}
+}
+
+docs {
+  `nonzero=true` will return a empty object like:
+  
+  ```json
+  {
+    "next": null,
+    "previous": null,
+    "results": []
+  }
+  ```
+}

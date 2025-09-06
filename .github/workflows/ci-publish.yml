@@ -1,5 +1,4 @@
-name: CI and Publish
-
+name: Publish to Test PyPI
 on:
   pull_request:
     branches: [ main ]
@@ -11,7 +10,8 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: [3.12, 3.13]
+        python-version: ["3.10", "3.11", "3.12", "3.13"]
+        os: [ubuntu-latest, windows-latest]
     
     steps:
     - name: Checkout code
@@ -39,10 +39,10 @@ jobs:
     
     - name: Install dependencies
       if: steps.cached-poetry-dependencies.outputs.cache-hit != 'true'
-      run: poetry install --no-interaction --no-root
+      run: poetry install --no-interaction --no-root --extras dev
     
     - name: Install project
-      run: poetry install --no-interaction
+      run: poetry install --no-interaction --extras dev
     
     - name: Lint with ruff
       run: |
@@ -72,7 +72,7 @@ jobs:
     - name: Set up Python
       uses: actions/setup-python@v4
       with:
-        python-version: 3.12
+        python-version: "3.11"
     
     - name: Install Poetry
       uses: snok/install-poetry@v1
@@ -87,7 +87,7 @@ jobs:
       uses: actions/cache@v3
       with:
         path: .venv
-        key: venv-${{ runner.os }}-3.12-${{ hashFiles('**/poetry.lock') }}
+        key: venv-${{ runner.os }}-3.11-${{ hashFiles('**/poetry.lock') }}
     
     - name: Install dependencies
       if: steps.cached-poetry-dependencies.outputs.cache-hit != 'true'

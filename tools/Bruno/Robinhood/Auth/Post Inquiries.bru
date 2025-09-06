@@ -1,0 +1,32 @@
+meta {
+  name: Post Inquiries
+  type: http
+  seq: 5
+}
+
+post {
+  url: {{base_url}}/pathfinder/inquiries/:machine_id/user_view/
+  body: json
+  auth: inherit
+}
+
+params:path {
+  machine_id: {{machine_id}}
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "sequence": 0,
+    "user_input": {
+      "status": "continue"
+    }
+  }
+}
+
+settings {
+  encodeUrl: true
+}

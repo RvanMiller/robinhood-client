@@ -1,0 +1,19 @@
+meta {
+  name: Accounts
+  type: http
+  seq: 4
+}
+
+get {
+  url: {{nummus_url}}/accounts/
+  body: none
+  auth: inherit
+}
+
+headers {
+  Authorization: Bearer {{access_token}}
+}
+
+settings {
+  encodeUrl: true
+}

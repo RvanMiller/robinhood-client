@@ -358,7 +358,6 @@ class TestStockOrdersIntegration:
             "results": [mock_order_data],
             "next": "https://api.robinhood.com/orders/?cursor=next",
             "previous": None,
-            "count": 100,
         }
 
         response = StockOrdersPageResponse(**response_data)
@@ -367,4 +366,3 @@ class TestStockOrdersIntegration:
         assert isinstance(response.results[0], StockOrder)
         assert response.results[0].id == "order1"
         assert response.next == "https://api.robinhood.com/orders/?cursor=next"
-        assert response.count == 100

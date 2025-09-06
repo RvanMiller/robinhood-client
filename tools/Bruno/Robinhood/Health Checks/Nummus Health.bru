@@ -1,0 +1,15 @@
+meta {
+  name: Nummus Health
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{nummus_url}}/health
+  body: none
+  auth: inherit
+}
+
+settings {
+  encodeUrl: true
+}

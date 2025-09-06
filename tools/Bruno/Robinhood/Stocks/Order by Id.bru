@@ -1,0 +1,27 @@
+meta {
+  name: Order by Id
+  type: http
+  seq: 4
+}
+
+get {
+  url: https://api.robinhood.com/orders/:order_id/
+  body: none
+  auth: inherit
+}
+
+params:path {
+  order_id: order-guid
+}
+
+headers {
+  Authorization: Bearer {{access_token}}
+}
+
+docs {
+  use JSONPath to filter:
+  
+  ```plaintext
+  $..results..updated_at
+  ```
+}
