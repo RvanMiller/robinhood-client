@@ -4,7 +4,7 @@ version = "0.1.0"
 description = "An unofficial Python REST client for Robinhood API."
 license = { file = "LICENSE" }
 readme = "README.md"
-requires-python = ">=3.12"
+requires-python = ">=3.10"
 authors = [
     {name = "Ryan Miller", email = "mrzodge@gmail.com"}
 ]
@@ -17,30 +17,37 @@ keywords = [
     "crypto",
     "investing"
 ]
-
-[tool.poetry.dependencies]
-python = ">=3.12"
-cryptography = "~45.0.6"
-pydantic = "~2.11.7"
-pyotp = "~2.9.0"
-python-dotenv = "~1.1.1"
-requests = "~2.32.4"
-
-[tool.poetry.group.dev.dependencies]
-pytest = "~8.4.1"
-ruff = "~0.12.9"
-pytest-dotenv = "~0.5.2"
-python-dateutil = "~2.9.0.post0"
-
-[tool.poetry]
-repository = "https://github.com/RvanMiller/robinhood-client"
-homepage = "https://github.com/RvanMiller/robinhood-client"
-packages = [{include = "robinhood_client"}]
 classifiers = [
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
     "Operating System :: OS Independent",
 ]
+dependencies = [
+    "cryptography~=45.0.6",
+    "pydantic~=2.11.7",
+    "pyotp~=2.9.0",
+    "python-dotenv~=1.1.1",
+    "requests~=2.32.4",
+]
+
+[project.urls]
+Homepage = "https://github.com/RvanMiller/robinhood-client"
+Repository = "https://github.com/RvanMiller/robinhood-client"
+
+[project.optional-dependencies]
+dev = [
+    "pytest~=8.4.1",
+    "ruff~=0.12.9",
+    "pytest-dotenv~=0.5.2",
+    "python-dateutil~=2.9.0.post0",
+]
+
+[tool.poetry]
+packages = [{include = "robinhood_client"}]
 
 [build-system]
 requires = ["poetry-core>=2.0.0,<3.0.0"]
@@ -87,8 +94,8 @@ exclude = [
 line-length = 88
 indent-width = 4
 
-# Assume Python 3.9
-target-version = "py39"
+# Assume Python 3.10
+target-version = "py310"
 
 [tool.ruff.lint]
 # Enable Pyflakes (`F`) and a subset of the pycodestyle (`E`) codes by default.
