@@ -4,7 +4,7 @@
 Bruno is an open-source API client for testing, debugging, and documenting APIs. It provides a fast, privacy-focused alternative to tools like Postman, allowing you to organize API requests in collections and work with them locally.
 
 ## Purpose of This Collection
-This Bruno collection contains organized requests for the unofficial Robinhood API. It is designed to:
+This Bruno collection contains organized requests for the Robinhood API. It is designed to:
 - Help developers test and explore Robinhood endpoints
 - Document authentication and trading flows
 - Accelerate development and debugging of the `robinhood-client` Python library
