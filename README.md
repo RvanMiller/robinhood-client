@@ -1,3 +1,5 @@
+[![Unit Tests](https://github.com/RvanMiller/robinhood-client/actions/workflows/ci-publish.yml/badge.svg)](https://github.com/RvanMiller/robinhood-client/actions/workflows/ci-publish.yml)
+
 # A Lightweight Robinhood API Client
 
 🚧 Under Construction 🚧
