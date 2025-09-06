@@ -1,0 +1,19 @@
+meta {
+  name: Margin Interest
+  type: http
+  seq: 4
+}
+
+get {
+  url: {{base_url}}/cash_journal/margin_interest_charges/
+  body: none
+  auth: inherit
+}
+
+headers {
+  Authorization: Bearer {{access_token}}
+}
+
+settings {
+  encodeUrl: true
+}

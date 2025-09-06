@@ -1,0 +1,41 @@
+meta {
+  name: Login
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{base_url}}/oauth2/token/
+  body: json
+  auth: inherit
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "client_id": "c82SH0WZOsabOXGP2sxqcj34FxkvfnWRZBKlBjFS",
+    "expires_in": "86400",
+    "grant_type": "password",
+    "password": "{{password}}",
+    "scope": "internal",
+    "username": "{{username}}",
+    "device_token": "{{device_id}}",
+    "try_passkeys": false,
+    "token_request_path": "/login",
+    "create_readonly_secondary_token": true,
+    "mfa_code": "{{mfa_code}}"
+  }
+}
+
+vars:post-response {
+  workflow_id: res.body.verification_workflow?.id
+  workflow_status: res.body.verification_workflow?.status
+  access_token: res.body.access_token
+}
+
+settings {
+  encodeUrl: true
+}

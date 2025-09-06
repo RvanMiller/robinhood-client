@@ -1,0 +1,25 @@
+meta {
+  name: Accounts
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{base_url}}/accounts/?nonzero=true
+  body: none
+  auth: inherit
+}
+
+params:query {
+  nonzero: true
+  ~page_size: 1
+  ~cursor: 
+}
+
+headers {
+  Authorization: Bearer {{access_token}}
+}
+
+settings {
+  encodeUrl: true
+}

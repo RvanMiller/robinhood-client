@@ -1,0 +1,39 @@
+meta {
+  name: Open Orders
+  type: http
+  seq: 4
+}
+
+get {
+  url: {{base_url}}/options/orders?account_numbers={{account_id}}&states=queued,new,confirmed,unconfirmed,partially_filled,pending_cancelled,locating,locate_completed
+  body: none
+  auth: inherit
+}
+
+params:query {
+  account_numbers: {{account_id}}
+  states: queued,new,confirmed,unconfirmed,partially_filled,pending_cancelled,locating,locate_completed
+}
+
+headers {
+  Authorization: Bearer {{access_token}}
+}
+
+settings {
+  encodeUrl: true
+}
+
+docs {
+  The Robinhood Web App uses these `states` to update the UI with open option orders:
+  
+  ```json
+  state = queued,new,confirmed,unconfirmed,partially_filled,pending_cancelled,locating,locate_completed
+  ```
+  
+  
+  How to use `JSONPath` to look at executions:
+  
+  ```plaintext
+  $..results..legs..executions
+  ```
+}

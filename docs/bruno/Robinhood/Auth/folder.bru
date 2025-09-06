@@ -1,0 +1,30 @@
+meta {
+  name: Auth
+  seq: 8
+}
+
+auth {
+  mode: inherit
+}
+
+docs {
+  ## Login Steps
+  
+  Follow these steps to completely log in. Note that each step saves variables automatically for the next step, including the last step to save the access token as a runtime variable.
+  
+  ### New Manual Login
+  1. Use `POST Login` request with a new or existing Device ID, and a newly generated MFA code.
+  2. Check Robinhood App for device approval.
+  3. Use `POST Verification` to get a Machine ID from the Workflow ID returned from (1).
+  4. Use `GET Inquiries` to get a Sheriff Challenge ID from the Machine ID from (3).
+  5. Use `GET Prompt Status` to view the Approval status.
+  6. If the approval status is approved, you can use `POST Inquiries` to finalize the flow.
+      - The response should have `workflow_status_approved` in it.
+  7. After finalizing in (6), use the original `POST Login` from (1) to get an `access_token` and other details.
+      - Note: `access_token` is captured as as runtime variable -- there is no need to copy/paste it anywhere.
+  
+  ### Re-use Existing Login
+  1. Open your current environment configuration.
+  2. Fill in or create a new **Secret Variable** with the name `access_token` and place your current token there.
+  3. Save the environment.
+}

@@ -1,0 +1,48 @@
+meta {
+  name: Positions
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{base_url}}/positions/?account_number={{account_id}}
+  body: none
+  auth: inherit
+}
+
+params:query {
+  account_number: {{account_id}}
+  ~nonzero: true
+  ~page_size: 1
+  ~cursor: {{cursor_next}}
+  ~cursor: {{cursor_prev}}
+}
+
+headers {
+  Authorization: Bearer {{access_token}}
+}
+
+vars:post-response {
+  cursor_next: decodeURIComponent((res.body.next.match(/[?&]cursor=([^&]+)/) || [])[1] || "")
+  cursor_prev: decodeURIComponent((res.body.previous.match(/[?&]cursor=([^&]+)/) || [])[1] || "")
+}
+
+settings {
+  encodeUrl: true
+}
+
+docs {
+  `nonzero=true` will return a empty object like:
+  
+  ```json
+  {
+    "next": null,
+    "previous": null,
+    "results": []
+  }
+  ```
+  
+  OR
+  
+  a much smaller set of data.  Around 10KB vs 300KB+
+}

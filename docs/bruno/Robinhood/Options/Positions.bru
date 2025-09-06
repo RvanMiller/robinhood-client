@@ -1,0 +1,37 @@
+meta {
+  name: Positions
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{base_url}}/options/positions?account_number={{account_id}}&nonzero=true
+  body: none
+  auth: inherit
+}
+
+params:query {
+  account_number: {{account_id}}
+  nonzero: true
+  ~page_size: 1
+}
+
+headers {
+  Authorization: Bearer {{access_token}}
+}
+
+settings {
+  encodeUrl: true
+}
+
+docs {
+  `nonzero=true` will return a empty object like:
+  
+  ```json
+  {
+    "next": null,
+    "previous": null,
+    "results": []
+  }
+  ```
+}

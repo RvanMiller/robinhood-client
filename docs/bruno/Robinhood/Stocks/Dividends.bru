@@ -1,0 +1,19 @@
+meta {
+  name: Dividends
+  type: http
+  seq: 6
+}
+
+get {
+  url: {{base_url}}/dividends/
+  body: none
+  auth: inherit
+}
+
+headers {
+  Authorization: Bearer {{access_token}}
+}
+
+settings {
+  encodeUrl: true
+}

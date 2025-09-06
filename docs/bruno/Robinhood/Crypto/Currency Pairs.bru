@@ -1,0 +1,19 @@
+meta {
+  name: Currency Pairs
+  type: http
+  seq: 5
+}
+
+get {
+  url: {{nummus_url}}/currency_pairs/
+  body: none
+  auth: inherit
+}
+
+settings {
+  encodeUrl: true
+}
+
+docs {
+  ## No Auth Required.
+}

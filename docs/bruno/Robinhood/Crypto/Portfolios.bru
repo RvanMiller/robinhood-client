@@ -1,0 +1,19 @@
+meta {
+  name: Portfolios
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{nummus_url}}/portfolios/
+  body: none
+  auth: inherit
+}
+
+headers {
+  Authorization: Bearer {{access_token}}
+}
+
+settings {
+  encodeUrl: true
+}

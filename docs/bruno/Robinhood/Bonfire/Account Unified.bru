@@ -1,0 +1,19 @@
+meta {
+  name: Account Unified
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{bonfire_url}}/accounts/{{account_id}}/unified
+  body: none
+  auth: inherit
+}
+
+headers {
+  Authorization: Bearer {{access_token}}
+}
+
+settings {
+  encodeUrl: true
+}

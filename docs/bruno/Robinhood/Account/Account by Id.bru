@@ -1,0 +1,23 @@
+meta {
+  name: Account by Id
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{base_url}}/accounts/:account_id/
+  body: none
+  auth: inherit
+}
+
+params:path {
+  account_id: {{account_id}}
+}
+
+headers {
+  Authorization: Bearer {{access_token}}
+}
+
+settings {
+  encodeUrl: true
+}

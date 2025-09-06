@@ -1,0 +1,19 @@
+meta {
+  name: Portfolio by Id
+  type: http
+  seq: 3
+}
+
+get {
+  url: {{nummus_url}}/portfolios/:portfolio_id/
+  body: none
+  auth: inherit
+}
+
+params:path {
+  portfolio_id: portfolio-guid
+}
+
+headers {
+  Authorization: Bearer {{access_token}}
+}

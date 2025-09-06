@@ -1,0 +1,23 @@
+meta {
+  name: Instruments
+  type: http
+  seq: 3
+}
+
+get {
+  url: {{base_url}}/options/instruments/:instrument_id/
+  body: none
+  auth: inherit
+}
+
+params:path {
+  instrument_id: 479ac03f-1e68-4c75-af7c-a7a88b3fd269
+}
+
+headers {
+  Authorization: Bearer {{access_token}}
+}
+
+settings {
+  encodeUrl: true
+}

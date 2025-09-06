@@ -1,0 +1,63 @@
+meta {
+  name: Orders
+  type: http
+  seq: 6
+}
+
+get {
+  url: {{nummus_url}}/orders/?state=unconfirmed
+  body: none
+  auth: inherit
+}
+
+params:query {
+  state: unconfirmed
+  ~state_group: closed
+  ~page_size: 10
+  ~updated_at[gte]: 2025-08-7
+  ~cursor: {{cursor_next}}
+  ~cursor: {{cursor_prev}}
+  ~account_numbers: {{account_id}}
+  ~updated_at[gte]: 2025-08-5
+}
+
+headers {
+  Authorization: Bearer {{access_token}}
+}
+
+vars:post-response {
+  cursor_next: decodeURIComponent((res.body.next.match(/[?&]cursor=([^&]+)/) || [])[1] || "")
+  cursor_prev: decodeURIComponent((res.body.previous.match(/[?&]cursor=([^&]+)/) || [])[1] || "")
+}
+
+settings {
+  encodeUrl: true
+}
+
+docs {
+  # Field Descriptions
+  ---
+  
+  ## State
+  State can ONLY be one value.
+  
+  Valid State values:
+  - queued
+  - new
+  - confirmed
+  - unconfirmed
+  - partially_filled
+  - pending_cancelled
+  - filled
+  
+  Examples:
+  - state=filled
+  - state=queued
+  
+  
+  ---
+  # General Notes
+  - This endpoint does not support `nonzero`.
+  - `page_size` doesn't seem to work here even though the Web App sends it (page_size=10).  Also not that even though they send a page_size, the returned results are still over 10 (50+ in my case).
+  - Web App sends `state_group` with either `open` or `closed`.  I have no open orders and `open` returns empty, while closed returns all the data, so I assume this is an easier way to filter than using `state`.
+}

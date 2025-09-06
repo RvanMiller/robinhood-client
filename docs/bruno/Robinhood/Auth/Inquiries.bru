@@ -1,0 +1,29 @@
+meta {
+  name: Inquiries
+  type: http
+  seq: 3
+}
+
+get {
+  url: {{base_url}}/pathfinder/inquiries/:machine_id/user_view/
+  body: none
+  auth: inherit
+}
+
+params:path {
+  machine_id: {{machine_id}}
+}
+
+body:json {
+  {
+    "": ""
+  }
+}
+
+vars:post-response {
+  challenge_id: res.body.context?.sheriff_challenge?.id
+}
+
+settings {
+  encodeUrl: true
+}
