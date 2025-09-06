@@ -21,7 +21,7 @@ pip install robinhood-client
 poetry add robinhood-client
 ```
 
-Also be sure that Python 3.12 or higher is installed. If you need to install python you can download it from [Python.org](https://www.python.org/downloads/).
+Also be sure that Python 3.10 or higher is installed. If you need to install python you can download it from [Python.org](https://www.python.org/downloads/).
 
 ## Basic Usage
 

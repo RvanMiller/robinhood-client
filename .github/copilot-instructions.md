@@ -54,7 +54,7 @@ poetry add --group dev package  # Add dev dependency
 
 ### Code Quality
 - Ruff for linting: `poetry run ruff check .`
-- Python 3.12+ required
+- Python 3.10+ required
 - Line length: 88 characters (Black-compatible)
 - Double quotes for strings
 

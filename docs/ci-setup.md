@@ -8,7 +8,7 @@ The CI/CD pipeline consists of two main jobs:
 
 ### 1. Test Job
 - **Triggers**: On pull requests to `main` and pushes to `main`
-- **Matrix Strategy**: Tests against Python 3.12 and 3.13
+- **Matrix Strategy**: Tests against currently supported Python versions: 3.10, 3.11, 3.12, and 3.13
 - **Steps**:
   - Code checkout
   - Python setup with Poetry
