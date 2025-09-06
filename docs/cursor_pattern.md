@@ -32,7 +32,6 @@ result = client.get_stock_orders(request)
 current_orders = result.results  # List[StockOrder]
 next_url = result.next          # Optional[str] 
 previous_url = result.previous  # Optional[str]
-total_count = result.count      # Optional[int]
 
 print(f"Current page has {len(current_orders)} orders")
 ```

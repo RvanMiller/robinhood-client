@@ -1,10 +1,19 @@
 """Data module exports."""
 
 from .orders import OrdersDataClient
-from .requests import StockOrdersRequest, StockOrderRequest
+from .options import OptionsDataClient
+from .requests import (
+    StockOrdersRequest, 
+    StockOrderRequest,
+    OptionsOrdersRequest,
+    OptionsOrderRequest,
+)
 
 __all__ = [
     "OrdersDataClient",
+    "OptionsDataClient",
     "StockOrdersRequest",
     "StockOrderRequest",
+    "OptionsOrdersRequest",
+    "OptionsOrderRequest",
 ]

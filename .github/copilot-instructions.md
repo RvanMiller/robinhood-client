@@ -50,6 +50,7 @@ poetry add --group dev package  # Add dev dependency
 - Test classes: `Test*`, test methods: `test_*`, `it_*`, `and_*`, `but_*`, `they_*`
 - Unit tests mock external dependencies; integration tests require real credentials
 - Environment variables for integration tests: `RH_USERNAME`, `RH_PASSWORD`, `RH_MFA_CODE`, `RH_ACCOUNT_NUMBER`
+- Use fake account numbers for unit tests (e.g., '123ABC').
 
 ### Code Quality
 - Ruff for linting: `poetry run ruff check .`
@@ -100,6 +101,13 @@ Built-in logging system with environment variable configuration:
 - Use the `authenticated_client` fixture for integration tests
 - Mock `SessionStorage` and HTTP responses for unit tests
 - Never test real order placement - use mock data only
+
+### Integration Testing Patterns
+- Module-level functions instead of class methods
+- Shared authentication fixtures with module scope
+- Consistent parameter patterns with type hints
+- Similar validation approaches for field checking
+- Comparable error handling and skipping logic
 
 ### Documentation
 - Sphinx documentation in `docs/` directory
