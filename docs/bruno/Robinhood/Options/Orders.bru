@@ -23,7 +23,7 @@ headers {
 }
 
 vars:post-response {
-  cursor_next: decodeURIComponent((res.body.next?.match(/[?&]cursor=([^&]+)/) || [])[1] || "")
+  cursor_next: decodeURIComponent((res.body.next?.match(/[?&]cursor=([^&]+)/) || [])[1] || null)
   cursor_prev: decodeURIComponent((res.body.previous?.match(/[?&]cursor=([^&]+)/) || [])[1] || null)
 }
 
