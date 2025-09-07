@@ -13,8 +13,8 @@ This Bruno collection contains organized requests for the Robinhood API. It is d
 1. Open Bruno.
 2. Click the "..." button at the top left and choose "Import Collection".
 3. Select `Bruno Collection` if asked for a collection type.
-3. Select the folder with the `bruno.json` file in it.
-4. The Robinhood API requests will appear, organized by service (Account, Auth, Crypto, etc).
+4. Select the folder with the `bruno.json` file in it.
+5. The Robinhood API requests will appear, organized by service (Account, Auth, Crypto, etc).
 
 ## How to Log In (Authentication)
 Refer to the documentation in `Auth/` for details on the login flow. The typical steps are:
