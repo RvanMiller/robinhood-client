@@ -1,48 +1,99 @@
 # Contributing
 
 Anyone and everyone is encouraged to contribute to this project. The most helpful changes are pull requests that fix one of the open issues in the Issues tab.
-Adding functionality that is available on the app/website but not through this interface is also very helpful. Grammar changes and changes to business logic
-that do not have a noticable effect on performance are generally not accepted.
+
+## Project Scope
+
+This library is designed to provide a Python interface for functionality available in the Robinhood Mobile App and Browser App. We focus on:
+
+- **Data Retrieval**: Orders, account information, market data
+- **Authentication**: Session management and MFA support  
+- **Core API Operations**: Direct mappings to Robinhood's API endpoints
+
+**Out of Scope**: Additional analysis features like calculating average losses, dividend summaries, or other functionality that could be provided by separate analysis libraries. The goal is to maintain a focused, lightweight client that mirrors the official app's capabilities.
+
+## Development Workflow
+
+1. **Pull Requests**: Unit tests run automatically on all PR pushes
+2. **Merge to Main**: Accepted PRs trigger automatic release to Test PyPI
+3. **Production Release**: After validation on Test PyPI and successful integration tests (run by project maintainers), packages are published to official PyPI via GitHub releases
 
 ## Pull Request Process
 
-1. Make sure that if you make any grammar or documentation changes, that they are in a seperate commit from
-   any code changes.
-2. Make sure you update __init__.py to import new functions that are created.
-3. Make sure to update the version number in pyproject.toml. The version number is in the format XX.YY.ZZ, where the
-   XX is only changed when there is a fundamental and major change, YY is changed for features added, and ZZ is changed
-   for bug fixes. When updating a number, all the numbers to the right get changed to zero. i.e. 1.23.50 => 1.24.0. Numbers
-   are also allowed to go as high as you want, so 1.65289.0 is a valid version number.
-4. Write tests to cover the functionality of code you added.
-5. After submitting a pull request, please be on the lookout for any messages from me about things that need to be fixed before I merge the branch.
+1. Ensure changes align with the project scope (Robinhood app functionality only)
+2. Make sure that if you make any grammar or documentation changes, that they are in a separate commit from any code changes
+3. Update version number in `pyproject.toml` following [Semantic Versioning 2.0](https://semver.org):
+   - **Major** (X.0.0): Breaking API changes
+   - **Minor** (0.X.0): New features, backward compatible
+   - **Patch** (0.0.X): Bug fixes, backward compatible
+4. Add imports for new public functions to appropriate `__init__.py` files
+5. Write comprehensive tests covering your changes:
+   - Unit tests for all new functionality
+   - Integration tests for API interactions (when applicable)
+   - Avoid tests that place real orders
+6. Follow the existing code patterns and architectural guidelines
+7. Be responsive to feedback during the review process
 
 ## Development Setup
 
 This project uses Poetry for dependency management. To set up your development environment:
 
-1. Install Poetry (if you haven't already):
+1. **Install Poetry** (if you haven't already):
    ```bash
    pip install poetry
    ```
 
-2. Install dependencies:
+2. **Install dependencies**:
    ```bash
    poetry install
    ```
 
-3. Activate the virtual environment:
+3. **Activate the virtual environment**:
    ```bash
    poetry shell
    ```
 
 ## Testing
 
-Make sure to run tests using Poetry:
+The project has comprehensive test coverage with both unit and integration tests:
+
+### Unit Tests
+Run unit tests (no API calls, use mocks):
 ```bash
-poetry run pytest tests
+poetry run pytest tests/unit/
 ```
 
-Add new tests to cover the changes you have made, but not if you need to test placing orders. Currently there is no way to submit fake orders, so any tests for orders would submit a real order.
+### Integration Tests  
+Run integration tests (requires valid Robinhood credentials):
+```bash
+# Set required environment variables first
+export RH_USERNAME="your_username"
+export RH_PASSWORD="your_password"  
+export RH_MFA_CODE="your_mfa_secret"
+export RH_ACCOUNT_NUMBER="your_account_number"
+
+poetry run pytest tests/integration/
+```
+
+### Test Guidelines
+- **Unit tests**: Mock external dependencies, test business logic
+- **Integration tests**: Test actual API interactions with real credentials
+- **No order placement**: Avoid tests that submit real trading orders
+- **Follow naming convention**: Test files end with `_tests.py`
+- **Test methods**: Use `test_`, `it_`, `and_`, `but_`, `they_` prefixes
+
+## Code Quality
+
+```bash
+# Linting
+poetry run ruff check .
+
+# Auto-fix issues  
+poetry run ruff check . --fix
+
+# Format code
+poetry run ruff format .
+```
 
 ## Code of Conduct
 

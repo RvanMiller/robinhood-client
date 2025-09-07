@@ -1,6 +1,7 @@
 # sensitive environment information
 .env
 *.pickle
+*.pkl
 
 # build and distribution files that are auto-generated
 build/

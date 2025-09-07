@@ -8,15 +8,15 @@
 ### Account Management
 - [ ] Account Profiles
 
-### Reteiving Market Data
+### Retrieving Market Data
 - [ ] Retrieve Stock Data
 - [ ] Retrieve Options Data
 - [ ] Retrieve Crypto Data
 
 ### Retrieving Orders
-- [ ] Retrieve Stock Orders
-- [ ] Retrieve Option Orders
-- [ ] Retrieve Crypto Orders
+- [x] Retrieve Stock Orders
+- [x] Retrieve Option Orders
+- [ ] Retrieve Crypto Orders  
 - [ ] Retrieve Futures Orders
 
 ### Trading

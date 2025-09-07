@@ -194,12 +194,12 @@ class BaseOAuthClient(BaseClient):
         an authentication token and saving it to the session header.
 
         """
-        logger.info("Logging in to Robinhood...")
+        logger.debug("Logging in to Robinhood...")
 
         if persist_session:
             logger.debug("Session persistence is enabled.")
             if self._login_using_storage():
-                logger.debug("Successfully logged in to Robinhood.")
+                logger.info("Using existing Robinhood session.")
                 return True
 
         logger.debug("No stored session found. Proceeding with login.")
@@ -304,7 +304,7 @@ class BaseOAuthClient(BaseClient):
             token = "{0} {1}".format(response["token_type"], response["access_token"])
             self._session.headers.update({"Authorization": token})
             self._is_authenticated = True
-            logger.debug("Logged in to Robinhood successfully.")
+            logger.info("Logged in to Robinhood successfully.")
         else:
             if "detail" in response:
                 logger.error("Login failed: %s", response["detail"])
@@ -441,7 +441,7 @@ class BaseOAuthClient(BaseClient):
                     raise AuthenticationError(
                         f"Max retries reached. Login failed: {str(e)}"
                     )
-                logger.info("Retrying workflow status check...")
+                logger.debug("Retrying workflow status check...")
                 continue
 
             # Handle None response
