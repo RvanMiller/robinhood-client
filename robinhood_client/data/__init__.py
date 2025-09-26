@@ -2,6 +2,7 @@
 
 from .orders import OrdersDataClient
 from .options import OptionsDataClient
+from .instruments import InstrumentCacheClient
 from .requests import (
     StockOrdersRequest,
     StockOrderRequest,
@@ -12,6 +13,7 @@ from .requests import (
 __all__ = [
     "OrdersDataClient",
     "OptionsDataClient",
+    "InstrumentCacheClient",
     "StockOrdersRequest",
     "StockOrderRequest",
     "OptionsOrdersRequest",

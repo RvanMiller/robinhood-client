@@ -1,7 +1,7 @@
 """Common module exports."""
 
 from .cursor import Cursor, ApiCursor, PaginatedResult, CursorResponse
-from .schema import StockOrder, StockOrdersPageResponse
+from .schema import StockOrder, StockOrdersPageResponse, Instrument
 from .session import SessionStorage, FileSystemSessionStorage, AuthSession
 
 __all__ = [
@@ -11,6 +11,7 @@ __all__ = [
     "CursorResponse",
     "StockOrder",
     "StockOrdersPageResponse",
+    "Instrument",
     "SessionStorage",
     "FileSystemSessionStorage",
     "AuthSession",

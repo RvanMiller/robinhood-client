@@ -19,6 +19,163 @@ class RobinhoodBaseModel(BaseModel):
     model_config = ConfigDict(use_enum_values=True)
 
 
+class Instrument(RobinhoodBaseModel):
+    """Represents a financial instrument (stock) from the Robinhood API."""
+
+    id: str
+    """The unique identifier for the instrument."""
+
+    url: str
+    """The URL for the instrument details."""
+
+    quote: str
+    """The URL for the instrument's quote data."""
+
+    fundamentals: str
+    """The URL for the instrument's fundamentals data."""
+
+    splits: str
+    """The URL for the instrument's splits data."""
+
+    state: str
+    """The state of the instrument (e.g., 'active')."""
+
+    market: str
+    """The URL for the market where the instrument is traded."""
+
+    simple_name: str
+    """The simple name of the company."""
+
+    name: str
+    """The full legal name of the company."""
+
+    tradeable: bool
+    """Whether the instrument is tradeable."""
+
+    tradability: str
+    """The tradability status of the instrument."""
+
+    symbol: str
+    """The trading symbol for the instrument."""
+
+    bloomberg_unique: Optional[str] = None
+    """The Bloomberg unique identifier."""
+
+    margin_initial_ratio: str
+    """The initial margin ratio for the instrument."""
+
+    maintenance_ratio: str
+    """The maintenance margin ratio for the instrument."""
+
+    country: str
+    """The country where the instrument is domiciled."""
+
+    day_trade_ratio: str
+    """The day trading buying power ratio."""
+
+    list_date: Optional[str] = None
+    """The date when the instrument was listed."""
+
+    min_tick_size: Optional[str | float] = None
+    """The minimum tick size for the instrument."""
+
+    type: str
+    """The type of the instrument (e.g., 'stock')."""
+
+    tradable_chain_id: str
+    """The unique identifier for the tradable options chain."""
+
+    rhs_tradability: str
+    """The Robinhood Gold tradability status."""
+
+    affiliate_tradability: str
+    """The affiliate tradability status."""
+
+    fractional_tradability: str
+    """The fractional share tradability status."""
+
+    short_selling_tradability: str
+    """The short selling tradability status."""
+
+    default_collar_fraction: str
+    """The default collar fraction for orders."""
+
+    # IPO-related fields
+    ipo_access_status: Optional[str] = None
+    """The IPO access status."""
+
+    ipo_access_cob_deadline: Optional[str] = None
+    """The IPO access close of business deadline."""
+
+    ipo_s1_url: Optional[str] = None
+    """The URL for the IPO S-1 filing."""
+
+    ipo_roadshow_url: Optional[str] = None
+    """The URL for the IPO roadshow."""
+
+    is_spac: bool
+    """Whether the instrument is a SPAC."""
+
+    is_test: bool
+    """Whether this is a test instrument."""
+
+    ipo_access_supports_dsp: bool
+    """Whether IPO access supports direct stock purchase."""
+
+    # Extended hours and halt information
+    extended_hours_fractional_tradability: bool
+    """Whether fractional shares are tradeable in extended hours."""
+
+    internal_halt_reason: str
+    """The reason for any internal trading halt."""
+
+    internal_halt_details: str
+    """Additional details about any internal trading halt."""
+
+    internal_halt_sessions: Optional[str] = None
+    """The sessions affected by any internal trading halt."""
+
+    internal_halt_start_time: Optional[str] = None
+    """The start time of any internal trading halt."""
+
+    internal_halt_end_time: Optional[str] = None
+    """The end time of any internal trading halt."""
+
+    internal_halt_source: str
+    """The source of any internal trading halt."""
+
+    # Additional trading parameters
+    all_day_tradability: str
+    """The all-day tradability status."""
+
+    notional_estimated_quantity_decimals: int
+    """The number of decimal places for notional estimated quantities."""
+
+    tax_security_type: str
+    """The tax security type classification."""
+
+    reserved_buying_power_percent_queued: str
+    """The reserved buying power percentage for queued orders."""
+
+    reserved_buying_power_percent_immediate: str
+    """The reserved buying power percentage for immediate orders."""
+
+    otc_market_tier: str
+    """The OTC market tier classification."""
+
+    car_required: bool
+    """Whether CAR (Customer Account Representative) is required."""
+
+    high_risk_maintenance_ratio: str
+    """The maintenance ratio for high-risk positions."""
+
+    low_risk_maintenance_ratio: str
+    """The maintenance ratio for low-risk positions."""
+
+    default_preset_percent_limit: str
+    """The default preset percent limit for orders."""
+
+
 class Currency(RobinhoodBaseModel):
     """Represents a currency amount with its code and identifier."""
 
@@ -104,6 +261,9 @@ class StockOrder(RobinhoodBaseModel):
 
     instrument_id: str
     """The unique identifier for the instrument."""
+
+    symbol: Optional[str] = None
+    """The trading symbol for the stock (populated when symbol resolution is enabled)."""
 
     cumulative_quantity: str | float
     """The cumulative quantity filled."""

@@ -6,6 +6,7 @@ from robinhood_client.common.schema import RobinhoodBaseModel
 class StockOrderRequest(RobinhoodBaseModel):
     account_number: Optional[str] = None
     order_id: str
+    resolve_symbols: bool = True
 
 
 class StockOrderResponse(RobinhoodBaseModel):
@@ -18,6 +19,7 @@ class StockOrdersRequest(RobinhoodBaseModel):
     account_number: str
     start_date: Optional[date | str] = None
     page_size: Optional[int] = 10
+    resolve_symbols: bool = True
 
 
 class OptionsOrderRequest(RobinhoodBaseModel):
