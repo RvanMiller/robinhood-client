@@ -15,7 +15,7 @@ from robinhood_client.common.enums import (
 
 class RobinhoodBaseModel(BaseModel):
     """Base model for all Robinhood API responses with enum serialization configuration."""
-    
+
     model_config = ConfigDict(use_enum_values=True)
 
 
