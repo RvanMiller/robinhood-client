@@ -111,8 +111,8 @@ class TestOrdersDataClient(unittest.TestCase):
         self.assertIsInstance(response, StockOrder)
         self.assertEqual(response.id, "order123")
         self.assertEqual(response.quantity, "10.00000000")
-        self.assertEqual(response.side.value, "buy")  # enum comparison
-        self.assertEqual(response.state.value, "filled")  # enum comparison
+        self.assertEqual(response.side, "buy")  # enum as string
+        self.assertEqual(response.state, "filled")  # enum as string
 
         mock_request_get.assert_called_once_with(
             "/orders/order123/", params={"account_number": "account123"}
@@ -151,8 +151,8 @@ class TestOrdersDataClient(unittest.TestCase):
         self.assertEqual(response.id, "order456")
         self.assertEqual(response.quantity, "5.00000000")
         self.assertEqual(response.price, "300.00")
-        self.assertEqual(response.side.value, "sell")
-        self.assertEqual(response.state.value, "cancelled")
+        self.assertEqual(response.side, "sell")
+        self.assertEqual(response.state, "cancelled")
 
         mock_request_get.assert_called_once_with("/orders/order456/", params={})
 

@@ -2,14 +2,14 @@
 
 from abc import ABC
 from typing import Generic, TypeVar, Iterator, Optional, Callable, Any, Dict
-from pydantic import BaseModel
 
 from robinhood_client.common.clients import BaseClient
+from robinhood_client.common.schema import RobinhoodBaseModel
 
 T = TypeVar("T")
 
 
-class CursorResponse(BaseModel, Generic[T]):
+class CursorResponse(RobinhoodBaseModel, Generic[T]):
     """Base response model for paginated API responses."""
 
     results: list[T]
