@@ -40,10 +40,12 @@ class OrdersDataClient(BaseOAuthClient):
 
         res = self.request_get(endpoint, params=params)
         order = StockOrder(**res)
-        
+
         # Resolve symbol if requested
         if request.resolve_symbols:
-            symbol = self._instrument_client.get_symbol_by_instrument_url(order.instrument)
+            symbol = self._instrument_client.get_symbol_by_instrument_url(
+                order.instrument
+            )
             if symbol:
                 order.symbol = symbol
 
@@ -118,31 +120,39 @@ class OrdersDataClient(BaseOAuthClient):
 
         return PaginatedResult(cursor)
 
-    def _create_symbol_resolving_cursor(self, endpoint: str, base_params: dict) -> ApiCursor[StockOrder]:
+    def _create_symbol_resolving_cursor(
+        self, endpoint: str, base_params: dict
+    ) -> ApiCursor[StockOrder]:
         """Create a cursor that automatically resolves symbols for orders.
-        
+
         Args:
             endpoint: The API endpoint
             base_params: Base parameters for the request
-            
+
         Returns:
             ApiCursor with symbol resolution
         """
+
         class SymbolResolvingApiCursor(ApiCursor[StockOrder]):
             def __init__(self, orders_client, *args, **kwargs):
                 self._orders_client = orders_client
                 super().__init__(*args, **kwargs)
-            
+
             def _fetch_current_page(self):
                 """Override to resolve symbols after fetching."""
                 super()._fetch_current_page()
-                if (self._current_page and self._current_page.results and 
-                    hasattr(self._orders_client, '_instrument_client')):
+                if (
+                    self._current_page
+                    and self._current_page.results
+                    and hasattr(self._orders_client, "_instrument_client")
+                ):
                     # Resolve symbols for all orders in this page
                     for order in self._current_page.results:
                         if not order.symbol:  # Only resolve if not already set
                             try:
-                                symbol = self._orders_client._instrument_client.get_symbol_by_instrument_url(order.instrument)
+                                symbol = self._orders_client._instrument_client.get_symbol_by_instrument_url(
+                                    order.instrument
+                                )
                                 if symbol:
                                     order.symbol = symbol
                             except Exception:

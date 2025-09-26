@@ -21,7 +21,9 @@ class TestInstrumentCacheClient:
         assert instrument_id == "e84dc27d-7b8e-4f21-b3bd-5b02a5c99bc6"
 
         # Test URL without trailing slash
-        url = "https://api.robinhood.com/instruments/e84dc27d-7b8e-4f21-b3bd-5b02a5c99bc6"
+        url = (
+            "https://api.robinhood.com/instruments/e84dc27d-7b8e-4f21-b3bd-5b02a5c99bc6"
+        )
         instrument_id = self.client._extract_instrument_id_from_url(url)
         assert instrument_id == "e84dc27d-7b8e-4f21-b3bd-5b02a5c99bc6"
 
@@ -30,11 +32,11 @@ class TestInstrumentCacheClient:
         instrument_id = self.client._extract_instrument_id_from_url(invalid_url)
         assert instrument_id is None
 
-    @patch.object(InstrumentCacheClient, 'request_get')
+    @patch.object(InstrumentCacheClient, "request_get")
     def test_get_symbol_by_instrument_id_with_cache_miss(self, mock_request_get):
         """Test getting symbol when not in cache."""
         instrument_id = "e84dc27d-7b8e-4f21-b3bd-5b02a5c99bc6"
-        
+
         # Mock API response
         mock_response = {
             "id": instrument_id,
@@ -86,16 +88,16 @@ class TestInstrumentCacheClient:
             "car_required": False,
             "high_risk_maintenance_ratio": "0.4000",
             "low_risk_maintenance_ratio": "0.2500",
-            "default_preset_percent_limit": "0.02"
+            "default_preset_percent_limit": "0.02",
         }
         mock_request_get.return_value = mock_response
 
         # Test getting symbol
         symbol = self.client.get_symbol_by_instrument_id(instrument_id)
-        
+
         assert symbol == "CRDO"
         mock_request_get.assert_called_once_with(f"/instruments/{instrument_id}/")
-        
+
         # Verify caching
         assert instrument_id in self.client._symbol_cache
         assert self.client._symbol_cache[instrument_id] == "CRDO"
@@ -104,25 +106,25 @@ class TestInstrumentCacheClient:
     def test_get_symbol_by_instrument_id_with_cache_hit(self):
         """Test getting symbol when already in cache."""
         instrument_id = "e84dc27d-7b8e-4f21-b3bd-5b02a5c99bc6"
-        
+
         # Pre-populate cache
         self.client._symbol_cache[instrument_id] = "CRDO"
-        
+
         # Test getting symbol (should not make API call)
-        with patch.object(self.client, 'request_get') as mock_request_get:
+        with patch.object(self.client, "request_get") as mock_request_get:
             symbol = self.client.get_symbol_by_instrument_id(instrument_id)
-            
+
             assert symbol == "CRDO"
             mock_request_get.assert_not_called()
 
-    @patch.object(InstrumentCacheClient, 'get_symbol_by_instrument_id')
+    @patch.object(InstrumentCacheClient, "get_symbol_by_instrument_id")
     def test_get_symbol_by_instrument_url(self, mock_get_symbol):
         """Test getting symbol by URL."""
         url = "https://api.robinhood.com/instruments/e84dc27d-7b8e-4f21-b3bd-5b02a5c99bc6/"
         mock_get_symbol.return_value = "CRDO"
-        
+
         symbol = self.client.get_symbol_by_instrument_url(url)
-        
+
         assert symbol == "CRDO"
         mock_get_symbol.assert_called_once_with("e84dc27d-7b8e-4f21-b3bd-5b02a5c99bc6")
 
@@ -131,12 +133,12 @@ class TestInstrumentCacheClient:
         # Pre-populate caches
         self.client._symbol_cache["test1"] = "SYM1"
         self.client._instrument_cache["test1"] = Mock()
-        
+
         # Test statistics
         stats = self.client.get_cache_stats()
         assert stats["symbol_cache_size"] == 1
         assert stats["instrument_cache_size"] == 1
-        
+
         # Test cache clearing
         self.client.clear_cache()
         stats = self.client.get_cache_stats()

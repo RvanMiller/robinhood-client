@@ -12,7 +12,7 @@ from .requests import (
 
 __all__ = [
     "OrdersDataClient",
-    "OptionsDataClient", 
+    "OptionsDataClient",
     "InstrumentCacheClient",
     "StockOrdersRequest",
     "StockOrderRequest",
