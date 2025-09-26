@@ -144,3 +144,78 @@ class TestInstrumentCacheClient:
         stats = self.client.get_cache_stats()
         assert stats["symbol_cache_size"] == 0
         assert stats["instrument_cache_size"] == 0
+
+    @patch.object(InstrumentCacheClient, "request_get")
+    def test_get_symbol_with_null_tradable_chain_id(self, mock_request_get):
+        """Test getting symbol for instrument with null tradable_chain_id."""
+        instrument_id = "54ce812f-249f-42ed-ae17-3ec9026a0ffe"
+
+        # Mock API response with null tradable_chain_id
+        mock_response = {
+            "id": instrument_id,
+            "url": f"https://api.robinhood.com/instruments/{instrument_id}/",
+            "symbol": "TEST",
+            "name": "Test Company Inc",
+            "simple_name": "Test Company",
+            "state": "active",
+            "market": "https://api.robinhood.com/markets/XNAS/",
+            "tradeable": True,
+            "tradability": "tradable",
+            "quote": "https://api.robinhood.com/quotes/TEST/",
+            "fundamentals": "https://api.robinhood.com/fundamentals/TEST/",
+            "splits": f"https://api.robinhood.com/instruments/{instrument_id}/splits/",
+            "bloomberg_unique": "EQ0000000012345678",
+            "margin_initial_ratio": "0.5000",
+            "maintenance_ratio": "0.4000",
+            "country": "US",
+            "day_trade_ratio": "0.2500",
+            "list_date": "2020-01-01",
+            "min_tick_size": None,
+            "type": "stock",
+            "tradable_chain_id": None,  # This should not cause validation error
+            "rhs_tradability": "tradable",
+            "affiliate_tradability": "tradable",
+            "fractional_tradability": "tradable",
+            "short_selling_tradability": "tradable",
+            "default_collar_fraction": "0.05",
+            "ipo_access_status": None,
+            "ipo_access_cob_deadline": None,
+            "ipo_s1_url": None,
+            "ipo_roadshow_url": None,
+            "is_spac": False,
+            "is_test": False,
+            "ipo_access_supports_dsp": False,
+            "extended_hours_fractional_tradability": False,
+            "internal_halt_reason": "",
+            "internal_halt_details": "",
+            "internal_halt_sessions": None,
+            "internal_halt_start_time": None,
+            "internal_halt_end_time": None,
+            "internal_halt_source": "",
+            "all_day_tradability": "tradable",
+            "notional_estimated_quantity_decimals": 5,
+            "tax_security_type": "stock",
+            "reserved_buying_power_percent_queued": "0.10000000",
+            "reserved_buying_power_percent_immediate": "0.05000000",
+            "otc_market_tier": "",
+            "car_required": False,
+            "high_risk_maintenance_ratio": "0.4000",
+            "low_risk_maintenance_ratio": "0.2500",
+            "default_preset_percent_limit": "0.02",
+        }
+        mock_request_get.return_value = mock_response
+
+        # Test getting symbol - should not raise validation error
+        symbol = self.client.get_symbol_by_instrument_id(instrument_id)
+
+        assert symbol == "TEST"
+        mock_request_get.assert_called_once_with(f"/instruments/{instrument_id}/")
+
+        # Verify caching
+        assert instrument_id in self.client._symbol_cache
+        assert self.client._symbol_cache[instrument_id] == "TEST"
+        assert instrument_id in self.client._instrument_cache
+
+        # Verify the instrument was properly parsed with null tradable_chain_id
+        cached_instrument = self.client._instrument_cache[instrument_id]
+        assert cached_instrument.tradable_chain_id is None

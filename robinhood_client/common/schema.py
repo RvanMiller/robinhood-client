@@ -82,7 +82,7 @@ class Instrument(RobinhoodBaseModel):
     type: str
     """The type of the instrument (e.g., 'stock')."""
 
-    tradable_chain_id: str
+    tradable_chain_id: Optional[str] = None
     """The unique identifier for the tradable options chain."""
 
     rhs_tradability: str
