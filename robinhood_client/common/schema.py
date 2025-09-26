@@ -1,6 +1,6 @@
 from typing import List, Optional
 from datetime import date, datetime
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 
 from robinhood_client.common.enums import (
     CurrencyCode,
@@ -13,7 +13,13 @@ from robinhood_client.common.enums import (
 )
 
 
-class Currency(BaseModel):
+class RobinhoodBaseModel(BaseModel):
+    """Base model for all Robinhood API responses with enum serialization configuration."""
+
+    model_config = ConfigDict(use_enum_values=True)
+
+
+class Currency(RobinhoodBaseModel):
     """Represents a currency amount with its code and identifier."""
 
     amount: str | float
@@ -26,7 +32,7 @@ class Currency(BaseModel):
     """The unique identifier for the currency."""
 
 
-class StockOrderExecution(BaseModel):
+class StockOrderExecution(RobinhoodBaseModel):
     """Represents an execution of a stock order."""
 
     price: str | float
@@ -69,7 +75,7 @@ class StockOrderExecution(BaseModel):
     """The sales taxes applied to the execution."""
 
 
-class StockOrder(BaseModel):
+class StockOrder(RobinhoodBaseModel):
     """Represents a stock order."""
 
     id: str
@@ -265,7 +271,7 @@ class StockOrder(BaseModel):
     """The position effect for the order."""
 
 
-class StockOrdersPageResponse(BaseModel):
+class StockOrdersPageResponse(RobinhoodBaseModel):
     """Response model for paginated stock orders."""
 
     results: List[StockOrder]
@@ -281,7 +287,7 @@ class StockOrdersPageResponse(BaseModel):
     """Total count of orders across all pages."""
 
 
-class OptionsOrderExecution(BaseModel):
+class OptionsOrderExecution(RobinhoodBaseModel):
     """Represents an execution within an options order leg."""
 
     id: str
@@ -300,7 +306,7 @@ class OptionsOrderExecution(BaseModel):
     """The timestamp when the execution occurred."""
 
 
-class OptionsOrderLeg(BaseModel):
+class OptionsOrderLeg(RobinhoodBaseModel):
     """Represents a leg of an options order."""
 
     id: str
@@ -337,7 +343,7 @@ class OptionsOrderLeg(BaseModel):
     """The list of executions for this leg."""
 
 
-class OptionsOrder(BaseModel):
+class OptionsOrder(RobinhoodBaseModel):
     """Represents an options order."""
 
     id: str
@@ -467,7 +473,7 @@ class OptionsOrder(BaseModel):
     """The sales taxes associated with the options order."""
 
 
-class OptionsOrdersPageResponse(BaseModel):
+class OptionsOrdersPageResponse(RobinhoodBaseModel):
     """Response model for paginated options orders."""
 
     results: List[OptionsOrder]

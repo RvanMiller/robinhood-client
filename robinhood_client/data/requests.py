@@ -1,31 +1,31 @@
 from datetime import date
 from typing import Optional
-from pydantic import BaseModel
+from robinhood_client.common.schema import RobinhoodBaseModel
 
 
-class StockOrderRequest(BaseModel):
+class StockOrderRequest(RobinhoodBaseModel):
     account_number: Optional[str] = None
     order_id: str
 
 
-class StockOrderResponse(BaseModel):
+class StockOrderResponse(RobinhoodBaseModel):
     # For single order response, it's just the StockOrder itself
     # This is a wrapper for consistency
     pass  # Will be replaced with StockOrder fields or just use StockOrder directly
 
 
-class StockOrdersRequest(BaseModel):
+class StockOrdersRequest(RobinhoodBaseModel):
     account_number: str
     start_date: Optional[date | str] = None
     page_size: Optional[int] = 10
 
 
-class OptionsOrderRequest(BaseModel):
+class OptionsOrderRequest(RobinhoodBaseModel):
     account_number: Optional[str] = None
     order_id: str
 
 
-class OptionsOrdersRequest(BaseModel):
+class OptionsOrdersRequest(RobinhoodBaseModel):
     account_number: str
     start_date: Optional[date | str] = None
     page_size: Optional[int] = 10
