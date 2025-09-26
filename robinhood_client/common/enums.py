@@ -33,6 +33,7 @@ class OrderState(Enum):
     CLOSED = "closed"
     CANCELLED = "cancelled"
     FILLED = "filled"
+    CONFIRMED = "confirmed"
     # TODO: Add others
 
 
