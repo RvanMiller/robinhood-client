@@ -116,7 +116,7 @@ class TestOptionsDataClient(unittest.TestCase):
         # Assert
         self.assertIsInstance(result, OptionsOrder)
         self.assertEqual(result.id, order_id)
-        self.assertEqual(result.state.value, "filled")
+        self.assertEqual(result.state, "filled")  # enum as string
         self.assertEqual(result.chain_symbol, "AMZN")
         self.assertEqual(result.direction, "credit")
         self.assertEqual(len(result.legs), 1)
