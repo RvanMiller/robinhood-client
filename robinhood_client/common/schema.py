@@ -238,8 +238,8 @@ class StockOrder(RobinhoodBaseModel):
     id: str
     """The unique identifier for the order."""
 
-    ref_id: str
-    """The reference identifier for the order."""
+    ref_id: Optional[str] = None
+    """The reference identifier for the options order. Added March 2018."""
 
     url: str
     """The URL for the order details."""
