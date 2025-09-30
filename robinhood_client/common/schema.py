@@ -334,8 +334,8 @@ class StockOrder(RobinhoodBaseModel):
     extended_hours: bool
     """Whether the order is for extended hours trading."""
 
-    market_hours: str  # TODO: Convert to Enum
-    """The market hours for the order (e.g., 'regular_hours')."""
+    market_hours: Optional[str] = None  # TODO: Convert to Enum
+    """The market hours for the order (e.g., 'regular_hours', 'extended_hours', 'all_day_hours')."""
 
     override_dtbp_checks: bool
     """Whether to override day trading buying power checks."""
@@ -409,11 +409,11 @@ class StockOrder(RobinhoodBaseModel):
     order_form_type: Optional[str] = None
     """The type of order form (e.g., 'share_based_market_buys', 'all_day_trading_v1_2', 'streamlined_limit_order_flow', 'collaring_removal')."""
 
-    last_update_version: int
-    """The last update version (e.g., 2)."""
+    last_update_version: Optional[int] = None
+    """The last update version (e.g., 2). Added in April 2019."""
 
-    placed_agent: str
-    """The agent that placed the order (e.g., 'user')."""
+    placed_agent: Optional[str] = None
+    """The agent that placed the order (e.g., 'user', 'broker?')."""
 
     is_editable: bool
     """Whether the order is editable."""
@@ -509,8 +509,8 @@ class OptionsOrder(RobinhoodBaseModel):
     id: str
     """The unique identifier for the options order."""
 
-    ref_id: str
-    """The reference identifier for the options order."""
+    ref_id: Optional[str] = None
+    """The reference identifier for the options order. Added March 2018."""
 
     account_number: str
     """The Robinhood account number associated with the order."""
