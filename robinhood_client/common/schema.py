@@ -43,7 +43,7 @@ class Instrument(RobinhoodBaseModel):
     market: str
     """The URL for the market where the instrument is traded."""
 
-    simple_name: str
+    simple_name: Optional[str] = None
     """The simple name of the company."""
 
     name: str
@@ -166,10 +166,10 @@ class Instrument(RobinhoodBaseModel):
     car_required: bool
     """Whether CAR (Customer Account Representative) is required."""
 
-    high_risk_maintenance_ratio: str
+    high_risk_maintenance_ratio: Optional[str] = None
     """The maintenance ratio for high-risk positions."""
 
-    low_risk_maintenance_ratio: str
+    low_risk_maintenance_ratio: Optional[str] = None
     """The maintenance ratio for low-risk positions."""
 
     default_preset_percent_limit: str
