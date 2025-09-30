@@ -412,8 +412,8 @@ class StockOrder(RobinhoodBaseModel):
     last_update_version: Optional[int] = None
     """The last update version (e.g., 2). Added in April 2019."""
 
-    placed_agent: Optional[str] = None
-    """The agent that placed the order (e.g., 'user', 'broker?')."""
+    placed_agent: Optional[str] = None  # TODO: May have other values, like 'broker'
+    """The agent that placed the order (e.g., 'user')."""
 
     is_editable: bool
     """Whether the order is editable."""
