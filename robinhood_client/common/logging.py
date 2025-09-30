@@ -5,6 +5,10 @@ import sys
 import os
 
 
+# Track configuration state to ensure idempotent behavior
+_logging_configured = False
+
+
 def configure_logging(level=None, log_file=None):
     """Configure logging for the robinhood_client package.
 
@@ -20,12 +24,17 @@ def configure_logging(level=None, log_file=None):
     Returns:
         logging.Logger: The configured logger object
     """
+    global _logging_configured
+    
     # Get root logger for the package
     logger = logging.getLogger("robinhood_client")
 
     # Clear any existing handlers to avoid duplicate logs
     if logger.handlers:
         logger.handlers.clear()
+
+    # Reset configuration state when explicitly called
+    _logging_configured = False
 
     # Determine log level - environment variable takes precedence
     if level is None:
@@ -55,9 +64,7 @@ def configure_logging(level=None, log_file=None):
         file_handler.setFormatter(formatter)
         logger.addHandler(file_handler)
 
+    # Mark as configured
+    _logging_configured = True
+
     return logger
-
-
-# Auto-configure logging when this module is imported
-# This allows for simple usage without explicit configuration
-default_logger = configure_logging()
