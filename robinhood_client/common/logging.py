@@ -7,6 +7,8 @@ import os
 
 # Track configuration state to ensure idempotent behavior
 _logging_configured = False
+_current_level = None
+_current_log_file = None
 
 
 def configure_logging(level=None, log_file=None):
@@ -24,22 +26,26 @@ def configure_logging(level=None, log_file=None):
     Returns:
         logging.Logger: The configured logger object
     """
-    global _logging_configured
+    global _logging_configured, _current_level, _current_log_file
     
     # Get root logger for the package
     logger = logging.getLogger("robinhood_client")
-
-    # Clear any existing handlers to avoid duplicate logs
-    if logger.handlers:
-        logger.handlers.clear()
-
-    # Reset configuration state when explicitly called
-    _logging_configured = False
 
     # Determine log level - environment variable takes precedence
     if level is None:
         env_level = os.environ.get("ROBINHOOD_LOG_LEVEL", "INFO").upper()
         level = getattr(logging, env_level, logging.INFO)
+
+    # Get log file setting
+    log_file = log_file or os.environ.get("ROBINHOOD_LOG_FILE")
+
+    # If already configured with same settings, return early to prevent reconfiguration
+    if _logging_configured and _current_level == level and _current_log_file == log_file:
+        return logger
+
+    # Clear any existing handlers to avoid duplicate logs
+    if logger.handlers:
+        logger.handlers.clear()
 
     logger.setLevel(level)
 
@@ -56,15 +62,16 @@ def configure_logging(level=None, log_file=None):
     # Add handler to logger
     logger.addHandler(console_handler)
 
-    # Add file handler if log_file is specified or in environment variable
-    log_file = log_file or os.environ.get("ROBINHOOD_LOG_FILE")
+    # Add file handler if log_file is specified
     if log_file:
         file_handler = logging.FileHandler(log_file)
         file_handler.setLevel(level)
         file_handler.setFormatter(formatter)
         logger.addHandler(file_handler)
 
-    # Mark as configured
+    # Mark as configured and store current settings
     _logging_configured = True
+    _current_level = level
+    _current_log_file = log_file
 
     return logger
