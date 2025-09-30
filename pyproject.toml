@@ -1,6 +1,6 @@
 [project]
 name = "robinhood-client"
-version = "0.2.6"
+version = "0.2.7"
 description = "An unofficial Python REST client for Robinhood API."
 license = { file = "LICENSE" }
 readme = "README.md"
