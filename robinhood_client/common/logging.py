@@ -27,7 +27,7 @@ def configure_logging(level=None, log_file=None):
         logging.Logger: The configured logger object
     """
     global _logging_configured, _current_level, _current_log_file
-    
+
     # Get root logger for the package
     logger = logging.getLogger("robinhood_client")
 
@@ -40,7 +40,11 @@ def configure_logging(level=None, log_file=None):
     log_file = log_file or os.environ.get("ROBINHOOD_LOG_FILE")
 
     # If already configured with same settings, return early to prevent reconfiguration
-    if _logging_configured and _current_level == level and _current_log_file == log_file:
+    if (
+        _logging_configured
+        and _current_level == level
+        and _current_log_file == log_file
+    ):
         return logger
 
     # Clear any existing handlers to avoid duplicate logs
