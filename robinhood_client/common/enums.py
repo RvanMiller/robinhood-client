@@ -34,6 +34,7 @@ class OrderState(Enum):
     CANCELLED = "cancelled"
     FILLED = "filled"
     CONFIRMED = "confirmed"
+    PARTIALLY_FILLED_REST_CANCELLED = "partially_filled_rest_cancelled"
     # TODO: Add others
 
 
