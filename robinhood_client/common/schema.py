@@ -198,8 +198,8 @@ class StockOrderExecution(RobinhoodBaseModel):
     quantity: str | float
     """The number of shares executed."""
 
-    rounded_notional: str | float
-    """The rounded notional value of the execution."""
+    rounded_notional: Optional[str | float] = None
+    """The rounded notional value of the execution. Added in April 2022."""
 
     settlement_date: date | str
     """The settlement date for the execution."""
@@ -213,8 +213,8 @@ class StockOrderExecution(RobinhoodBaseModel):
     ipo_access_execution_rank: Optional[str] = None  # TODO: Confirm type
     """The IPO access execution rank."""
 
-    trade_execution_date: date | str
-    """The date when the trade was executed."""
+    trade_execution_date: Optional[date | str] = None
+    """The date when the trade was executed. Added in October 2022."""
 
     fees: str | float
     """The total fees for the execution."""
@@ -406,8 +406,8 @@ class StockOrder(RobinhoodBaseModel):
     preset_percent_limit: Optional[str | float] = None
     """The preset percent limit for the order."""
 
-    order_form_type: str
-    """The type of order form (e.g., 'share_based_market_buys')."""
+    order_form_type: Optional[str] = None
+    """The type of order form (e.g., 'share_based_market_buys', 'all_day_trading_v1_2', 'streamlined_limit_order_flow', 'collaring_removal')."""
 
     last_update_version: int
     """The last update version (e.g., 2)."""
