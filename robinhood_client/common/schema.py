@@ -346,13 +346,13 @@ class StockOrder(RobinhoodBaseModel):
     response_category: Optional[str] = None  # TODO: Confirm type
     """The response category for the order."""
 
-    stop_triggered_at: Optional[datetime | str] = None  # TODO: Confirm type
+    stop_triggered_at: Optional[datetime | str] = None
     """The timestamp when the stop was triggered."""
 
-    last_trail_price: Optional[str | float] = None
+    last_trail_price: Optional[Currency] = None
     """The last trail price for trailing stop orders."""
 
-    last_trail_price_updated_at: Optional[datetime | str] = None  # TODO: Confirm type
+    last_trail_price_updated_at: Optional[datetime | str] = None
     """The timestamp when the trail price was last updated."""
 
     last_trail_price_source: Optional[str] = None  # TODO: Confirm type
@@ -418,7 +418,7 @@ class StockOrder(RobinhoodBaseModel):
     is_editable: bool
     """Whether the order is editable."""
 
-    replaces: Optional[str] = None  # TODO: Confirm type
+    replaces: Optional[str] = None
     """The order that this order replaces."""
 
     user_cancel_request_state: str  # TODO: Convert to Enum
