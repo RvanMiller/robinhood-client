@@ -8,7 +8,7 @@ def main():
     """Demonstrate symbol resolution functionality."""
     # Initialize the client with session storage
     session_storage = FileSystemSessionStorage()
-    orders_client = OrdersDataClient(session_storage)
+    orders_client = OrdersDataClient(session_storage, resolve_symbols=True)
 
     # Example 1: Get orders with symbol resolution enabled (default)
     print("=== Example 1: Orders with symbol resolution (default) ===")
@@ -25,10 +25,9 @@ def main():
 
     # Example 2: Get orders without symbol resolution
     print("=== Example 2: Orders without symbol resolution ===")
-    request_no_symbols = StockOrdersRequest(
-        account_number="your_account_number", resolve_symbols=False
-    )
-    orders_result_no_symbols = orders_client.get_stock_orders(request_no_symbols)
+    orders_client_no_symbols = OrdersDataClient(session_storage, resolve_symbols=False)
+    request_no_symbols = StockOrdersRequest(account_number="your_account_number")
+    orders_result_no_symbols = orders_client_no_symbols.get_stock_orders(request_no_symbols)
 
     for order in orders_result_no_symbols:
         print(f"Order ID: {order.id}")

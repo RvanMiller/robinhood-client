@@ -83,7 +83,7 @@ class TestOrdersDataClientCursor:
     def test_get_stock_orders_returns_paginated_result(self, mock_init):
         """Test that get_stock_orders returns a PaginatedResult."""
         # Setup
-        client = OrdersDataClient.__new__(OrdersDataClient)
+        client = OrdersDataClient()
 
         # Mock the request_get method to return mock data
         mock_response = {
@@ -110,7 +110,7 @@ class TestOrdersDataClientCursor:
     def test_cursor_iteration_across_pages(self, mock_init):
         """Test that cursor can iterate across multiple pages."""
         # Setup
-        client = OrdersDataClient.__new__(OrdersDataClient)
+        client = OrdersDataClient()
 
         # Mock responses for pagination
         page1_response = {

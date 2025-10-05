@@ -22,14 +22,15 @@ from .requests import (
 
 class OrdersDataClient(BaseOAuthClient):
     """Client for retrieving Stock and Options data."""
+    _resolve_symbols: bool = True
 
-    def __init__(self, session_storage: SessionStorage = None):
+    def __init__(self, session_storage: SessionStorage = None, resolve_symbols: bool = True):
         if session_storage is None:
             from robinhood_client.common.session import FileSystemSessionStorage
-
             session_storage = FileSystemSessionStorage()
         super().__init__(url=BASE_API_URL, session_storage=session_storage)
         self._instrument_client = InstrumentCacheClient(session_storage)
+        self._resolve_symbols = resolve_symbols
 
     # --- Stock Orders ---
 
@@ -46,7 +47,7 @@ class OrdersDataClient(BaseOAuthClient):
         order = StockOrder(**res)
 
         # Resolve symbol if requested
-        if request.resolve_symbols:
+        if self._resolve_symbols:
             symbol = self._instrument_client.get_symbol_by_instrument_url(
                 order.instrument
             )
@@ -75,7 +76,7 @@ class OrdersDataClient(BaseOAuthClient):
         else:
             params["page_size"] = 10
 
-        if request.resolve_symbols:
+        if self._resolve_symbols:
             cursor = self._create_symbol_resolving_cursor(endpoint, params)
         else:
             cursor = ApiCursor(
