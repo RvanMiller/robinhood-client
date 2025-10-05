@@ -2,7 +2,7 @@
 
 from unittest.mock import Mock, patch
 from robinhood_client.data.orders import OrdersDataClient
-from robinhood_client.data.requests import StockOrderRequest, StockOrdersRequest
+from robinhood_client.data.requests import StockOrderRequest
 from robinhood_client.common.session import SessionStorage
 
 
@@ -134,21 +134,24 @@ class TestOrdersDataClientSymbolResolution:
 
         mock_order_response = self.create_mock_order_response(order_id, account_number)
 
+        # Create a client with symbol resolution disabled
+        client = OrdersDataClient(self.mock_session_storage, resolve_symbols=False)
+
         with (
-            patch.object(self.client, "request_get") as mock_request_get,
+            patch.object(client, "request_get") as mock_request_get,
             patch.object(
-                self.client._instrument_client, "get_symbol_by_instrument_url"
+                client._instrument_client, "get_symbol_by_instrument_url"
             ) as mock_get_symbol,
         ):
             mock_request_get.return_value = mock_order_response
 
-            # Create request with symbol resolution disabled
+            # Create request
             request = StockOrderRequest(
-                account_number=account_number, order_id=order_id, resolve_symbols=False
+                account_number=account_number, order_id=order_id
             )
 
             # Get the order
-            order = self.client.get_stock_order(request)
+            order = client.get_stock_order(request)
 
             # Verify API call
             mock_request_get.assert_called_once_with(
@@ -165,13 +168,3 @@ class TestOrdersDataClientSymbolResolution:
                 order.instrument
                 == "https://api.robinhood.com/instruments/e84dc27d-7b8e-4f21-b3bd-5b02a5c99bc6/"
             )
-
-    def test_request_defaults(self):
-        """Test that resolve_symbols defaults to True in request models."""
-        # Test StockOrderRequest
-        request = StockOrderRequest(order_id="test-id")
-        assert request.resolve_symbols is True
-
-        # Test StockOrdersRequest
-        request = StockOrdersRequest(account_number="test-account")
-        assert request.resolve_symbols is True

@@ -1,4 +1,4 @@
-"""Integration tests for the OrdersDataClient module."""
+"""Integration tests for the Stock Orders."""
 
 import os
 import pytest
@@ -13,7 +13,7 @@ from robinhood_client.data.requests import StockOrdersRequest, StockOrderRequest
 
 
 @pytest.fixture(scope="module")
-def authenticated_client():
+def orders_client():
     """Fixture that provides an authenticated OrdersDataClient for all tests."""
     # Create a session storage
     session_storage = FileSystemSessionStorage()
@@ -54,7 +54,7 @@ def account_number():
     return account_number
 
 
-def test_get_stock_orders(authenticated_client: OrdersDataClient, account_number: str):
+def test_get_stock_orders(orders_client: OrdersDataClient, account_number: str):
     """Integration test for getting stock orders."""
     # Create a request for recent orders (last 7 days)
     one_week_ago = (datetime.now() - timedelta(days=7)).strftime("%Y-%m-%d")
@@ -63,7 +63,7 @@ def test_get_stock_orders(authenticated_client: OrdersDataClient, account_number
     )
 
     # Execute the request
-    response = authenticated_client.get_stock_orders(request)
+    response = orders_client.get_stock_orders(request)
 
     # Verify the response is a PaginatedResult
     assert response is not None
@@ -272,7 +272,7 @@ def test_get_stock_orders(authenticated_client: OrdersDataClient, account_number
             print(f"✓ All {len(response.results)} orders passed basic validation")
 
 
-def test_get_stock_order(authenticated_client: OrdersDataClient, account_number: str):
+def test_get_stock_order(orders_client: OrdersDataClient, account_number: str):
     """Integration test for getting a single stock order."""
     # First, get recent orders to find an order ID to test with
     one_week_ago = (datetime.now() - timedelta(days=7)).strftime("%Y-%m-%d")
@@ -280,7 +280,7 @@ def test_get_stock_order(authenticated_client: OrdersDataClient, account_number:
         account_number=account_number, start_date=one_week_ago, page_size=1
     )
 
-    orders_response = authenticated_client.get_stock_orders(orders_request)
+    orders_response = orders_client.get_stock_orders(orders_request)
 
     # Skip test if no orders found
     if not orders_response.results:
@@ -296,7 +296,7 @@ def test_get_stock_order(authenticated_client: OrdersDataClient, account_number:
     )
 
     # Execute the request for single order
-    single_order = authenticated_client.get_stock_order(single_order_request)
+    single_order = orders_client.get_stock_order(single_order_request)
 
     # Verify the response
     assert single_order is not None
@@ -384,7 +384,7 @@ def test_get_stock_order(authenticated_client: OrdersDataClient, account_number:
 
 
 def test_get_stock_orders_pagination(
-    authenticated_client: OrdersDataClient, account_number: str
+    orders_client: OrdersDataClient, account_number: str
 ):
     """Integration test for cursor-based stock orders retrieval."""
     # Create a request for recent orders
@@ -394,7 +394,7 @@ def test_get_stock_orders_pagination(
     )
 
     # Execute the cursor request
-    result = authenticated_client.get_stock_orders(request)
+    result = orders_client.get_stock_orders(request)
 
     # Verify the result structure
     assert result is not None
@@ -431,7 +431,7 @@ def test_get_stock_orders_pagination(
 
 
 def test_get_stock_orders_iteration(
-    authenticated_client: OrdersDataClient, account_number: str
+    orders_client: OrdersDataClient, account_number: str
 ):
     """Integration test for iterating through multiple pages with cursor."""
     # Create a request with small page size to test pagination
@@ -441,7 +441,7 @@ def test_get_stock_orders_iteration(
     )
 
     # Execute the cursor request
-    result = authenticated_client.get_stock_orders(request)
+    result = orders_client.get_stock_orders(request)
 
     # Test iteration through all pages
     all_orders_via_iteration = []

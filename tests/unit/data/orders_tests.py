@@ -156,6 +156,65 @@ class TestOrdersDataClient(unittest.TestCase):
 
         mock_request_get.assert_called_once_with("/orders/order456/", params={})
 
+    def test_default_session_storage(self):
+        """Test OrdersDataClient uses FileSystemSessionStorage by default."""
+        from robinhood_client.common.session import FileSystemSessionStorage
+
+        client = OrdersDataClient()
+        self.assertIsInstance(client._session_storage, FileSystemSessionStorage)
+
+    @patch("robinhood_client.data.orders.ApiCursor")
+    def test_get_stock_orders_filters(self, mock_api_cursor):
+        """Test get_stock_orders applies state, start_date, and end_date filters."""
+        mock_cursor_instance = MagicMock()
+        mock_api_cursor.return_value = mock_cursor_instance
+        from robinhood_client.data.requests import StockOrdersRequest
+        import datetime
+
+        request = StockOrdersRequest(
+            account_number="acc123",
+            page_size=5,
+            state="filled",
+            start_date=datetime.date(2025, 1, 1),
+            end_date=datetime.date(2025, 1, 31),
+        )
+        client = OrdersDataClient(
+            session_storage=self.session_storage, resolve_symbols=False
+        )
+        result = client.get_stock_orders(request)
+        # Assert correct parameters passed to ApiCursor
+        called_args = mock_api_cursor.call_args[1]["base_params"]
+        self.assertEqual(called_args["state"], "filled")
+        self.assertEqual(called_args["updated_at[gte]"], "2025-01-01")
+        self.assertEqual(called_args["updated_at[lte]"], "2025-01-31")
+        # Assert result is a PaginatedResult
+        from robinhood_client.common.cursor import PaginatedResult
+
+        self.assertIsInstance(result, PaginatedResult)
+
+    @patch("robinhood_client.data.orders.ApiCursor")
+    def test_get_options_orders_filters(self, mock_api_cursor):
+        """Test get_options_orders applies state, start_date, and end_date filters."""
+        mock_cursor_instance = MagicMock()
+        mock_api_cursor.return_value = mock_cursor_instance
+        from robinhood_client.data.requests import OptionOrdersRequest
+        import datetime
+
+        request = OptionOrdersRequest(
+            account_number="acc456",
+            page_size=10,
+            state="cancelled",
+            start_date=datetime.date(2025, 2, 1),
+            end_date=datetime.date(2025, 2, 28),
+        )
+        client = OrdersDataClient(session_storage=self.session_storage)
+        result = client.get_options_orders(request)
+        self.assertIs(result.cursor(), mock_cursor_instance)
+        called_args = mock_api_cursor.call_args[1]["base_params"]
+        self.assertEqual(called_args["state"], "cancelled")
+        self.assertEqual(called_args["updated_at[gte]"], "2025-02-01")
+        self.assertEqual(called_args["updated_at[lte]"], "2025-02-28")
+
 
 if __name__ == "__main__":
     unittest.main()

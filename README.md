@@ -45,7 +45,6 @@ Also be sure that Python 3.10 or higher is installed. If you need to install pyt
 ```python
 from robinhood_client.common.session import FileSystemSessionStorage
 from robinhood_client.data.orders import OrdersDataClient
-from robinhood_client.data.options import OptionsDataClient
 from robinhood_client.data.requests import StockOrdersRequest, OptionsOrdersRequest
 import pyotp
 

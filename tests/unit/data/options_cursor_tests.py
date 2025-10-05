@@ -1,14 +1,14 @@
-"""Unit tests for OptionsDataClient cursor integration."""
+"""Unit tests for OrdersDataClient options cursor integration."""
 
 from unittest.mock import Mock, patch
-from robinhood_client.data.options import OptionsDataClient
-from robinhood_client.data.requests import OptionsOrdersRequest
+from robinhood_client.data.orders import OrdersDataClient
+from robinhood_client.data.requests import OptionOrdersRequest
 from robinhood_client.common.cursor import PaginatedResult
 from robinhood_client.common.schema import OptionsOrder
 
 
-class TestOptionsDataClientCursor:
-    """Test cursor integration in OptionsDataClient."""
+class TestOrdersDataClientOptionsCursor:
+    """Test cursor integration in OrdersDataClient for options orders."""
 
     def create_mock_options_order_data(self, order_id: str) -> dict:
         """Create a mock options order data dictionary."""
@@ -83,7 +83,7 @@ class TestOptionsDataClientCursor:
         """Test that get_options_orders returns a PaginatedResult."""
         # Setup - use a mock session storage instead of bypassing __init__
         mock_session_storage = Mock()
-        client = OptionsDataClient(session_storage=mock_session_storage)
+        client = OrdersDataClient(session_storage=mock_session_storage)
 
         # Mock the first page response
         mock_first_page = {
@@ -98,7 +98,7 @@ class TestOptionsDataClientCursor:
 
         # Mock the request_get method directly
         with patch.object(client, "request_get", return_value=mock_first_page):
-            request = OptionsOrdersRequest(account_number="123")
+            request = OptionOrdersRequest(account_number="123")
 
             # Act
             result = client.get_options_orders(request)
@@ -117,7 +117,7 @@ class TestOptionsDataClientCursor:
         """Test cursor iteration through multiple pages of options orders."""
         # Setup
         mock_session_storage = Mock()
-        client = OptionsDataClient(session_storage=mock_session_storage)
+        client = OrdersDataClient(session_storage=mock_session_storage)
 
         # Mock responses for multiple pages
         mock_responses = [
@@ -144,7 +144,7 @@ class TestOptionsDataClientCursor:
         ]
 
         with patch.object(client, "request_get", side_effect=mock_responses):
-            request = OptionsOrdersRequest(account_number="123", page_size=2)
+            request = OptionOrdersRequest(account_number="123", page_size=2)
             result = client.get_options_orders(request)
 
             # Act - iterate through all orders
@@ -158,8 +158,9 @@ class TestOptionsDataClientCursor:
     def test_cursor_all_method_collects_all_orders(self):
         """Test that cursor.all() method collects all orders from all pages."""
         # Setup
+
         mock_session_storage = Mock()
-        client = OptionsDataClient(session_storage=mock_session_storage)
+        client = OrdersDataClient(session_storage=mock_session_storage)
 
         mock_responses = [
             # First page
@@ -182,7 +183,7 @@ class TestOptionsDataClientCursor:
         ]
 
         with patch.object(client, "request_get", side_effect=mock_responses):
-            request = OptionsOrdersRequest(account_number="123")
+            request = OptionOrdersRequest(account_number="123")
             result = client.get_options_orders(request)
 
             # Act
@@ -196,8 +197,9 @@ class TestOptionsDataClientCursor:
     def test_get_options_orders_with_date_filter(self):
         """Test get_options_orders with start_date parameter."""
         # Setup
+
         mock_session_storage = Mock()
-        client = OptionsDataClient(session_storage=mock_session_storage)
+        client = OrdersDataClient(session_storage=mock_session_storage)
 
         mock_response = {
             "results": [self.create_mock_options_order_data("order1")],
@@ -209,7 +211,7 @@ class TestOptionsDataClientCursor:
         with patch.object(
             client, "request_get", return_value=mock_response
         ) as mock_get:
-            request = OptionsOrdersRequest(
+            request = OptionOrdersRequest(
                 account_number="123", start_date="2023-01-01", page_size=5
             )
 
@@ -228,21 +230,22 @@ class TestOptionsDataClientCursor:
             # Check the parameters
             params = call_args[1]["params"]
             assert params["account_number"] == "123"
-            assert params["start_date"] == "2023-01-01"
+            assert params["updated_at[gte]"] == "2023-01-01"
             assert params["page_size"] == 5
 
     def test_get_options_orders_default_page_size(self):
         """Test that default page_size is applied when not specified."""
         # Setup
+
         mock_session_storage = Mock()
-        client = OptionsDataClient(session_storage=mock_session_storage)
+        client = OrdersDataClient(session_storage=mock_session_storage)
 
         mock_response = {"results": [], "next": None, "previous": None, "count": 0}
 
         with patch.object(
             client, "request_get", return_value=mock_response
         ) as mock_get:
-            request = OptionsOrdersRequest(account_number="123")
+            request = OptionOrdersRequest(account_number="123")
 
             # Act
             result = client.get_options_orders(request)
@@ -257,8 +260,9 @@ class TestOptionsDataClientCursor:
     def test_cursor_has_next_functionality(self):
         """Test cursor has_next() method functionality."""
         # Setup
+
         mock_session_storage = Mock()
-        client = OptionsDataClient(session_storage=mock_session_storage)
+        client = OrdersDataClient(session_storage=mock_session_storage)
 
         mock_response_with_next = {
             "results": [self.create_mock_options_order_data("order1")],
@@ -268,7 +272,7 @@ class TestOptionsDataClientCursor:
         }
 
         with patch.object(client, "request_get", return_value=mock_response_with_next):
-            request = OptionsOrdersRequest(account_number="123")
+            request = OptionOrdersRequest(account_number="123")
             result = client.get_options_orders(request)
 
             # Act & Assert
@@ -284,7 +288,7 @@ class TestOptionsDataClientCursor:
         }
 
         with patch.object(client, "request_get", return_value=mock_response_no_next):
-            request = OptionsOrdersRequest(account_number="123")
+            request = OptionOrdersRequest(account_number="123")
             result = client.get_options_orders(request)
 
             # Act & Assert

@@ -37,13 +37,6 @@ Getting Option Information
 --------------------------
 
 
-.. automodule:: robinhood_client.options
-   :members:
-
-Getting Market Information
---------------------------
-
-
 .. automodule:: robinhood_client.markets
    :members:
 
