@@ -516,7 +516,7 @@ class OptionsOrder(RobinhoodBaseModel):
     """The Robinhood account number associated with the order."""
 
     cancel_url: Optional[str] = None
-    """CONFIRM: The URL to cancel the options order."""
+    """The URL to cancel the options order."""
 
     canceled_quantity: str | float
     """The quantity of the options order that has been canceled."""
@@ -533,8 +533,8 @@ class OptionsOrder(RobinhoodBaseModel):
     pending_quantity: str | float
     """The quantity of the options order that is still pending."""
 
-    premium: str | float
-    """The premium amount for the options order."""
+    premium: Optional[str | float] = None
+    """The premium amount for the options order. None for market orders."""
 
     processed_premium: str | float
     """The processed premium amount for the options order."""
@@ -548,8 +548,8 @@ class OptionsOrder(RobinhoodBaseModel):
     net_amount_direction: str  # TODO: Convert to Enum
     """The direction of the net amount, either 'credit' or 'debit'."""
 
-    price: str | float
-    """The price per unit for the options order."""
+    price: Optional[str | float] = None
+    """The price per unit for the options order. None for market orders."""
 
     processed_quantity: str | float
     """The quantity of the options order that has been processed."""
@@ -588,7 +588,7 @@ class OptionsOrder(RobinhoodBaseModel):
     """The underlying stock symbol for the options chain."""
 
     response_category: Optional[str] = None
-    """CONFIRM: The response category for the options order."""
+    """The response category for the options order."""
 
     opening_strategy: Optional[str] = None
     """The opening strategy for the options order."""
