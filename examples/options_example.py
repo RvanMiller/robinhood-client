@@ -18,11 +18,11 @@ from typing import Optional
 import pyotp
 
 from robinhood_client.common.session import FileSystemSessionStorage
-from robinhood_client.data.options import OptionsDataClient
+from robinhood_client.data import OrdersDataClient
 
 
-def create_authenticated_client() -> Optional[OptionsDataClient]:
-    """Create and authenticate an OptionsDataClient."""
+def create_authenticated_client() -> Optional[OrdersDataClient]:
+    """Create and authenticate an OrdersDataClient."""
     # Check for required environment variables
     username = os.environ.get("RH_USERNAME")
     password = os.environ.get("RH_PASSWORD")
@@ -37,7 +37,7 @@ def create_authenticated_client() -> Optional[OptionsDataClient]:
 
     # Create session storage and client
     session_storage = FileSystemSessionStorage()
-    client = OptionsDataClient(session_storage=session_storage)
+    client = OrdersDataClient(session_storage=session_storage)
 
     try:
         # Generate TOTP code and authenticate
@@ -51,7 +51,7 @@ def create_authenticated_client() -> Optional[OptionsDataClient]:
         return None
 
 
-def demonstrate_basic_options_retrieval(client: OptionsDataClient) -> None:
+def demonstrate_basic_options_retrieval(client: OrdersDataClient) -> None:
     """Demonstrate basic options order retrieval."""
     print("\n" + "=" * 60)
     print("BASIC OPTIONS ORDER RETRIEVAL")
@@ -87,7 +87,7 @@ def demonstrate_basic_options_retrieval(client: OptionsDataClient) -> None:
         print(f"❌ Error retrieving options orders: {e}")
 
 
-def demonstrate_cursor_pagination(client: OptionsDataClient) -> None:
+def demonstrate_cursor_pagination(client: OrdersDataClient) -> None:
     """Demonstrate cursor-based pagination."""
     print("\n" + "=" * 60)
     print("CURSOR PAGINATION EXAMPLE")
@@ -119,7 +119,7 @@ def demonstrate_cursor_pagination(client: OptionsDataClient) -> None:
         print(f"❌ Error during pagination: {e}")
 
 
-def demonstrate_date_filtering(client: OptionsDataClient) -> None:
+def demonstrate_date_filtering(client: OrdersDataClient) -> None:
     """Demonstrate filtering options orders by date."""
     print("\n" + "=" * 60)
     print("DATE FILTERING EXAMPLE")
@@ -142,7 +142,7 @@ def demonstrate_date_filtering(client: OptionsDataClient) -> None:
         print(f"❌ Error filtering by date: {e}")
 
 
-def demonstrate_specific_order_retrieval(client: OptionsDataClient) -> None:
+def demonstrate_specific_order_retrieval(client: OrdersDataClient) -> None:
     """Demonstrate retrieving a specific options order."""
     print("\n" + "=" * 60)
     print("SPECIFIC ORDER RETRIEVAL")

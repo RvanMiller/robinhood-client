@@ -1,23 +1,23 @@
-"""Unit tests for the OptionsDataClient module."""
+"""Unit tests for the OrdersDataClient options order methods."""
 
 import unittest
 from unittest.mock import patch, MagicMock
 
 from robinhood_client.common.session import SessionStorage
 from robinhood_client.common.schema import OptionsOrder
-from robinhood_client.data.options import OptionsDataClient
+from robinhood_client.data.orders import OrdersDataClient
 from robinhood_client.data.requests import (
-    OptionsOrderRequest,
+    OptionOrderRequest,
 )
 
 
-class TestOptionsDataClient(unittest.TestCase):
-    """Tests for the OptionsDataClient class."""
+class TestOrdersDataClientOptions(unittest.TestCase):
+    """Tests for the OrdersDataClient options order methods."""
 
     def setUp(self):
         """Set up test fixtures."""
         self.session_storage = MagicMock(spec=SessionStorage)
-        self.client = OptionsDataClient(session_storage=self.session_storage)
+        self.client = OrdersDataClient(session_storage=self.session_storage)
 
     def _create_complete_options_order_data(self, order_id, **overrides):
         """Helper method to create complete options order data for testing."""
@@ -99,7 +99,7 @@ class TestOptionsDataClient(unittest.TestCase):
         default_data.update(overrides)
         return default_data
 
-    @patch.object(OptionsDataClient, "request_get")
+    @patch.object(OrdersDataClient, "request_get")
     def test_get_options_order_success(self, mock_request_get):
         """Test successful retrieval of a single options order."""
         # Arrange
@@ -108,7 +108,7 @@ class TestOptionsDataClient(unittest.TestCase):
         expected_data = self._create_complete_options_order_data(order_id)
         mock_request_get.return_value = expected_data
 
-        request = OptionsOrderRequest(order_id=order_id, account_number=account_number)
+        request = OptionOrderRequest(order_id=order_id, account_number=account_number)
 
         # Act
         result = self.client.get_options_order(request)
@@ -132,7 +132,7 @@ class TestOptionsDataClient(unittest.TestCase):
             f"/options/orders/{order_id}/", params={"account_number": account_number}
         )
 
-    @patch.object(OptionsDataClient, "request_get")
+    @patch.object(OrdersDataClient, "request_get")
     def test_get_options_order_without_account_number(self, mock_request_get):
         """Test retrieval of options order without account number parameter."""
         # Arrange
@@ -140,7 +140,7 @@ class TestOptionsDataClient(unittest.TestCase):
         expected_data = self._create_complete_options_order_data(order_id)
         mock_request_get.return_value = expected_data
 
-        request = OptionsOrderRequest(order_id=order_id)
+        request = OptionOrderRequest(order_id=order_id)
 
         # Act
         result = self.client.get_options_order(request)
@@ -169,7 +169,7 @@ class TestOptionsDataClient(unittest.TestCase):
 
             mock_request_get.return_value = expected_data
 
-            request = OptionsOrderRequest(
+            request = OptionOrderRequest(
                 order_id=order_id, account_number=account_number
             )
 
@@ -181,7 +181,7 @@ class TestOptionsDataClient(unittest.TestCase):
             self.assertEqual(result.legs[0].position_effect, "open")
             self.assertEqual(result.legs[0].side, "buy")
 
-    @patch.object(OptionsDataClient, "request_get")
+    @patch.object(OrdersDataClient, "request_get")
     def test_get_options_order_handles_missing_optional_fields(self, mock_request_get):
         """Test that missing optional fields are handled properly."""
         # Arrange
@@ -196,7 +196,7 @@ class TestOptionsDataClient(unittest.TestCase):
         )
         mock_request_get.return_value = minimal_data
 
-        request = OptionsOrderRequest(order_id=order_id)
+        request = OptionOrderRequest(order_id=order_id)
 
         # Act
         result = self.client.get_options_order(request)

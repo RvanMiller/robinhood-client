@@ -1,24 +1,24 @@
-"""Integration tests for OptionsDataClient."""
+"""Integration tests for Options Orders."""
 
 import os
 import pyotp
 import pytest
 from datetime import date, timedelta
 
-from robinhood_client.data.options import OptionsDataClient
-from robinhood_client.data.requests import OptionsOrderRequest, OptionsOrdersRequest
+from robinhood_client.data import OrdersDataClient
+from robinhood_client.data.requests import OptionOrderRequest, OptionOrdersRequest
 from robinhood_client.common.session import FileSystemSessionStorage
 from robinhood_client.common.schema import OptionsOrder
 
 
 @pytest.fixture(scope="module")
-def authenticated_options_client():
-    """Fixture that provides an authenticated OptionsDataClient for all tests."""
+def authenticated_orders_client():
+    """Fixture that provides an authenticated OrdersDataClient for all tests."""
     # Create a session storage
     session_storage = FileSystemSessionStorage()
 
     # Initialize the client with our session storage
-    client = OptionsDataClient(session_storage=session_storage)
+    client = OrdersDataClient(session_storage=session_storage)
 
     # Check for credentials in environment variables
     username = os.environ.get("RH_USERNAME")
@@ -57,17 +57,17 @@ def account_number():
 
 
 def test_get_options_orders(
-    authenticated_options_client: OptionsDataClient, account_number: str
+    orders_client: OrdersDataClient, account_number: str
 ):
     """Integration test for getting options orders."""
     # Create request with recent date to limit results
     start_date = date.today() - timedelta(days=30)
-    request = OptionsOrdersRequest(
+    request = OptionOrdersRequest(
         account_number=account_number, start_date=start_date, page_size=5
     )
 
     # Act
-    result = authenticated_options_client.get_options_orders(request)
+    result = orders_client.get_options_orders(request)
 
     # Assert
     assert result is not None
@@ -105,16 +105,16 @@ def test_get_options_orders(
 
 
 def test_get_specific_options_order(
-    authenticated_options_client: OptionsDataClient, account_number: str
+    orders_client: OrdersDataClient, account_number: str
 ):
     """Integration test for getting a single options order."""
     # First get a list of orders to find a valid order ID
     start_date = date.today() - timedelta(days=90)
-    orders_request = OptionsOrdersRequest(
+    orders_request = OptionOrdersRequest(
         account_number=account_number, start_date=start_date, page_size=1
     )
 
-    orders_result = authenticated_options_client.get_options_orders(orders_request)
+    orders_result = orders_client.get_options_orders(orders_request)
 
     # Skip test if no orders found
     if not orders_result.results:
@@ -127,12 +127,12 @@ def test_get_specific_options_order(
     print(f"Testing get_options_order with order ID: {order_id}")
 
     # Now test getting that specific order
-    order_request = OptionsOrderRequest(
+    order_request = OptionOrderRequest(
         account_number=account_number, order_id=order_id
     )
 
     # Act
-    specific_order = authenticated_options_client.get_options_order(order_request)
+    specific_order = orders_client.get_options_order(order_request)
 
     # Assert
     assert isinstance(specific_order, OptionsOrder)
@@ -174,19 +174,19 @@ def test_get_specific_options_order(
 
 
 def test_get_options_orders_cursor_iteration(
-    authenticated_options_client: OptionsDataClient, account_number: str
+    orders_client: OrdersDataClient, account_number: str
 ):
     """Integration test for cursor iteration through multiple pages of options orders."""
     # Create request with a longer time range to get more results
     start_date = date.today() - timedelta(days=180)
-    request = OptionsOrdersRequest(
+    request = OptionOrdersRequest(
         account_number=account_number,
         start_date=start_date,
         page_size=2,  # Small page size to test pagination
     )
 
     # Act
-    result = authenticated_options_client.get_options_orders(request)
+    result = orders_client.get_options_orders(request)
 
     # Collect orders through iteration (this tests the cursor functionality)
     all_orders = []
@@ -231,17 +231,17 @@ def test_get_options_orders_cursor_iteration(
 
 
 def test_get_options_orders_with_date_string(
-    authenticated_options_client: OptionsDataClient, account_number: str
+    orders_client: OrdersDataClient, account_number: str
 ):
     """Integration test for options orders request with date as string."""
     # Test with date as string
     start_date_str = "2024-01-01"
-    request = OptionsOrdersRequest(
+    request = OptionOrdersRequest(
         account_number=account_number, start_date=start_date_str, page_size=3
     )
 
     # Act
-    result = authenticated_options_client.get_options_orders(request)
+    result = orders_client.get_options_orders(request)
 
     # Assert
     assert result is not None

@@ -1,4 +1,4 @@
-"""Integration tests for the OrdersDataClient module."""
+"""Integration tests for the Stock Orders."""
 
 import os
 import pytest

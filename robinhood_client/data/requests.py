@@ -22,12 +22,12 @@ class StockOrdersRequest(RobinhoodBaseModel):
     resolve_symbols: bool = True
 
 
-class OptionsOrderRequest(RobinhoodBaseModel):
+class OptionOrderRequest(RobinhoodBaseModel):
     account_number: Optional[str] = None
     order_id: str
 
 
-class OptionsOrdersRequest(RobinhoodBaseModel):
+class OptionOrdersRequest(RobinhoodBaseModel):
     account_number: str
     start_date: Optional[date | str] = None
     page_size: Optional[int] = 10
