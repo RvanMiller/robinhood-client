@@ -22,22 +22,24 @@ from .requests import (
 
 class OrdersDataClient(BaseOAuthClient):
     """Client for retrieving Stock and Options data."""
+
     _resolve_symbols: bool = True
 
-    def __init__(self, session_storage: SessionStorage = None, resolve_symbols: bool = True):
+    def __init__(
+        self, session_storage: SessionStorage = None, resolve_symbols: bool = True
+    ):
         if session_storage is None:
             from robinhood_client.common.session import FileSystemSessionStorage
+
             session_storage = FileSystemSessionStorage()
         super().__init__(url=BASE_API_URL, session_storage=session_storage)
-        self._instrument_client = InstrumentCacheClient(session_storage)
         self._resolve_symbols = resolve_symbols
+        self._instrument_client = InstrumentCacheClient(session_storage)
 
     # --- Stock Orders ---
 
     def get_stock_order(self, request: StockOrderRequest) -> StockOrder:
-        """Gets information for a specific stock order.
-        ...existing code...
-        """
+        """Gets information for a specific stock order."""
         params = {}
         endpoint = f"/orders/{request.order_id}/"
         if request.account_number is not None:
@@ -59,9 +61,7 @@ class OrdersDataClient(BaseOAuthClient):
     def get_stock_orders(
         self, request: StockOrdersRequest
     ) -> PaginatedResult[StockOrder]:
-        """Gets a cursor-based paginated result for stock orders.
-        ...existing code...
-        """
+        """Gets a cursor-based paginated result for stock orders."""
         params = {"account_number": request.account_number}
         endpoint = "/orders/"
 
@@ -91,9 +91,7 @@ class OrdersDataClient(BaseOAuthClient):
     def _create_symbol_resolving_cursor(
         self, endpoint: str, base_params: dict
     ) -> ApiCursor[StockOrder]:
-        """Create a cursor that automatically resolves symbols for orders.
-        ...existing code...
-        """
+        """Create a cursor that automatically resolves symbols for orders."""
 
         class SymbolResolvingApiCursor(ApiCursor[StockOrder]):
             def __init__(self, orders_client, *args, **kwargs):

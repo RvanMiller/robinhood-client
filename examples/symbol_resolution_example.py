@@ -27,7 +27,9 @@ def main():
     print("=== Example 2: Orders without symbol resolution ===")
     orders_client_no_symbols = OrdersDataClient(session_storage, resolve_symbols=False)
     request_no_symbols = StockOrdersRequest(account_number="your_account_number")
-    orders_result_no_symbols = orders_client_no_symbols.get_stock_orders(request_no_symbols)
+    orders_result_no_symbols = orders_client_no_symbols.get_stock_orders(
+        request_no_symbols
+    )
 
     for order in orders_result_no_symbols:
         print(f"Order ID: {order.id}")

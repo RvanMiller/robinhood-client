@@ -168,4 +168,3 @@ class TestOrdersDataClientSymbolResolution:
                 order.instrument
                 == "https://api.robinhood.com/instruments/e84dc27d-7b8e-4f21-b3bd-5b02a5c99bc6/"
             )
-
