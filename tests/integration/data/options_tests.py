@@ -12,7 +12,7 @@ from robinhood_client.common.schema import OptionsOrder
 
 
 @pytest.fixture(scope="module")
-def authenticated_orders_client():
+def orders_client():
     """Fixture that provides an authenticated OrdersDataClient for all tests."""
     # Create a session storage
     session_storage = FileSystemSessionStorage()
@@ -56,9 +56,7 @@ def account_number():
     return account_number
 
 
-def test_get_options_orders(
-    orders_client: OrdersDataClient, account_number: str
-):
+def test_get_options_orders(orders_client: OrdersDataClient, account_number: str):
     """Integration test for getting options orders."""
     # Create request with recent date to limit results
     start_date = date.today() - timedelta(days=30)
@@ -127,9 +125,7 @@ def test_get_specific_options_order(
     print(f"Testing get_options_order with order ID: {order_id}")
 
     # Now test getting that specific order
-    order_request = OptionOrderRequest(
-        account_number=account_number, order_id=order_id
-    )
+    order_request = OptionOrderRequest(account_number=account_number, order_id=order_id)
 
     # Act
     specific_order = orders_client.get_options_order(order_request)

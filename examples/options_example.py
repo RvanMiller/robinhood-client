@@ -1,5 +1,5 @@
 """
-Example demonstrating how to use the OptionsDataClient for retrieving options order data.
+Example demonstrating how to use the OrdersDataClient for retrieving options order data.
 
 This example shows:
 - Basic options order retrieval
@@ -21,7 +21,7 @@ from robinhood_client.common.session import FileSystemSessionStorage
 from robinhood_client.data import OrdersDataClient
 
 
-def create_authenticated_client() -> Optional[OrdersDataClient]:
+def create_orders_client() -> Optional[OrdersDataClient]:
     """Create and authenticate an OrdersDataClient."""
     # Check for required environment variables
     username = os.environ.get("RH_USERNAME")
@@ -193,11 +193,11 @@ def demonstrate_specific_order_retrieval(client: OrdersDataClient) -> None:
 
 def main():
     """Main example function."""
-    print("Robinhood Options Data Client Example")
-    print("====================================")
+    print("Robinhood Orders Data Client Example for Options")
+    print("================================================")
 
     # Create authenticated client
-    client = create_authenticated_client()
+    client = create_orders_client()
     if not client:
         return
 

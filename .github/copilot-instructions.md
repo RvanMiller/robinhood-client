@@ -98,7 +98,7 @@ Built-in logging system with environment variable configuration:
 
 ### Testing New Features
 - Create both unit tests (mocked) and integration tests (real API)
-- Use the `authenticated_client` fixture for integration tests
+- Use the `orders_client` fixture for integration tests
 - Mock `SessionStorage` and HTTP responses for unit tests
 - Never test real order placement - use mock data only
 

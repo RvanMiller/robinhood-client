@@ -156,6 +156,13 @@ class TestOrdersDataClient(unittest.TestCase):
 
         mock_request_get.assert_called_once_with("/orders/order456/", params={})
 
+    def test_default_session_storage(self):
+        """Test OrdersDataClient uses FileSystemSessionStorage by default."""
+        from robinhood_client.common.session import FileSystemSessionStorage
+
+        client = OrdersDataClient()
+        self.assertIsInstance(client._session_storage, FileSystemSessionStorage)
+
 
 if __name__ == "__main__":
     unittest.main()

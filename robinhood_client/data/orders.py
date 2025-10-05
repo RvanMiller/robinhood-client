@@ -23,7 +23,11 @@ from .requests import (
 class OrdersDataClient(BaseOAuthClient):
     """Client for retrieving Stock and Options data."""
 
-    def __init__(self, session_storage: SessionStorage):
+    def __init__(self, session_storage: SessionStorage = None):
+        if session_storage is None:
+            from robinhood_client.common.session import FileSystemSessionStorage
+
+            session_storage = FileSystemSessionStorage()
         super().__init__(url=BASE_API_URL, session_storage=session_storage)
         self._instrument_client = InstrumentCacheClient(session_storage)
 
