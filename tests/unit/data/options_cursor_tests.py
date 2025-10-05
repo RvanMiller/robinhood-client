@@ -230,7 +230,7 @@ class TestOrdersDataClientOptionsCursor:
             # Check the parameters
             params = call_args[1]["params"]
             assert params["account_number"] == "123"
-            assert params["start_date"] == "2023-01-01"
+            assert params["updated_at[gte]"] == "2023-01-01"
             assert params["page_size"] == 5
 
     def test_get_options_orders_default_page_size(self):

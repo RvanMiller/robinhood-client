@@ -1,5 +1,6 @@
 from datetime import date
 from typing import Optional
+from robinhood_client.common.enums import OrderState
 from robinhood_client.common.schema import RobinhoodBaseModel
 
 
@@ -17,7 +18,9 @@ class StockOrderResponse(RobinhoodBaseModel):
 class StockOrdersRequest(RobinhoodBaseModel):
     account_number: str
     page_size: Optional[int] = 10
+    state: Optional[OrderState] = None
     start_date: Optional[date | str] = None
+    end_date: Optional[date | str] = None
 
 
 class OptionOrderRequest(RobinhoodBaseModel):
@@ -27,5 +30,7 @@ class OptionOrderRequest(RobinhoodBaseModel):
 
 class OptionOrdersRequest(RobinhoodBaseModel):
     account_number: str
-    start_date: Optional[date | str] = None
     page_size: Optional[int] = 10
+    state: Optional[OrderState] = None
+    start_date: Optional[date | str] = None
+    end_date: Optional[date | str] = None

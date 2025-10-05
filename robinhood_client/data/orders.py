@@ -65,16 +65,25 @@ class OrdersDataClient(BaseOAuthClient):
         params = {"account_number": request.account_number}
         endpoint = "/orders/"
 
-        if request.start_date is not None:
-            if hasattr(request.start_date, "isoformat"):
-                params["start_date"] = request.start_date.isoformat()
-            else:
-                params["start_date"] = request.start_date
-
         if request.page_size is not None:
             params["page_size"] = request.page_size
         else:
             params["page_size"] = 10
+
+        if request.state is not None:
+            params["state"] = str(request.state)
+
+        if request.start_date is not None:
+            if hasattr(request.start_date, "isoformat"):
+                params["updated_at[gte]"] = request.start_date.isoformat()
+            else:
+                params["updated_at[gte]"] = request.start_date
+
+        if request.end_date is not None:
+            if hasattr(request.end_date, "isoformat"):
+                params["updated_at[lte]"] = request.end_date.isoformat()
+            else:
+                params["updated_at[lte]"] = request.end_date
 
         if self._resolve_symbols:
             cursor = self._create_symbol_resolving_cursor(endpoint, params)
@@ -189,18 +198,26 @@ class OrdersDataClient(BaseOAuthClient):
         params = {"account_number": request.account_number}
         endpoint = "/options/orders/"
 
-        if request.start_date is not None:
-            if hasattr(request.start_date, "isoformat"):
-                params["start_date"] = request.start_date.isoformat()
-            else:
-                params["start_date"] = request.start_date
-
         if request.page_size is not None:
             params["page_size"] = request.page_size
         else:
             params["page_size"] = 10
 
-        # OptionsOrdersPageResponse already imported above
+        if request.state is not None:
+            params["state"] = str(request.state)
+
+        if request.start_date is not None:
+            if hasattr(request.start_date, "isoformat"):
+                params["updated_at[gte]"] = request.start_date.isoformat()
+            else:
+                params["updated_at[gte]"] = request.start_date
+
+        if request.end_date is not None:
+            if hasattr(request.end_date, "isoformat"):
+                params["updated_at[lte]"] = request.end_date.isoformat()
+            else:
+                params["updated_at[lte]"] = request.end_date
+
         cursor = ApiCursor(
             client=self,
             endpoint=endpoint,
