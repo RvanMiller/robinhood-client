@@ -208,7 +208,9 @@ class TestOrdersDataClientOptionsCursor:
             "count": 1,
         }
 
-        with patch.object(client, "request_get", return_value=mock_response) as mock_get:
+        with patch.object(
+            client, "request_get", return_value=mock_response
+        ) as mock_get:
             request = OptionOrdersRequest(
                 account_number="123", start_date="2023-01-01", page_size=5
             )
@@ -240,7 +242,9 @@ class TestOrdersDataClientOptionsCursor:
 
         mock_response = {"results": [], "next": None, "previous": None, "count": 0}
 
-        with patch.object(client, "request_get", return_value=mock_response) as mock_get:
+        with patch.object(
+            client, "request_get", return_value=mock_response
+        ) as mock_get:
             request = OptionOrdersRequest(account_number="123")
 
             # Act
