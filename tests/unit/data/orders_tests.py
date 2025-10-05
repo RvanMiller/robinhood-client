@@ -170,6 +170,7 @@ class TestOrdersDataClient(unittest.TestCase):
         mock_api_cursor.return_value = mock_cursor_instance
         from robinhood_client.data.requests import StockOrdersRequest
         import datetime
+
         request = StockOrdersRequest(
             account_number="acc123",
             page_size=5,
@@ -177,7 +178,9 @@ class TestOrdersDataClient(unittest.TestCase):
             start_date=datetime.date(2025, 1, 1),
             end_date=datetime.date(2025, 1, 31),
         )
-        client = OrdersDataClient(session_storage=self.session_storage, resolve_symbols=False)
+        client = OrdersDataClient(
+            session_storage=self.session_storage, resolve_symbols=False
+        )
         result = client.get_stock_orders(request)
         # Assert correct parameters passed to ApiCursor
         called_args = mock_api_cursor.call_args[1]["base_params"]
@@ -186,6 +189,7 @@ class TestOrdersDataClient(unittest.TestCase):
         self.assertEqual(called_args["updated_at[lte]"], "2025-01-31")
         # Assert result is a PaginatedResult
         from robinhood_client.common.cursor import PaginatedResult
+
         self.assertIsInstance(result, PaginatedResult)
 
     @patch("robinhood_client.data.orders.ApiCursor")
@@ -195,6 +199,7 @@ class TestOrdersDataClient(unittest.TestCase):
         mock_api_cursor.return_value = mock_cursor_instance
         from robinhood_client.data.requests import OptionOrdersRequest
         import datetime
+
         request = OptionOrdersRequest(
             account_number="acc456",
             page_size=10,
