@@ -228,6 +228,35 @@ class BaseOAuthClient(BaseClient):
 
         return True
 
+    def logout(self):
+        """Logs out of Robinhood by clearing session data.
+
+        This method performs a complete logout by:
+        - Setting the authentication status to False
+        - Removing the Authorization header from the session
+        - Clearing any stored session data from the session storage
+
+        After calling this method, you will need to call :meth:`login` again
+        to re-authenticate before making authenticated API requests.
+
+        :returns: None
+
+        Example:
+            >>> from robinhood_client.data.orders import OrdersDataClient
+            >>> from robinhood_client.common.session import FileSystemSessionStorage
+            >>> 
+            >>> storage = FileSystemSessionStorage()
+            >>> client = OrdersDataClient(session_storage=storage)
+            >>> client.login(username='user@example.com', password='password')
+            >>> # ... perform operations ...
+            >>> client.logout()  # Clear session and log out
+
+        """
+        self._is_authenticated = False
+        self._session.headers.pop("Authorization", None)
+        self._session_storage.clear()
+        logger.info("Logged out of Robinhood successfully.")
+
     def _login_using_storage(self) -> bool:
         loaded_session = self._session_storage.load()
         if loaded_session is None:
@@ -324,17 +353,6 @@ class BaseOAuthClient(BaseClient):
         if isinstance(res, Response):
             res.raise_for_status()
         return True
-
-    def logout(self):
-        """Logs out of Robinhood by clearing session data.
-
-        :returns: None
-
-        """
-        self._is_authenticated = False
-        self._session.headers.pop("Authorization", None)
-        self._session_storage.clear()
-        logger.info("Logged out of Robinhood successfully.")
 
     def get_access_token(self):
         """Retrieve the access token from the session."""
