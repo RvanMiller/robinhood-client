@@ -445,18 +445,80 @@ class TestBaseOAuthClient(unittest.TestCase):
         )
 
     def test_logout(self):
-        """Test logout method."""
+        """Test logout method clears all session data."""
         # Arrange
         self.client._is_authenticated = True
         self.client._session.headers["Authorization"] = "Bearer token123"
 
         # Act
-        self.client.logout()
+        with self.assertLogs(level="INFO") as log:
+            self.client.logout()
 
         # Assert
         self.assertFalse(self.client._is_authenticated)
         self.assertNotIn("Authorization", self.client._session.headers)
         self.session_storage.clear.assert_called_once()
+        self.assertIn(
+            "INFO:robinhood_client.common.clients:Logged out of Robinhood successfully.",
+            log.output[0],
+        )
+
+    def test_logout_when_not_authenticated(self):
+        """Test logout method works even when not authenticated."""
+        # Arrange
+        self.client._is_authenticated = False
+        # No Authorization header set
+
+        # Act
+        with self.assertLogs(level="INFO") as log:
+            self.client.logout()
+
+        # Assert
+        self.assertFalse(self.client._is_authenticated)
+        self.assertNotIn("Authorization", self.client._session.headers)
+        self.session_storage.clear.assert_called_once()
+        self.assertIn(
+            "INFO:robinhood_client.common.clients:Logged out of Robinhood successfully.",
+            log.output[0],
+        )
+
+    def test_logout_multiple_times(self):
+        """Test that logout can be called multiple times safely."""
+        # Arrange
+        self.client._is_authenticated = True
+        self.client._session.headers["Authorization"] = "Bearer token123"
+
+        # Act - First logout
+        self.client.logout()
+
+        # Reset mock to check second call
+        self.session_storage.clear.reset_mock()
+
+        # Act - Second logout
+        with self.assertLogs(level="INFO") as log:
+            self.client.logout()
+
+        # Assert - Second logout should still work
+        self.assertFalse(self.client._is_authenticated)
+        self.assertNotIn("Authorization", self.client._session.headers)
+        self.session_storage.clear.assert_called_once()
+        self.assertIn(
+            "INFO:robinhood_client.common.clients:Logged out of Robinhood successfully.",
+            log.output[0],
+        )
+
+    def test_logout_clears_authorization_header_safely(self):
+        """Test that logout uses pop() to safely remove Authorization header."""
+        # Arrange
+        self.client._is_authenticated = True
+        # Intentionally don't set Authorization header
+
+        # Act - Should not raise KeyError
+        self.client.logout()
+
+        # Assert
+        self.assertFalse(self.client._is_authenticated)
+        self.assertNotIn("Authorization", self.client._session.headers)
 
     def test_get_access_token(self):
         """Test get_access_token method."""
