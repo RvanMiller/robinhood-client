@@ -244,7 +244,7 @@ class BaseOAuthClient(BaseClient):
         Example:
             >>> from robinhood_client.data.orders import OrdersDataClient
             >>> from robinhood_client.common.session import FileSystemSessionStorage
-            >>> 
+            >>>
             >>> storage = FileSystemSessionStorage()
             >>> client = OrdersDataClient(session_storage=storage)
             >>> client.login(username='user@example.com', password='password')
