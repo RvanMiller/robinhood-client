@@ -35,6 +35,7 @@ class OrderState(Enum):
     CONFIRMED = "confirmed"
     QUEUED = "queued"
     FILLED = "filled"
+    REJECTED = "rejected"
     PARTIALLY_FILLED_REST_CANCELLED = "partially_filled_rest_cancelled"
     # TODO: Add others
 
