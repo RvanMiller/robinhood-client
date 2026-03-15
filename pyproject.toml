@@ -27,11 +27,11 @@ classifiers = [
     "Operating System :: OS Independent",
 ]
 dependencies = [
-    "cryptography~=45.0.6",
-    "pydantic~=2.11.7",
+    "cryptography~=46.0.0",
+    "pydantic~=2.12.0",
     "pyotp~=2.9.0",
-    "python-dotenv~=1.1.1",
-    "requests~=2.32.4",
+    "python-dotenv~=1.2.0",
+    "requests~=2.32.0",
 ]
 
 [project.urls]
@@ -40,9 +40,9 @@ Repository = "https://github.com/RvanMiller/robinhood-client"
 
 [project.optional-dependencies]
 dev = [
-    "pytest~=8.4.1",
-    "ruff~=0.12.9",
-    "pytest-dotenv~=0.5.2",
+    "pytest~=9.0.0",
+    "ruff~=0.15.0",
+    "pytest-dotenv~=0.5.0",
     "python-dateutil~=2.9.0.post0",
 ]
 
