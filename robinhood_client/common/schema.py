@@ -210,7 +210,7 @@ class StockOrderExecution(RobinhoodBaseModel):
     id: str
     """The unique identifier for the execution."""
 
-    ipo_access_execution_rank: Optional[str] = None  # TODO: Confirm type
+    ipo_access_execution_rank: Optional[int] = None
     """The IPO access execution rank."""
 
     trade_execution_date: Optional[date | str] = None
